@@ -1,0 +1,35 @@
+[
+      {
+        username:'admin',
+        email:'admin@rtbf.be',
+        password:'adminadmin',
+        roles:['admin'],
+        status:'enabled',
+        profile:{
+          first_name:'admin',
+          last_name:'admin'
+        }
+      },
+
+      {
+        username:'user',
+        email:'user@rtbf.be',
+        password:'useruser',
+        roles:['user'],
+        status:'enabled',
+        profile: {
+          first_name:'user',
+          last_name:'user'}
+      },
+
+      {
+        username:'eduv',
+        email:'eduv@rtbf.be',
+        password:'eduveduv',
+        roles:['user', 'admin'],
+        status:'enabled',
+        profile: {
+          first_name:'Eduard',
+          last_name:'Vandenrijd'}
+      }
+]

@@ -1,25 +1,39 @@
-import angular from 'angular';
+import $ from "jquery";
+import 'bootstrap/dist/css/bootstrap.css'; //FIXME for production, add instead import 'bootstrap/dist/css/bootstrap.min.css';
 
-import '../style/app.css';
+import angular from 'angular';
+import ngAnimate from 'angular-animate';
+import normalize from 'normalize.css';
+
+import '../assets/css/gecopa.css';
+import '../assets/css/animations.css';
+
+import './common/models/concours';
 
 let app = () => {
   return {
     template: require('./app.html'),
-    controller: 'AppCtrl',
-    controllerAs: 'app'
+    controller: 'GecopaCtrl',
+    controllerAs: 'gecopa'
   }
 };
 
-class AppCtrl {
-  constructor() {
-    this.url = 'https://github.com/preboot/angular-webpack';
+class GecopaCtrl {
+  constructor(ConcoursModel) {
+    let self = this;
+
+    ConcoursModel.getConcours().then(function (concours) {
+      self.concours = concours;
+    });
+
+    this.date = new Date();
   }
 }
 
-const MODULE_NAME = 'app';
+const gecopa = 'app';
 
-angular.module(MODULE_NAME, [])
+angular.module(gecopa, [ngAnimate, 'gecopa.models.concours'])
   .directive('app', app)
-  .controller('AppCtrl', AppCtrl);
+  .controller('GecopaCtrl', GecopaCtrl);
 
-export default MODULE_NAME;
+export default gecopa;
