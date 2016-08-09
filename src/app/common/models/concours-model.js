@@ -1,3 +1,4 @@
+import angular from 'angular';
 angular.module('gecopa.models.concours', [])
     .service('ConcoursModel', function ($http, $q) {
         var self = this,
@@ -22,7 +23,8 @@ angular.module('gecopa.models.concours', [])
         }
 
         self.getConcours = function () {
-            return (concours) ? $q.when(concours) : $http.get(URLS.FETCH).then(cacheConcours);
+            return (concours) ? $q.when(concours) :
+            $http.get(URLS.FETCH).then(cacheConcours);
         };
 
         self.getConcoursById = function (concoursId) {
