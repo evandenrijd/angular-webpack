@@ -1,112 +1,87 @@
 <!doctype html>
-<html ng-app="app" lang="en">
+<html lang="en">
 
   <head>
-    <meta charset="UTF-8">
     <title>GECOPA</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link type="image/png" rel="shortcut icon"
+          href="http://www.static.rtbf.be/rtbf/home/images/ico/favicon-info-32x32.png"/>
+    <link type="image/png" rel="apple-touch-icon-precomposed"
+          href="http://www.static.rtbf.be/rtbf/home/images/ico/favicon-info-192x192.png"
+          sizes="192x 192"/>
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <!-- Start ngMaterial specific -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic">
+    <!-- Following link, makes the class material-icons work with ligatures. -->
+    <!-- Need Microsoft IE 10 for mnemonic ligatures to work. If this is an
+         issue, use the unicode ligatures instead, starting with: &#x followed
+         by the unicode number. -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- End ngMaterial specific -->
+
+    <style type="text/css">
+      /**
+      * Hide when Angular is not yet loaded and initialized
+      */
+      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+      display: none !important;
+      }
+    </style>
+
   </head>
 
-  <body ng-controller="GecopaController as gecopa">
-    <!-- header -->
-    <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand glyphicon glyphicon-dashboard" href="#"> GECOPA</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class="glyphicon glyphicon-user"></i> Admin <span class="caret"></span></a>
-              <ul id="g-account-menu" class="dropdown-menu" role="menu">
-                <li><a href="#">My Profile</a></li>
-              </ul>
-            </li>
-            <li><a href="#"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
-          </ul>
-        </div>
-      </div>
+  <body ng-app="gecopa" layout="column" ng-controller="GecopaController as gecopa" ng-cloak>
+
+    <md-toolbar layout="row">
+      <md-button class="menu"
+                 hide-gt-sm
+                 ng-click="gecopa.toggleCategories()"
+                 aria-label="Show Categories">
+        <i class="material-icons">menu</i>
+      </md-button>
+      <h1>GECOPA</h1>
+    </md-toolbar>
+
+    <div flex layout="row">
+
+      <md-sidenav ng-click="gecopa.toggleCategories()"
+                  md-is-locked-open="$mdMedia('gt-sm')"
+                  md-component-id="left"
+                  class="md-whiteframe-z2" >
+        <md-list>
+          <md-list-item ng-repeat="category in gecopa.getCategories()">
+            <md-button flex ng-click="gecopa.selectCategory(category)"
+                       ng-class="{'selected' : category === gecopa.getSelectedCategory() }">
+              <div layout="row" layout-align="start center">
+                <div class="material-icons">{{category.getIcon()}}</div>
+                <div>{{category.displayName()}}</div>
+              </div>
+            </md-button>
+          </md-list-item>
+        </md-list>
+      </md-sidenav>
+
+      <md-content flex id="content">
+        <h2>{{gecopa.getSelectedCategory().getName()}}</h2>
+        <md-list>
+          <md-list-item ng-repeat="concours in gecopa.getConcours()">
+            <div layout="row" layout-align="space-around center">
+              <div>{{concours.title}}</div>
+            </div>
+          </md-list-item>
+        </md-list>
+      </md-content>
+
     </div>
-    <!-- /Header -->
 
-    <!-- Main -->
-    <div class="container-fluid">
-      <div class="row">
-
-        <!-- Left column -->
-        <div class="col-sm-3">
-          <ul>
-            <div ng-repeat="category in gecopa.categories">
-              <div class="nav nav-stacked" >
-                <li ng-class="{'active':isCurrentCategory(category)}">
-                  <a href="#"><strong><span class="glyphicon" ng-class="category.icon"></span> {{ category.displayName }}</strong></a>
-                </li>
-              </div>
-            </div>
-          </ul>
-        </div>
-        <!-- /Left column -->
-
-        <!-- Main -->
-        <div class="col-sm-9 main">
-
-          <div>
-
-            <div ng-if="!gecopa.concours.length">
-              <p>No current concours available right now!</p>
-            </div>
-
-            <div class="row" ng-if="gecopa.concours.length">
-              <div class="col-md-3"></div>
-              <div class="col-md-2">
-                <h3 class="concours-list-header">Concours</h3>
-              </div>
-              <div class="col-md-2">
-                <h3 class="concours-list-header">Date limite de participation</h3>
-              </div>
-              <div class="col-md-2">
-                <h3 class="concours-list-header">Participants</h3>
-              </div>
-            </div>
-
-            <div class="concours-list-item" ng-repeat="object in gecopa.concours | orderBy:'-endDate'">
-              <div class="row">
-                <div class="col-md-3"><a ui-sref="concoursDetails({concoursId: object._id})"><img ng-src="/{{object.image}}"/></a></div>
-                <div class="col-md-2"><a ui-sref="concoursDetails({concoursId: object._id})">{{ object.title }}</a></div>
-                <div class="col-md-2">{{ object.endDate | date: 'dd-MM-yyyy' }}</div>
-                <div class="col-md-2">{{ object.participants.length }}</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-    <!-- /Main -->
-
-    <!-- Status bar -->
-    <div>
-      <div id="status-bar" class="navbar navbar-default navbar-fixed-bottom text-center">
-        <div class="container-fluid">
-          <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-left">
-              <li><a href="#"> {{ gecopa.getLastMessage().message }}</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="#"> GECOPA started at: {{ gecopa.date | date:'yyyy-MM-dd hh:mm:ss.sss' }}</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /Status bar -->
+    <!-- <footer>{{ gecopa.date }}</footer> -->
 
   </body>
-</htm>
+
+</html>

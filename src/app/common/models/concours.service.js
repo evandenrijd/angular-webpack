@@ -1,7 +1,7 @@
 import angular from 'angular';
 angular.module('gecopa.models.concours', [])
-    .service('ConcoursModel', function ($http, $q) {
-        var self = this,
+    .service('concoursService', function ConcoursService($http, $q) {
+        var self = {},
             URLS = {
                 FETCH: 'data/concours.json'
             },
@@ -17,12 +17,12 @@ angular.module('gecopa.models.concours', [])
         }
 
         function findConcours(concoursId) {
-            return _.find(concours, function (concours) {
-                return concours.id === parseInt(concoursId, 10);
+            return _.find(concours, function (aConcours) {
+                return aConcours.id === parseInt(concoursId, 10);
             })
         }
 
-        self.getConcours = function () {
+        self.loadAllConcours = function () {
             return (concours) ? $q.when(concours) :
             $http.get(URLS.FETCH).then(cacheConcours);
         };
@@ -39,22 +39,24 @@ angular.module('gecopa.models.concours', [])
             return deferred.promise;
         };
 
-        self.createConcours = function (concours) {
-            concours.id = concours.length;
-            concours.push(concours);
+        self.createConcours = function (aConcours) {
+            aConcours.id = aConcours.length;
+            concours.push(aConcours);
         };
 
-        self.updateConcours = function (concours) {
+        self.updateConcours = function (aConcours) {
             var index = _.findIndex(concours, function (b) {
-                return b.id === concours.id
+                return b.id === aConcours.id
             });
 
-            concours[index] = concours;
+            concours[index] = aConcours;
         };
 
-        self.deleteConcours = function (concours) {
+        self.deleteConcours = function (aConcours) {
             _.remove(concours, function (b) {
-                return b.id === concours.id;
+                return b.id === aConcours.id;
             });
         };
+
+        return self;
     });
