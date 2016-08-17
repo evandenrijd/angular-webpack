@@ -10,7 +10,6 @@
           href="http://www.static.rtbf.be/rtbf/home/images/ico/favicon-info-192x192.png"
           sizes="192x 192"/>
 
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
@@ -38,14 +37,14 @@
 
   <body ng-app="gecopa" layout="column" ng-controller="GecopaController as gecopa" ng-cloak>
 
-    <md-toolbar layout="row">
+    <md-toolbar layout="row" layout-align="start center">
       <md-button class="menu"
                  hide-gt-sm
                  ng-click="gecopa.toggleCategories()"
                  aria-label="Show Categories">
         <i class="material-icons">menu</i>
       </md-button>
-      <h1>GECOPA</h1>
+      <md-button ui-sref="gecopa.admin.welcome"><h1>GECOPA</h1></md-button>
     </md-toolbar>
 
     <div flex layout="row">
@@ -53,30 +52,17 @@
       <md-sidenav ng-click="gecopa.toggleCategories()"
                   md-is-locked-open="$mdMedia('gt-sm')"
                   md-component-id="left"
-                  class="md-whiteframe-z2" >
-        <md-list>
-          <md-list-item ng-repeat="category in gecopa.getCategories()">
-            <md-button flex ng-click="gecopa.selectCategory(category)"
-                       ng-class="{'selected' : category === gecopa.getSelectedCategory() }">
-              <div layout="row" layout-align="start center">
-                <div class="material-icons">{{category.getIcon()}}</div>
-                <div>{{category.displayName()}}</div>
-              </div>
-            </md-button>
-          </md-list-item>
-        </md-list>
+                  class="md-whiteframe-z2"
+                  ui-view="categories">
       </md-sidenav>
 
-      <md-content flex id="content">
-        <h2>{{gecopa.getSelectedCategory().getName()}}</h2>
-        <md-list>
-          <md-list-item ng-repeat="concours in gecopa.getConcours()">
-            <div layout="row" layout-align="space-around center">
-              <div>{{concours.title}}</div>
-            </div>
-          </md-list-item>
-        </md-list>
-      </md-content>
+      <div id="content">
+        <ui-view name="content">
+          <md-content>
+            <h1>Loading app</h1>
+          </md-content>
+        </ui-view>
+      </div>
 
     </div>
 

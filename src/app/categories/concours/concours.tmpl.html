@@ -1,0 +1,10 @@
+<md-list>
+  <h1>Concours</h1>
+  <md-list-item ng-repeat="concours in concoursListController.getConcours()">
+    <div layout="row" layout-align="space-around center">
+      <div><a ui-sref="gecopa.admin.concours.edit({id: concours.getId()})"><img ng-src="{{concours.getImage()}}"/></a></div>
+      <div><a>{{concours.getTitle()}}</a></div>
+      <div><a>{{concours.getEndDate()}}</a></div>
+    </div>
+  </md-list-item>
+</md-list>

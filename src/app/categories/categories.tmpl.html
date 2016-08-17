@@ -1,1 +1,11 @@
-<!--  -->
+<md-list>
+  <md-list-item ng-repeat="category in categoriesListController.getCategories()">
+    <md-button flex ng-click="categoriesListController.selectCategory(category)"
+               ng-class="{'selected' : category === categoriesListController.getSelectedCategory() }">
+      <div layout="row" layout-align="start center">
+        <div class="material-icons">{{category.getIcon()}}</div>
+        <div>{{category.displayName()}}</div>
+      </div>
+    </md-button>
+  </md-list-item>
+</md-list>

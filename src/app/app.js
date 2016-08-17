@@ -5,46 +5,19 @@ import '../assets/css/gecopa.css';
 import angular from 'angular';
 import ngAnimate from 'angular-animate';
 import ngMaterial from 'angular-material';
+import uiRouter from 'angular-ui-router';
+import {dump_obj} from './utils';
+import routing from './routing';
 
-import './common/models/concours.service';
-
-var categoryConstructor = function(spec, my) {
-  let self = {};
-  let data = spec;
-  let shared = my;
-
-  // shared.$log.debug('ctor called: ', spec);
-
-  let displayName = function() {
-    return data && data.name;
-  };
-
-  let getName = function() {
-    return data && data.name;
-  }
-
-  let getIcon = function() {
-    return data && data.icon;
-  }
-
-  let getId = function() {
-    return data && data.id;
-  }
-
-  self.displayName = displayName;
-  self.getName = getName;
-  self.getIcon = getIcon;
-  self.getId = getId;
-
-  return self;
-};
-
+import './categories/categories';
 
 (function () {
 
   angular.module('gecopa', [
     ngAnimate,
     ngMaterial,
+    uiRouter,
+    'categories',
     'gecopa.models.concours',
   ])
     .config(function($mdThemingProvider) { //ngMaterial theme
@@ -52,84 +25,71 @@ var categoryConstructor = function(spec, my) {
         .primaryPalette('indigo');
     })
     .controller('GecopaController', GecopaController)
-    .run(function() {
+    .run(function($rootScope, $state) {
+      $rootScope.$on('$stateChangeError',
+                     (event, toState, toParams, fromState, fromParams, error) => {
+                       if (error) {
+                         console.log('$stateChangeError: ',
+                                     dump_obj({toState, toParams, fromState, fromParams, error}));
+                         $state.go('/');
+                       }
+                     }
+                    );
+      $rootScope.$on('$stateNotFound',
+                     function(event, unfoundState, fromState, fromParams){
+                       console.debug('$stateNotFound: ',
+                                     dump_obj({unfoundState, fromState, fromParams}));
+                     });
       let date = new Date();
       console.debug('app bootstrapped at ' + date);
-    });
+    })
+    .service('appState', function appStateProvider($state) {
+      let self = {};
+      let category = null;
 
-  function GecopaController($mdSidenav, $log, concoursService) {
+      let getCategory = function() {
+        return category;
+      }
+
+      let setCategory = function(aCategory) {
+        category = aCategory;
+      }
+
+      let toString = function(){
+        return '{appState: ' + dump_obj({category}) + '}';
+      }
+
+      let getStateFromSelectedCategory = function() {
+        let state = 'gecopa.admin';
+        if (category) {
+          state += '.' + category.getName();
+        }
+        return state;
+      }
+
+      self.getCategory = getCategory;
+      self.setCategory = setCategory;
+      self.toString = toString;
+      self.getStateFromSelectedCategory = getStateFromSelectedCategory;
+
+      return self;
+    })
+    .config(routing)
+  ;
+
+  function GecopaController($mdSidenav, $log, appState) {
     let self = {};
 
     //private variables
     let selected = null;
 
-    var categories = (function() {
-      let categories_core = [
-        {
-          id: 0,
-          name: 'concours',
-          icon: 'home'
-        },
-        {
-          id: 1,
-          name: 'users',
-          icon: 'people'
-        },
-        {
-          id: 2,
-          name: 'settings',
-          icon: 'settings'
-        },
-      ];
-
-      let self = {};
-      let categories = categories_core.map((c) => {
-        return categoryConstructor(c, {$log});
-      });
-
-      let getCategories = function () {
-        return categories;
-      }
-      self.getCategories = getCategories;
-
-      return self;
-    })();
-
-    function toggleCategories() {
+    let toggleCategories = function() {
       $mdSidenav('left').toggle();
     }
 
-    function selectCategory(category) {
-      $log.debug('category: ', category, ' is selected');
-      selected = category;
-    }
-
-    function getSelectedCategory() {
-      return selected;
-    }
-
-    let concours = function() {
-      let self = {};
-      let concours;
-
-      concoursService.loadAllConcours().then(result => {
-        concours = result;
-      });
-
-      let getConcours = function() {
-        return concours;
-      }
-
-      self.getConcours = getConcours;
-      return self;
-    }();
-
     //public API
     self.toggleCategories = toggleCategories;
-    self.selectCategory = selectCategory;
-    self.getSelectedCategory = getSelectedCategory;
-    self.getCategories = categories.getCategories;
-    self.getConcours = concours.getConcours;
+    self.getStateFromSelectedCategory = appState.getStateFromSelectedCategory;
 
     return self;
   }
