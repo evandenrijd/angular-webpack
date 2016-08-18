@@ -1,6 +1,7 @@
 import angular from 'angular';
 import concoursConstructor from './concours.object';
 import _ from 'underscore';
+import {dump_obj} from '../../utils';
 
 angular.module('gecopa.models.concours', [])
   .service('concoursService', function ConcoursService($http, $q) {
@@ -24,13 +25,15 @@ angular.module('gecopa.models.concours', [])
 
     function findConcours(concoursId) {
       return _.find(concours, function (aConcours) {
-        return aConcours.id === parseInt(concoursId, 10);
+        return aConcours.getId() === parseInt(concoursId, 10);
       })
     }
 
     self.loadAllConcours = function () {
       return (concours) ? $q.when(concours) :
-        $http.get(URLS.FETCH).then(cacheConcours);
+        $http.get(URLS.FETCH).then(result => {
+          return cacheConcours(result);
+        });
     };
 
     self.getConcoursById = function (concoursId) {
@@ -46,20 +49,20 @@ angular.module('gecopa.models.concours', [])
     };
 
     self.createConcours = function (aConcours) {
-      aConcours.id = aConcours.length;
+      aConcours.setId(concours.length);
       concours.push(aConcours);
     };
 
     self.updateConcours = function (aConcours) {
       var index = _.findIndex(concours, function (b) {
-        return b.id === aConcours.id
+        return b.getId() === aConcours.getId();
       });
       concours[index] = aConcours;
     };
 
     self.deleteConcours = function (aConcours) {
       _.remove(concours, function (b) {
-        return b.id === aConcours.id;
+        return b.getId() === aConcours.getId();
       });
     };
 

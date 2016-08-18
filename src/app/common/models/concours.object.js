@@ -21,10 +21,15 @@ var concoursConstructor = function(spec, my) {
     return data && data.image;
   }
 
+  let toString = function() {
+    return dump_obj(data);
+  }
+
   self.getTitle = getTitle;
   self.getId = getId;
   self.getImage = getImage;
   self.getEndDate = getEndDate;
+  self.toString = toString;
 
   return self;
 };
