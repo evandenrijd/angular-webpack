@@ -116,6 +116,10 @@ module.exports = function makeWebpackConfig () {
       // Allow loading html through js
       test: /\.html$/,
       loader: 'raw'
+    },{
+      //LESS LOADER
+      test: /\.less$/,
+      loader: "style!css!less"
     }]
   };
 

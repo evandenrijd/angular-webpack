@@ -1,6 +1,5 @@
 import $ from "jquery";
-import 'angular-material/angular-material.css';
-import '../assets/css/gecopa.css';
+import '../assets/css/gecopa.less';
 
 import angular from 'angular';
 import ngAnimate from 'angular-animate';
