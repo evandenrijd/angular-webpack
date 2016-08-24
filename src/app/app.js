@@ -10,6 +10,7 @@ import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
+import appStateConstructor from './appState';
 
 import './categories/categories';
 
@@ -29,57 +30,37 @@ import './categories/categories';
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
     })
-    .controller('GecopaController', GecopaController)
-    .run(function($rootScope, $state) {
+    .config(routing) //ui-router
+    .run(function($rootScope, $state) { //ui-router error handling
       $rootScope.$on('$stateChangeError',
-                     (event, toState, toParams, fromState, fromParams, error) => {
+                     (event, toState, toParams,
+                      fromState, fromParams, error) => {
                        if (error) {
-                         console.log('$stateChangeError: ',
-                                     dump_obj({toState, toParams, fromState, fromParams, error}));
+                         console.debug('$stateChangeError: ',
+                                       dump_obj({toState,
+                                                 toParams,
+                                                 fromState,
+                                                 fromParams,
+                                                 error}));
                          $state.go('/');
                        }
                      }
                     );
       $rootScope.$on('$stateNotFound',
                      function(event, unfoundState, fromState, fromParams){
-                       console.debug('$stateNotFound: ',
-                                     dump_obj({unfoundState, fromState, fromParams}));
+                       console.error('$stateNotFound: ',
+                                     dump_obj({unfoundState,
+                                               fromState,
+                                               fromParams}));
                      });
       let date = new Date();
       console.debug('app bootstrapped at ' + date);
     })
-    .service('appState', function appStateProvider($state) {
-      let self = {};
-      let category = null;
-
-      let getCategory = function() {
-        return category;
-      }
-
-      let setCategory = function(aCategory) {
-        category = aCategory;
-      }
-
-      let toString = function(){
-        return '{appState: ' + dump_obj({category}) + '}';
-      }
-
-      let getStateFromSelectedCategory = function() {
-        let state = 'gecopa.admin';
-        if (category) {
-          state += '.' + category.getName();
-        }
-        return state;
-      }
-
-      self.getCategory = getCategory;
-      self.setCategory = setCategory;
-      self.toString = toString;
-      self.getStateFromSelectedCategory = getStateFromSelectedCategory;
-
-      return self;
+    .service('appState', function () {
+      return appStateConstructor();
     })
-    .config(routing)
+    .controller('GecopaController',
+                GecopaController)
   ;
 
   function GecopaController($mdSidenav, $log, appState) {
