@@ -5,6 +5,9 @@ import angular from 'angular';
 import ngAnimate from 'angular-animate';
 import ngMaterial from 'angular-material';
 import uiRouter from 'angular-ui-router';
+import ngMessages from 'angular-messages';
+import ngFormly from 'angular-formly';
+import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
 
@@ -16,6 +19,9 @@ import './categories/categories';
     ngAnimate,
     ngMaterial,
     uiRouter,
+    ngMessages,
+    ngFormly,
+    ngFormlyMaterial,
     'categories',
     'gecopa.models.concours',
   ])

@@ -12,7 +12,7 @@ angular.module('categories.concours.edit', [
         views: {
           'content@': {  //absolutely targets the named view in root unnamed state.
                          //<div ui-view='content'/> within index.html
-            controller: 'ConcoursEditController as concoursEditController',
+            controller: 'ConcoursEditController as vm',
             template: require('./concours.edit.tmpl.html')
           }
         }
@@ -20,5 +20,5 @@ angular.module('categories.concours.edit', [
 
     ;
   })
-  .controller('ConcoursEditController', ConcoursEditController);
+  .controller('ConcoursEditController', ConcoursEditController)
 ;

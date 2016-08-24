@@ -1,6 +1,16 @@
-<md-content flex>
-  <p>OK</p>
-  <p>{{concoursEditController.getConcours().getTitle() }}</p>
-  <!-- <md-button ng-click="concoursEditController.save()">Save</md-button> -->
-  <!-- <md-button ui-sref="gecopa.admin.concours">Cancel</md-button> -->
+<md-content layout="column">
+  <h2>Input concours:</h2>
+  <formly-form model="vm.model" fields="vm.fields" form="vm.form">
+    <div layout="row"  layout-align="space-around center">
+      <md-button ng-click="vm.submit()">Submit</md-button>
+      <md-button ng-click="vm.cancel()">Cancel</md-button>
+    </div>
+  </formly-form>
+
+  <h2>Model</h2>
+  <pre>{{vm.model | json}}</pre>
+  <h2>Fields <small>(note, functions are not shown)</small></h2>
+  <pre>{{vm.originalFields | json}}</pre>
+  <h2>Form</h2>
+  <pre>{{vm.fields | json}}</pre>
 </md-content>

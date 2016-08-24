@@ -12,6 +12,7 @@
     * [Running the app](#running-the-app)
     * [Developing](#developing)
     * [Testing](#testing)
+* [Release Notes](#release-notes)
 
 # Getting Started
 
@@ -49,3 +50,24 @@ It will start a local server using `webpack-dev-server` which will watch, build
 
 * single run: `npm test`
 * live mode (TDD style): `npm run test-watch`
+
+# Release Notes
+
+## 1.0.0
+
+    user login
+
+    creation of concours
+    creation of concours from copy
+    update concours
+    delete concours
+
+    concours status
+        => enum
+
+    concours screen validation
+        => startDate <= endDate <= drawingDate
+        => creationDate, drawingAdmin readonly
+
+    concours screen date visualisation
+        => dd/mm/yyyy

@@ -12,8 +12,12 @@
   "dependencies": {
     "angular": "^1.5.8",
     "angular-animate": "^1.5.8",
+    "angular-formly": "^8.3.0",
+    "angular-formly-material": "^0.14.3",
     "angular-material": "^1.1.0-rc.5",
+    "angular-messages": "^1.5.8",
     "angular-ui-router": "^0.3.1",
+    "api-check": "^7.5.5",
     "bootstrap": "^3.3.7",
     "jquery": "^3.1.0",
     "normalize.css": "^4.2.0",
