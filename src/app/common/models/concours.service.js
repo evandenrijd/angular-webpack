@@ -3,8 +3,9 @@ import concoursConstructor from './concours.object';
 import _ from 'underscore';
 import {dump_obj} from '../../utils';
 
-angular.module('gecopa.models.concours', [])
-  .service('concoursService', function ConcoursService($http, $q) {
+(function(){
+
+  let concoursServiceConstructor = function($http, $q) {
     let self = {};
     let my = {};
     let URLS = {
@@ -13,13 +14,15 @@ angular.module('gecopa.models.concours', [])
     let concours;
 
     function extract(result) {
-      return result.data.map(c => {
-        return concoursConstructor(c, my);
+      console.debug('result: ', result);
+      return result.data.map(spec => {
+        return concoursConstructor(spec, my);
       });
     }
 
     function cacheConcours(result) {
       concours = extract(result);
+      console.debug('concours: ', concours);
       return concours;
     }
 
@@ -67,4 +70,13 @@ angular.module('gecopa.models.concours', [])
     };
 
     return self;
-  });
+  }
+
+  angular.module('gecopa.models.concours', [])
+    .provider('concoursService', function concoursServiceProvider() {
+      this.$get = function concoursServiceConstructorFactory($http, $q) {
+        return concoursServiceConstructor($http, $q);
+      }
+    });
+
+})();

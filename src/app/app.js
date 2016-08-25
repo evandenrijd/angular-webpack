@@ -10,7 +10,7 @@ import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
-import appStateConstructor from './appState';
+import './common/appState.service';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 
@@ -42,6 +42,7 @@ import './categories/categories';
     ngMessages,
     ngFormly,
     ngFormlyMaterial,
+    'gecopa.appState',
     'categories',
     'gecopa.models.concours',
     'pascalprecht.translate',
@@ -79,8 +80,8 @@ import './categories/categories';
       console.debug('app bootstrapped at ' + date);
     })
 
-    .service('appState', function () {
-      return appStateConstructor();
+    .config(function(appStateProvider) {
+      // appStateProvider.
     })
 
     .controller('GecopaController', gecopaConstructor)
