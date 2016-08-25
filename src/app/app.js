@@ -40,7 +40,7 @@ import './categories/categories';
     ngMessages,
     ngFormly,
     ngFormlyMaterial,
-    'gecopa.appState',
+    'gecopa.common.appState',
     'categories',
     'gecopa.models.concours',
   ])
