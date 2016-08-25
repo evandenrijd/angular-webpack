@@ -11,10 +11,29 @@ import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
 import appStateConstructor from './appState';
+import 'angular-translate';
+import 'angular-translate-loader-static-files';
 
 import './categories/categories';
 
 (function () {
+
+  let gecopaConstructor = function($mdSidenav, $log, appState) {
+    let self = {};
+
+    //private variables
+    let selected = null;
+
+    let toggleCategories = function() {
+      $mdSidenav('left').toggle();
+    }
+
+    //public API
+    self.toggleCategories = toggleCategories;
+    self.getStateFromSelectedCategory = appState.getStateFromSelectedCategory;
+
+    return self;
+  }
 
   angular.module('gecopa', [
     ngAnimate,
@@ -25,12 +44,15 @@ import './categories/categories';
     ngFormlyMaterial,
     'categories',
     'gecopa.models.concours',
+    'pascalprecht.translate',
   ])
     .config(function($mdThemingProvider) { //ngMaterial theme
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
     })
+
     .config(routing) //ui-router
+
     .run(function($rootScope, $state) { //ui-router error handling
       $rootScope.$on('$stateChangeError',
                      (event, toState, toParams,
@@ -56,28 +78,20 @@ import './categories/categories';
       let date = new Date();
       console.debug('app bootstrapped at ' + date);
     })
+
     .service('appState', function () {
       return appStateConstructor();
     })
-    .controller('GecopaController',
-                GecopaController)
+
+    .controller('GecopaController', gecopaConstructor)
+
+    .config(function ($translateProvider) { //setup i18n
+      $translateProvider.useStaticFilesLoader({
+        prefix: 'data/languages/',
+        suffix: '/gecopa.lang.json'
+      });
+      $translateProvider.preferredLanguage('en-BE');
+    });
   ;
-
-  function GecopaController($mdSidenav, $log, appState) {
-    let self = {};
-
-    //private variables
-    let selected = null;
-
-    let toggleCategories = function() {
-      $mdSidenav('left').toggle();
-    }
-
-    //public API
-    self.toggleCategories = toggleCategories;
-    self.getStateFromSelectedCategory = appState.getStateFromSelectedCategory;
-
-    return self;
-  }
 
 })();
