@@ -11,8 +11,6 @@ import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
 import './common/appState.service';
-import 'angular-translate';
-import 'angular-translate-loader-static-files';
 
 import './categories/categories';
 
@@ -45,7 +43,6 @@ import './categories/categories';
     'gecopa.appState',
     'categories',
     'gecopa.models.concours',
-    'pascalprecht.translate',
   ])
     .config(function($mdThemingProvider) { //ngMaterial theme
       $mdThemingProvider.theme('default')
@@ -85,14 +82,6 @@ import './categories/categories';
     })
 
     .controller('GecopaController', gecopaConstructor)
-
-    .config(function ($translateProvider) { //setup i18n
-      $translateProvider.useStaticFilesLoader({
-        prefix: 'data/languages/',
-        suffix: '/gecopa.lang.json'
-      });
-      $translateProvider.preferredLanguage('en-BE');
-    });
   ;
 
 })();

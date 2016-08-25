@@ -1,10 +1,12 @@
 import angular from 'angular';
+import 'angular-translate';
+import 'angular-translate-loader-static-files';
 import {dump_obj} from '../utils';
 
 (function(){
 
-  let appStateConstructor = function(spec) {
-    let self = spec || {};
+  let appStateConstructor = function() {
+    let self = {};
     let category = null;
 
     let getCategory = function() {
@@ -35,7 +37,17 @@ import {dump_obj} from '../utils';
     return self;
   }
 
-  angular.module('gecopa.appState', [])
+
+  angular.module('gecopa.appState', [
+    'pascalprecht.translate',
+  ])
+    .config(function ($translateProvider) { //setup i18n
+      $translateProvider.useStaticFilesLoader({
+        prefix: 'data/languages/',
+        suffix: '/gecopa.lang.json'
+      });
+      $translateProvider.preferredLanguage('en-BE');
+    })
     .provider('appState', function appStateProvider() {
       this.$get = function appStateConstructorFactory() {
         return appStateConstructor();
