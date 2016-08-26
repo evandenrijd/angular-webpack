@@ -1,3 +1,25 @@
 {
   "WELCOME_TITLE": "Bienvenue"
+  "concours_code": "Code",
+  "concours_title": "Intitulé",
+  "concours_description": "Description",
+  "concours_image": "Image",
+  "concours_startDate": "Date de début",
+  "concours_endDate": "Date de fin",
+  "concours_winners": "Nombre de gagnants",
+  "concours_question": "Question",
+  "concours_answer": "Réponse",
+  "concours_status": "Statut",
+  "concours_link": "Lien",
+  "concours_admins": "Gestionnaires",
+  "concours_comments": "Commentaire",
+  "concours_finalWinners": "Texte du mail adressé aux gagnants",
+  "concours_finalLosers": "Texte du mail adressé aux perdants",
+  "concours_drawingDate": "Date du tirage",
+  "concours_drawingAdmin": "Gestionnaire du tirage",
+  "concours_exclusionRule": "Règle d'exclusion",
+  "concours_creationDate": "Date de creation",
+  "concours_creationAdmin": "Gestionnaire de création",
+  "concours_imageName": "Nom de l'image",
+  "concours_imageMime": "Mime"
 }

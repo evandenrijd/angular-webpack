@@ -1,3 +1,25 @@
 {
-  "WELCOME_TITLE": "Welcome"
+  "WELCOME_TITLE": "Welcome",
+  "concours_code": "Code",
+  "concours_title": "Title",
+  "concours_description": "Description",
+  "concours_image": "Image",
+  "concours_startDate": "Start date",
+  "concours_endDate": "End date",
+  "concours_winners": "Number of winners",
+  "concours_question": "Question",
+  "concours_answer": "Answer",
+  "concours_status": "Status",
+  "concours_link": "Link",
+  "concours_admins": "Administators",
+  "concours_comments": "Comments",
+  "concours_finalWinners": "Mail text shown to the winners",
+  "concours_finalLosers": "Mail text shown to the losers",
+  "concours_drawingDate": "Drawing date",
+  "concours_drawingAdmin": "Drawing admin",
+  "concours_exclusionRule": "Exclusion rule",
+  "concours_creationDate": "Creation date",
+  "concours_creationAdmin": "Creation admin",
+  "concours_imageName": "Image name",
+  "concours_imageMime": "Mime"
 }
