@@ -3,7 +3,7 @@ import 'angular-toastr/dist/angular-toastr.min.css';
 import ngAnimate from 'angular-animate';
 import toastr from 'angular-toastr';
 
-import './settings';
+import './settings.module';
 import MessageStore from './MessageStore';
 
 let ToasterMixin = (superclass) => class extends superclass {

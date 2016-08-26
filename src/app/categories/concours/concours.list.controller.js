@@ -1,11 +1,11 @@
 import concoursConstructor from '../../common/models/concours.object';
 
-export default function ConcoursListController($log, concoursService) {
+export default function ConcoursListController($log, concoursList) {
   let self = {};
   let my = {}; //shared state (global deps);
   let concours = [];
 
-  concoursService.loadAllConcours().then(result => {
+  concoursList.loadAllConcours().then(result => {
     concours = result;
   });
 

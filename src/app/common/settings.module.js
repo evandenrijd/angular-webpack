@@ -1,5 +1,5 @@
 import angular from 'angular';
-import './defaults';
+import './defaults.module';
 
 (function(){
 

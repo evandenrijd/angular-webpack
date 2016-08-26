@@ -35,12 +35,12 @@
 
   </head>
 
-  <body ng-app="gecopa" layout="column" ng-controller="GecopaController as gecopa" ng-cloak>
+  <body ng-app="gecopa.app" layout="column" ng-controller="GecopaController as vm" ng-cloak>
 
     <md-toolbar layout="row" layout-align="start center">
       <md-button class="menu"
                  hide-gt-sm
-                 ng-click="gecopa.toggleCategories()"
+                 ng-click="vm.toggleCategories()"
                  aria-label="Show Categories">
         <i class="material-icons">menu</i>
       </md-button>

@@ -10,8 +10,8 @@ import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
-import './common/settings';
-import './common/appState.service';
+import './common/settings.module';
+import './common/appState.module';
 
 import './categories/categories';
 
@@ -33,7 +33,7 @@ import './categories/categories';
     return self;
   }
 
-  angular.module('gecopa', [
+  angular.module('gecopa.app', [
     ngAnimate,
     ngMaterial,
     uiRouter,

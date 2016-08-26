@@ -5,7 +5,7 @@ import {dump_obj} from '../../utils';
 
 (function(){
 
-  let concoursServiceConstructor = function($http, $q) {
+  let concoursListConstructor = function($http, $q) {
     let self = {};
     let my = {};
     let URLS = {
@@ -73,9 +73,9 @@ import {dump_obj} from '../../utils';
   }
 
   angular.module('gecopa.models.concours', [])
-    .provider('concoursService', function concoursServiceProvider() {
-      this.$get = function concoursServiceConstructorFactory($http, $q) {
-        return concoursServiceConstructor($http, $q);
+    .provider('concoursList', function concoursListProvider() {
+      this.$get = function concoursListConstructorFactory($http, $q) {
+        return concoursListConstructor($http, $q);
       }
     });
 

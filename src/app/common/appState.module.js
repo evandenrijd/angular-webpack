@@ -2,8 +2,8 @@ import angular from 'angular';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import {dump_obj} from '../utils';
-import './defaults';
-import './settings';
+import './defaults.module';
+import './settings.module';
 
 (function(){
 

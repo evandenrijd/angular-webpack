@@ -1,8 +1,8 @@
 import angular from 'angular';
-import '../../../common/models/concours.service';
+import '../../../common/models/concours.module';
 import {dump_obj} from '../../../utils';
 
-export default function ConcoursEditController($log, concoursService, $stateParams) {
+export default function ConcoursEditController($log, concoursList, $stateParams) {
   let self = {};
   let my = {}; //shared state (global deps);
   let concours = null;
@@ -24,7 +24,7 @@ export default function ConcoursEditController($log, concoursService, $statePara
   self.cancel = init;
   self.getConcours = getConcours;
 
-  concoursService.getConcoursById($stateParams.id).then(result => {
+  concoursList.getConcoursById($stateParams.id).then(result => {
     concours = result;
     self.fields = concours.getFormlyFields();
     self.originalFields = angular.copy(self.fields);
