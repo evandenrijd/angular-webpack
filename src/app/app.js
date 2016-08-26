@@ -29,7 +29,6 @@ import './categories/categories';
 
     //public API
     self.toggleCategories = toggleCategories;
-    self.getStateFromSelectedCategory = appState.getStateFromSelectedCategory;
 
     return self;
   }

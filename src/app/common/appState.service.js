@@ -36,20 +36,11 @@ import './settings';
       return '{appState: ' + dump_obj({category}) + '}';
     }
 
-    let getStateFromSelectedCategory = function() {
-      let state = 'gecopa.admin';
-      if (category) {
-        state += '.' + category.getName();
-      }
-      return state;
-    }
-
     self.getCategory = getCategory;
     self.setCategory = setCategory;
     self.getLanguage = getLanguage;
     self.setLanguage = setLanguage;
     self.toString = toString;
-    self.getStateFromSelectedCategory = getStateFromSelectedCategory;
 
     return self;
   }

@@ -30,7 +30,7 @@ export default function CategoriesListController($log, $state, appState) {
 
   let selectCategory = function(category) {
     appState.setCategory(category);
-    $state.go(appState.getStateFromSelectedCategory());
+    $state.go(appState.getCategory().getState());
   }
 
   let getSelectedCategory = function() {
