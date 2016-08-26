@@ -1,38 +1,51 @@
 import angular from 'angular';
+import './defaults';
 
-class Settings  {
-  static defaults() {
-    return {
-      consoleOut: true,
-      debugOn: true,     //See also consoleOut
-      popupMessaging: true,
-    };
-  };
+(function(){
 
-  constructor(obj) {
-    this.properties = {};
-    angular.extend(this.properties, Settings.defaults(), obj);
-    return this;
-  }
+  let settingsProvider = function() {
+    let self = {};
 
-  get(prop) {
-    return this.properties[prop];
-  }
+    let settingsConstructor = function (defaultLanguage) {
+      let languages = ['fr-BE', 'en-BE'];
 
-  set(prop, value) {
-    if (angular.isObject(prop)) {
-      angular.extend(this.properties, prop);
-    } else {
-      this.properties[prop] = value;
+      let self = {
+        consoleOut: true,
+        debugOn: true,     //See also consoleOut
+        popupMessaging: true,
+        language: defaultLanguage,
+      };
+
+      let get = function(prop) {
+        return self[prop];
+      }
+
+      let set = function(prop, value) {
+        if (angular.isObject(prop)) {
+          angular.extend(self, prop);
+        } else {
+          self[prop] = value;
+        }
+        return self;
+      }
+
+      self.get = get;
+      self.set = set;
+
+      return self;
     }
-    return this;
-  }
-};
 
-angular.module('gecopa.common.settings', [])
-  .provider('settings', function SettingsProvider() {
-    this.$get = function () {
-      return new Settings();
+    self.$get = function (defaultLanguage) {
+      return settingsConstructor(defaultLanguage);
     }
-  })
-;
+
+    return self;
+  }
+
+  angular.module('gecopa.common.settings', [
+    'gecopa.common.defaults'
+  ])
+    .provider('settings', settingsProvider)
+  ;
+})();
+

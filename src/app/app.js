@@ -10,6 +10,7 @@ import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
+import './common/settings';
 import './common/appState.service';
 
 import './categories/categories';
@@ -40,10 +41,20 @@ import './categories/categories';
     ngMessages,
     ngFormly,
     ngFormlyMaterial,
+    'gecopa.common.settings',
     'gecopa.common.appState',
     'categories',
     'gecopa.models.concours',
   ])
+
+    .config(function(settingsProvider){
+      //Nothing to initialize
+    })
+
+    .config(function(appStateProvider) {
+      //Nothing to initialize
+    })
+
     .config(function($mdThemingProvider) { //ngMaterial theme
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
@@ -75,10 +86,6 @@ import './categories/categories';
                      });
       let date = new Date();
       console.debug('app bootstrapped at ' + date);
-    })
-
-    .config(function(appStateProvider) {
-      // appStateProvider.
     })
 
     .controller('GecopaController', gecopaConstructor)

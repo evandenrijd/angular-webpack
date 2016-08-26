@@ -2,16 +2,14 @@ import angular from 'angular';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import {dump_obj} from '../utils';
+import './defaults';
+import './settings';
 
 (function(){
 
-  let languages = ['fr-BE', 'en-BE'];
-  let defaultLanguage = 'en-BE';
-
-  let appStateConstructor = function($translate) {
+  let appStateConstructor = function($translate, settings) {
     let self = {};
     let category = null;
-    let language = defaultLanguage;
 
     let getCategory = function() {
       return category;
@@ -23,13 +21,13 @@ import {dump_obj} from '../utils';
     }
 
     let getLanguage = function() {
-      return language;
+      return settings.get('language');
     }
 
     let setLanguage = function(lang) {
-      if (language !== lang) {
+      if (getLanguage() !== lang) {
         $translate.use(lang);
-        language = lang;
+        settings.set('language', lang);
       }
       return self;
     }
@@ -57,20 +55,26 @@ import {dump_obj} from '../utils';
   }
 
   angular.module('gecopa.common.appState', [
+    'gecopa.common.defaults',
+    'gecopa.common.settings',
     'pascalprecht.translate',
   ])
-    .config(function ($translateProvider) { //setup i18n
+
+    .config(function ($translateProvider, settingsProvider, defaultLanguageProvider) { //setup i18n
       $translateProvider.useStaticFilesLoader({
         prefix: 'data/languages/',
         suffix: '/gecopa.lang.json'
       });
-      $translateProvider.preferredLanguage(defaultLanguage);
+      $translateProvider.preferredLanguage(defaultLanguageProvider.$get());
       $translateProvider.useSanitizeValueStrategy(null); //FIXME: allow for XSS
     })
+
     .provider('appState', function appStateProvider() {
-      this.$get = function appStateConstructorFactory($translate) {
-        return appStateConstructor($translate);
+      let self = {};
+      self.$get = function appStateConstructorFactory($translate, settings) {
+        return appStateConstructor($translate, settings);
       }
+      return self;
     });
 
 })();
