@@ -166,22 +166,30 @@ import '../meta.module';
       return dump_obj(data);
     }
 
+    const excludeKeys = ['id', 'image', 'imageName', 'imageMime'];
+
     let getFormlyFields = function() {
       if (!formly_fields) {
-        formly_fields = my.meta.getFormlyFields({name: 'concours',
-                                                 layout: layoutEdit});
+        formly_fields = my.meta.getFormlyFields({
+          name: 'concours',
+          exclude: excludeKeys,
+          layout: layoutEdit
+        });
       }
       return formly_fields;
     }
 
     let getFormlyModel = function() {
-      formly_model = my.meta.getFormlyModel({name: 'concours', 
-                                             model: data});
+      formly_model = my.meta.getFormlyModel({
+        name: 'concours',
+        exclude: excludeKeys,
+        model: data
+      });
       return formly_model;
     }
 
     let setFormlyModel = function() {
-      //FIXME: TODO
+      //FIXME: TODO dates are not set back
       data = formly_model;
       return self;
     }

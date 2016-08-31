@@ -43,12 +43,10 @@ import {dump_obj} from '../utils';
 
     let formly_fields = function(o) {
       return data[o.name]
-        .filter(d => { return d.name !== 'id'
-                       && d.name !== 'image'
-                       && d.name !== 'imageName'
-                       && d.name !== 'imageMime'
-                       ;
-                     })
+        .filter(d => {
+          if (!o.exclude) return true;
+          return !_.find(o.exclude, e => { return d.name === e});
+        })
         .map(d => {
           let field = {
             key: d.name,
@@ -69,9 +67,9 @@ import {dump_obj} from '../utils';
             field.templateOptions.options = d.type;
             field.templateOptions.valueProp = 'id';
             field.templateOptions.labelProp = 'label';
-            field.templateOptions.options.map(selection => {
-              selection.label = selection.name; //default overwritten by $translate
-            });
+            // field.templateOptions.options.map(selection => {
+            //   selection.label = selection.name; //default overwritten by $translate
+            // });
             if (my.$translate) {
               field.templateOptions.options.map((selection, index) => {
                 field.expressionProperties['templateOptions.options[' + index + '].label'] =
@@ -157,8 +155,10 @@ import {dump_obj} from '../utils';
             typeof value === 'string') { //datepickers need real dates no strings
             if (value) {
               value = new Date(value); //FIXME: expect ending with Z for UTC time
-              console.debug('converted date to: ', value);
+              // console.debug('converted date to: ', value);
             }
+        } else {
+          value = angular.copy(value);
         }
         model[ff.key] = value;
       });
@@ -167,12 +167,18 @@ import {dump_obj} from '../utils';
 
     //public API
     self.getFormlyFields = function (o) {
-      return formly_fields_layout({name: o.name,
-                                   layout: o.layout});
+      return formly_fields_layout({
+        exclude: o.exclude,
+        name: o.name,
+        layout: o.layout
+      });
     };
     self.getFormlyModel = function (o) {
-      return get_formly_model({name: o.name,
-                               model: o.model});
+      return get_formly_model({
+        exclude: o.exclude,
+        name: o.name,
+        model: o.model
+      });
     };
 
     return self;
