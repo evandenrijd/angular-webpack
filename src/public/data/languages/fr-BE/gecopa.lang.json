@@ -1,5 +1,6 @@
 {
   "WELCOME_TITLE": "Bienvenue"
+  "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
   "concours_code": "Code",
   "concours_title": "Intitulé",
   "concours_description": "Description",

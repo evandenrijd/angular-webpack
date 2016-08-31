@@ -9,7 +9,8 @@ import '../meta.module';
     let self = {};
     let data = spec;
     my = my || {};
-    let model = null; //copy of the data used in formly
+    let formly_fields;
+    let formly_model; //copy of the data used in formly
 
     let layoutEdit = [
       {
@@ -157,61 +158,39 @@ import '../meta.module';
 
     ];
 
-
-    let getTitle = function() {
-      return data && data.title;
-    }
-
-    let getEndDate = function() {
-      return data && data.endDate;
-    }
-
     let getId = function() {
       return data && data.id;
-    }
-
-    let getImage = function() {
-      return data && data.image;
     }
 
     let toString = function() {
       return dump_obj(data);
     }
 
-    let getState = function() {
-      return data;
-    }
-
-    let setState = function(state) {
-      data = state;
-    }
-
     let getFormlyFields = function() {
-      return my.meta.getFormlyFields({name: 'concours',
-                                      layout: layoutEdit});
+      if (!formly_fields) {
+        formly_fields = my.meta.getFormlyFields({name: 'concours',
+                                                 layout: layoutEdit});
+      }
+      return formly_fields;
     }
 
     let getFormlyModel = function() {
-      model = my.meta.getFormlyModel({name: 'concours', 
-                                      model: data});
-      return model;
+      formly_model = my.meta.getFormlyModel({name: 'concours', 
+                                             model: data});
+      return formly_model;
     }
 
     let setFormlyModel = function() {
       //FIXME: TODO
-      data = model;
+      data = formly_model;
       return self;
     }
 
     self.getFormlyModel = getFormlyModel;
+    self.setFormlyModel = setFormlyModel;
     self.getFormlyFields = getFormlyFields;
-    self.getTitle = getTitle;
     self.getId = getId;
-    self.getImage = getImage;
-    self.getEndDate = getEndDate;
     self.toString = toString;
-    self.getState = getState;
-    self.setState = setState;
 
     return self;
   };
@@ -225,7 +204,7 @@ import '../meta.module';
     let concours;
 
     function extract(result) {
-      console.debug('result: ', result);
+      // console.debug('result: ', result);
       return result.data.map(spec => {
         return concoursConstructor(spec, my);
       });
@@ -233,7 +212,7 @@ import '../meta.module';
 
     function cacheConcours(result) {
       concours = extract(result);
-      console.debug('concours: ', concours);
+      // console.debug('concours: ', concours);
       return concours;
     }
 
