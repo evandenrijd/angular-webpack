@@ -21,5 +21,11 @@
   "concours_creationDate": "Date de creation",
   "concours_creationAdmin": "Gestionnaire de création",
   "concours_imageName": "Nom de l'image",
-  "concours_imageMime": "Mime"
+  "concours_imageMime": "Mime",
+
+  "concours_status_ENUM_NO_SHOW": "Pas affiché",
+  "concours_status_ENUM_SHOW": "Affiché",
+  "concours_status_ENUM_LAST_DAY": "Dernier jour",
+  "concours_status_ENUM_CLOSED_NOT_DRAW": "Clôturé tirage non effectué",
+  "concours_status_ENUM_CLOSED": "Clôturé tirage effectué"
 }

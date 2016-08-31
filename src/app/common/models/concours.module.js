@@ -146,7 +146,7 @@ import '../meta.module';
       {
         className: 'layout-row layout-align-end-center',
         fieldGroup: [
-          { className: 'flex-20', key: 'status' },
+          { className: 'flex-33', key: 'status' },
           { className: 'flex-20', key: 'creationDate',
             templateOptions: {
               disabled: true,

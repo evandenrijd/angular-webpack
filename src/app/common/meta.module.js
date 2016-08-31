@@ -19,7 +19,13 @@ import {dump_obj} from '../utils';
         { name: "winners", type: "number", required: true, oracle: "NOMBRE_CCR", init: function() { return 0; } },
         { name: "question", type: "string", oracle: "QUESTION_CCR", init: function() { return null; } },
         { name: "answer", type: "string", oracle: "REPONSE_CCR", init: function() { return null; } },
-        { name: "status", type: "enum", oracle: "STATUT_CCR", init: function() { return null; } },
+        { name: "status", type: [{ id: 0, name: 'ENUM_NO_SHOW'},
+                                 { id: 1, name: 'ENUM_SHOW'},
+                                 { id: 2, name: 'ENUM_LAST_DAY'},
+                                 { id: 3, name: 'ENUM_CLOSED_NOT_DRAW'},
+                                 { id: 4, name: 'ENUM_CLOSED'
+                                 },
+                                ], oracle: "STATUT_CCR", init: function() { return 1; } },
         { name: "link", type: "string", oracle: "LIEN_CCR", init: function() { return null; } },
         { name: "admins", type: "string", oracle: "GESTIONNAIRE_CCR", init: function() { return null; } },
         { name: "comments", type: "string", oracle: "COMMENTAIRE_CCR", init: function() { return null; } },
@@ -50,16 +56,33 @@ import {dump_obj} from '../utils';
               label: d.name, //default, will be overwritten by translation
               //see expressionProperties
             },
+            expressionProperties: {},
           };
           if (my.$translate) {
-            field.expressionProperties = {
-              'templateOptions.label': function($viewValue, $modelValue, scope) {
-                return my.$translate('concours_' + d.name);
+            field.expressionProperties['templateOptions.label'] =
+              function($viewValue, $modelValue, scope) {
+                return my.$translate(o.name + '_' + d.name);
               }
-            }
           }
-          if (d.type === 'date')
+          if (typeof d.type === 'object') { //select object
+            field.type = 'select';
+            field.templateOptions.options = d.type;
+            field.templateOptions.valueProp = 'id';
+            field.templateOptions.labelProp = 'label';
+            field.templateOptions.options.map(selection => {
+              selection.label = selection.name; //default overwritten by $translate
+            });
+            if (my.$translate) {
+              field.templateOptions.options.map((selection, index) => {
+                field.expressionProperties['templateOptions.options[' + index + '].label'] =
+                  function($viewValue, $modelValue, scope) {
+                    return my.$translate(o.name + '_' + d.name + '_' + selection.name);
+                  }
+              });
+            }
+          } else if (d.type === 'date') {
             field.type = 'datepicker';
+          }
           if (d.required)
             field.templateOptions.required = true;
           if (d.readonly)
