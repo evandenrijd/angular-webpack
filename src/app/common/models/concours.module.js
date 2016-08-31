@@ -115,11 +115,16 @@ import '../meta.module';
           {
             className: 'layout-row',
             fieldGroup: [
-              { className: 'flex-20', key: 'finalWinners' },
-              { className: 'flex-20', key: 'finalLosers' },
-              { className: 'flex-20', key: 'status' },
+              { className: 'flex', key: 'mailWinners' },
             ]
           },
+
+      {
+        className: 'layout-row',
+        fieldGroup: [
+          { className: 'flex', key: 'mailLosers' },
+        ]
+      },
 
           {
             className: 'layout-row',
@@ -141,6 +146,7 @@ import '../meta.module';
           {
             className: 'layout-row layout-align-end-center',
             fieldGroup: [
+              { className: 'flex-20', key: 'status' },
               { className: 'flex-20', key: 'creationDate',
                 templateOptions: {
                   disabled: true,
