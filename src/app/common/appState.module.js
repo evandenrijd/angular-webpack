@@ -7,8 +7,8 @@ import './settings.module';
 
 (function(){
 
-  let appStateConstructor = function($translate, settings) {
-    let self = {};
+  let appStateConstructor = function(spec, my) {
+    let self = spec || {};
     let category = null;
 
     let getCategory = function() {
@@ -21,13 +21,13 @@ import './settings.module';
     }
 
     let getLanguage = function() {
-      return settings.get('language');
+      return my.settings.get('language');
     }
 
     let setLanguage = function(lang) {
       if (getLanguage() !== lang) {
-        $translate.use(lang);
-        settings.set('language', lang);
+        my.$translate.use(lang);
+        my.settings.set('language', lang);
       }
       return self;
     }
@@ -63,7 +63,7 @@ import './settings.module';
     .provider('appState', function appStateProvider() {
       let self = {};
       self.$get = function appStateConstructorFactory($translate, settings) {
-        return appStateConstructor($translate, settings);
+        return appStateConstructor({}, {$translate, settings});
       }
       return self;
     });
