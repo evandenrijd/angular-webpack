@@ -13,6 +13,7 @@ import '../meta.module';
     let formly_model; //copy of the data used in formly
 
     let layoutEdit = [
+
       {
         className: 'layout-row',
         fieldGroup: [
@@ -166,25 +167,21 @@ import '../meta.module';
       return dump_obj(data);
     }
 
-    const excludeKeys = ['id', 'image', 'imageName', 'imageMime'];
-
-    let getFormlyFields = function() {
+    let getFormlyFields = function(o) {
       if (!formly_fields) {
-        formly_fields = my.meta.getFormlyFields({
+        formly_fields = my.meta.getFormlyFields(_.extend({
           name: 'concours',
-          exclude: excludeKeys,
           layout: layoutEdit
-        });
+        }, o));
       }
       return formly_fields;
     }
 
-    let getFormlyModel = function() {
-      formly_model = my.meta.getFormlyModel({
+    let getFormlyModel = function(o) {
+      formly_model = my.meta.getFormlyModel(_.extend({
         name: 'concours',
-        exclude: excludeKeys,
         model: data
-      });
+      }, o));
       return formly_model;
     }
 
