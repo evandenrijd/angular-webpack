@@ -65,6 +65,8 @@ It will start a local server using `webpack-dev-server` which will watch, build
     concours status
         => enum
 
+    concours image
+
     concours screen validation
         => startDate <= endDate <= drawingDate
         => creationDate, drawingAdmin readonly

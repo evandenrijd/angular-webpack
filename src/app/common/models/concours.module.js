@@ -191,11 +191,46 @@ import '../meta.module';
       return self;
     }
 
+    let getCachedImage = function () {
+      return 'images/GECOPA.CONCOURS_CCR_T.IMAGE_CCR.' + getId();
+    }
+
+    let getImage = function() {
+      return data && data.image;
+    }
+
+    let getImageObject = function () {
+      let image = {
+        asURL: data && data.image,
+        filename: data && data.imageName,
+        mime: data && data.imageMime
+      }
+      return image;
+    }
+
+    let setImageObject = function (image) {
+      if (data.image !== image.asURL) {
+        data.image = image.asURL;
+      }
+      if (data.imageMime !== image.mime) {
+        data.imageMime = image.mime;
+      }
+      if (data.imageName !== image.filename) {
+        data.imageName = image.filename;
+      }
+      return data.image;
+    }
+
     self.getFormlyModel = getFormlyModel;
     self.setFormlyModel = setFormlyModel;
     self.getFormlyFields = getFormlyFields;
     self.getId = getId;
     self.toString = toString;
+    self.getImageObject = getImageObject;
+    self.setImageObject = setImageObject;
+    self.getCachedImage = getCachedImage;
+
+    self.getImage = getImage;
 
     return self;
   };
@@ -249,16 +284,27 @@ import '../meta.module';
     self.createConcours = function (aConcours) {
       aConcours.setId(concours.length);
       concours.push(aConcours);
+      //FIXME Normal create REST call
     };
 
     self.updateConcours = function (aConcours) {
       var index = _.findIndex(concours, function (b) {
         return b.getId() === aConcours.getId();
       });
+      let image = aConcours.getImage();
+      if (image.asURL.match(/^data:/)) {
+        //FIXME push data into the database + copy a file into the images-directory.
+        //  => should be a SPECIAL REST call that does that.
+        image.asURL = aConcours.getCachedImage();
+        aConcours.setImage(image); //take the image from the cache if successful.
+      } else {
+        //FIXME Normal update REST call
+      }
       concours[index] = aConcours;
     };
 
     self.deleteConcours = function (aConcours) {
+      //FIXME Normal delete REST call
       _.remove(concours, function (b) {
         return b.getId() === aConcours.getId();
       });

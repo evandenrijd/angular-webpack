@@ -13,7 +13,7 @@ let concoursEditControllerConstructor = function(spec, my) {
     concours = result;
     self.fields = concours.getFormlyFields({exclude: excludeKeys});
     self.model = concours.getFormlyModel({exclude: excludeKeys});
-    self.image = concours.getImage();
+    self.image = concours.getImageObject();
   });
 
   let getConcours = function() {
@@ -22,11 +22,13 @@ let concoursEditControllerConstructor = function(spec, my) {
 
   let submit = function() {
     concours.setFormlyModel();
+    concours.setImageObject(self.image);
     my.concoursList.updateConcours(concours);
   }
 
   let cancel = function() {
     self.model = concours.getFormlyModel({exclude: excludeKeys});
+    self.image = concours.getImageObject();
     return self;
   }
 

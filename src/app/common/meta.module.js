@@ -173,6 +173,9 @@ import {dump_obj} from '../utils';
         layout: o.layout
       });
     };
+
+    //getFormlyModel: Massage the values of the model, but the keys stay as is,
+    //  except the excluded one's will not appear.
     self.getFormlyModel = function (o) {
       return get_formly_model({
         exclude: o.exclude,

@@ -1,8 +1,10 @@
 import angular from 'angular';
 import ConcoursEditController from './concours.edit.controller';
+import '../../../common/choose_file/choose_image_file';
 
 angular.module('categories.concours.edit', [
   'gecopa.models.concours',
+  'gecopa.common.chooseImageFile'
 ])
   .config(function ($stateProvider) {
     $stateProvider
