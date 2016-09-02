@@ -20,7 +20,7 @@ import ConcoursListController from './concours.list.controller';
           views: {
             'content@': {  //absolutely targets the named view in root unnamed state.
                            //<div ui-view='content'/> within index.html
-              controller: 'ConcoursListController as concoursListController',
+              controller: 'ConcoursListController as vm',
               template: require('./concours.tmpl.html')
             }
           }

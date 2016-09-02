@@ -231,6 +231,12 @@ import '../meta.module';
     self.getCachedImage = getCachedImage;
 
     self.getImage = getImage;
+    self.getTitle = function() {
+      return data && data.title;
+    }
+    self.getEndDate = function() {
+      return data && data.endDate;
+    }
 
     return self;
   };
