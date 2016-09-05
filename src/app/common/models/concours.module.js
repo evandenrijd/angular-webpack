@@ -159,12 +159,12 @@ import '../meta.module';
 
     ];
 
-    let getId = function() {
-      return data && data.id;
-    }
-
     let toString = function() {
       return dump_obj(data);
+    }
+
+    let get = function (attr) {
+      return data && data[attr];
     }
 
     let getFormlyFields = function(o) {
@@ -192,11 +192,7 @@ import '../meta.module';
     }
 
     let getCachedImage = function () {
-      return 'images/GECOPA.CONCOURS_CCR_T.IMAGE_CCR.' + getId();
-    }
-
-    let getImage = function() {
-      return data && data.image;
+      return 'images/GECOPA.CONCOURS_CCR_T.IMAGE_CCR.' + get('id');
     }
 
     let getImageObject = function () {
@@ -224,19 +220,12 @@ import '../meta.module';
     self.getFormlyModel = getFormlyModel;
     self.setFormlyModel = setFormlyModel;
     self.getFormlyFields = getFormlyFields;
-    self.getId = getId;
     self.toString = toString;
     self.getImageObject = getImageObject;
     self.setImageObject = setImageObject;
     self.getCachedImage = getCachedImage;
 
-    self.getImage = getImage;
-    self.getTitle = function() {
-      return data && data.title;
-    }
-    self.getEndDate = function() {
-      return data && data.endDate;
-    }
+    self.get = get;
 
     return self;
   };
@@ -264,7 +253,7 @@ import '../meta.module';
 
     function findConcours(concoursId) {
       return _.find(concours, function (aConcours) {
-        return aConcours.getId() === parseInt(concoursId, 10);
+        return aConcours.get('id') === parseInt(concoursId, 10);
       })
     }
 
@@ -295,7 +284,7 @@ import '../meta.module';
 
     self.updateConcours = function (aConcours) {
       var index = _.findIndex(concours, function (b) {
-        return b.getId() === aConcours.getId();
+        return b.get('id') === aConcours.getId();
       });
       let image = aConcours.getImage();
       if (image.asURL.match(/^data:/)) {
@@ -312,7 +301,7 @@ import '../meta.module';
     self.deleteConcours = function (aConcours) {
       //FIXME Normal delete REST call
       _.remove(concours, function (b) {
-        return b.getId() === aConcours.getId();
+        return b.get('id') === aConcours.getId();
       });
     };
 

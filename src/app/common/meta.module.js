@@ -184,6 +184,11 @@ import {dump_obj} from '../utils';
       });
     };
 
+    //e.g. {name: 'concours', attr: 'id'}
+    self.getAttributeLabelId = function (o) {
+      return o.name + '_' + o.attr;
+    }
+
     return self;
   }
 
