@@ -1,5 +1,8 @@
-import './edit/settings-edit';
+import angular from 'angular';
+import './edit/settings.edit';
 
-angular.module('categories.settings', [
-  'categories.settings.edit'
-]);
+(function() {
+  angular.module('categories.settings', [
+    'categories.settings.edit'
+  ]);
+})();

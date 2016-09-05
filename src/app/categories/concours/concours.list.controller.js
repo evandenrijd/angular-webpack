@@ -1,4 +1,4 @@
-export default function ConcoursListController($log, concoursList, meta) {
+export default function concoursListController($log, concoursList, meta) {
   let self = {};
   let my = {}; //shared state (global deps);
   let concours = [];

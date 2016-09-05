@@ -10,8 +10,8 @@ import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
-import './common/settings.module';
 import './common/appState.module';
+import './common/models/settings.module';
 
 import './categories/categories';
 
@@ -40,7 +40,7 @@ import './categories/categories';
     ngMessages,
     ngFormly,
     ngFormlyMaterial,
-    'gecopa.common.settings',
+    'gecopa.models.settings',
     'gecopa.common.appState',
     'categories',
     'gecopa.models.concours',

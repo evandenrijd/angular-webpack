@@ -3,7 +3,7 @@ import './create/concours.create';
 import './edit/concours.edit';
 
 import '../../common/models/concours.module';
-import ConcoursListController from './concours.list.controller';
+import concoursListController from './concours.list.controller';
 
 (function() {
 
@@ -28,5 +28,6 @@ import ConcoursListController from './concours.list.controller';
 
       ;
     })
-    .controller('ConcoursListController', ConcoursListController);
+    .controller('ConcoursListController', concoursListController);
+
 })();

@@ -33,6 +33,9 @@
   "concours_status_ENUM_SHOW": "Affiché",
   "concours_status_ENUM_LAST_DAY": "Dernier jour",
   "concours_status_ENUM_CLOSED_NOT_DRAW": "Clôturé tirage non effectué",
-  "concours_status_ENUM_CLOSED": "Clôturé tirage effectué"
+  "concours_status_ENUM_CLOSED": "Clôturé tirage effectué",
+
+  "settings_language_ENUM_ENGLISH": "Anglais",
+  "settings_language_ENUM_FRENCH": "Français"
 
 }

@@ -3,7 +3,7 @@ import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import {dump_obj} from '../utils';
 import './defaults.module';
-import './settings.module';
+import './models/settings.module';
 
 (function(){
 
@@ -47,7 +47,7 @@ import './settings.module';
 
   angular.module('gecopa.common.appState', [
     'gecopa.common.defaults',
-    'gecopa.common.settings',
+    'gecopa.models.settings',
     'pascalprecht.translate',
   ])
 
