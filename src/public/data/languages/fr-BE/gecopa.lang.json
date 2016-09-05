@@ -1,6 +1,11 @@
 {
   "WELCOME_TITLE": "Bienvenue"
   "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
+
+  "category_concours": "Concours",
+  "category_drawings": "Tirage au sort",
+  "category_settings": "Settings",
+
   "concours_code": "Code",
   "concours_title": "Intitulé",
   "concours_description": "Description",
@@ -29,4 +34,5 @@
   "concours_status_ENUM_LAST_DAY": "Dernier jour",
   "concours_status_ENUM_CLOSED_NOT_DRAW": "Clôturé tirage non effectué",
   "concours_status_ENUM_CLOSED": "Clôturé tirage effectué"
+
 }

@@ -1,28 +1,10 @@
-import categoryConstructor from '../common/models/category.object';
+import '../common/models/category.module';
 
-export default function CategoriesListController($log, $state, appState) {
+export default function CategoriesListController($log, $state, appState, categoryList) {
   let self = {};
   let my = {$log}; //shared state (global deps);
-  let categories_core = [
-    {
-      id: 1,
-      name: 'concours',
-      icon: 'home'
-    },
-    {
-      id: 2,
-      name: 'users',
-      icon: 'people'
-    },
-    {
-      id: 3,
-      name: 'settings',
-      icon: 'settings'
-    },
-  ];
-  let categories = categories_core.map((c) => {
-    return categoryConstructor(c, my);
-  });
+
+  let categories = categoryList.getCategories();
 
   let getCategories = function () {
     return categories;

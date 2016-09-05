@@ -1,10 +1,10 @@
 <md-list>
-  <md-list-item ng-repeat="category in categoriesListController.getCategories()">
-    <md-button flex ng-click="categoriesListController.selectCategory(category)"
-               ng-class="{'selected' : category === categoriesListController.getSelectedCategory() }">
+  <md-list-item ng-repeat="category in vm.getCategories()">
+    <md-button flex ng-click="vm.selectCategory(category)"
+               ng-class="{'selected' : category === vm.getSelectedCategory() }">
       <div layout="row" layout-align="start center">
-        <div class="material-icons">{{category.getIcon()}}</div>
-        <div>{{category.displayName()}}</div>
+        <div class="material-icons">{{category.get('icon')}}</div>
+        <div translate>{{'category_' + category.get('name')}}</div>
       </div>
     </md-button>
   </md-list-item>

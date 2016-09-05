@@ -1,6 +1,11 @@
 {
   "WELCOME_TITLE": "Welcome",
   "EDIT_CONCOURS_TITLE": "Update concours",
+
+  "category_concours": "Concours",
+  "category_drawings": "Drawing of lots",
+  "category_settings": "Settings",
+
   "concours_code": "Code",
   "concours_title": "Title",
   "concours_description": "Description",

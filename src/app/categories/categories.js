@@ -6,7 +6,8 @@ import './concours/concours';
 (function() {
 
   angular.module('categories', [
-    'categories.concours'
+    'categories.concours',
+    'gecopa.models.category'
   ])
     .config(function ($stateProvider) {
       $stateProvider
@@ -16,7 +17,7 @@ import './concours/concours';
           abstract: true,
           views: {
             'categories@': {
-              controller: 'CategoriesListController as categoriesListController',
+              controller: 'CategoriesListController as vm',
               template: require('./categories.tmpl.html')
             },
           }

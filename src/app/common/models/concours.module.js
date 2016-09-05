@@ -257,6 +257,7 @@ import '../meta.module';
       })
     }
 
+    //public API
     self.loadAllConcours = function () {
       return (concours) ? my.$q.when(concours) :
         my.$http.get(URLS.FETCH).then(result => {
