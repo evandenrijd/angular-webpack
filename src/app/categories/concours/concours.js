@@ -1,5 +1,5 @@
 import angular from 'angular';
-import './create/concours-create';
+import './create/concours.create';
 import './edit/concours.edit';
 
 import '../../common/models/concours.module';
