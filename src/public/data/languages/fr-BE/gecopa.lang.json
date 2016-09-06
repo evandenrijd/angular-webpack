@@ -1,10 +1,12 @@
 {
-  "WELCOME_TITLE": "Bienvenue"
+  "WELCOME_TITLE": "Bienvenue",
   "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
+  "PREFERENCES_TITLE": "Préférences",
 
   "category_concours": "Concours",
   "category_drawings": "Tirage au sort",
   "category_settings": "Settings",
+  "category_preferences": "Préférences",
 
   "concours_code": "Code",
   "concours_title": "Intitulé",
@@ -35,7 +37,7 @@
   "concours_status_ENUM_CLOSED_NOT_DRAW": "Clôturé tirage non effectué",
   "concours_status_ENUM_CLOSED": "Clôturé tirage effectué",
 
-  "settings_language_ENUM_ENGLISH": "Anglais",
-  "settings_language_ENUM_FRENCH": "Français"
+  "preferences_language_ENUM_ENGLISH": "Anglais",
+  "preferences_language_ENUM_FRENCH": "Français"
 
 }

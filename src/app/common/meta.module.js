@@ -1,6 +1,7 @@
 import angular from 'angular';
 import _ from 'underscore';
 import {dump_obj} from '../utils';
+import './defaults.module';
 
 (function(){
 
@@ -43,11 +44,14 @@ import {dump_obj} from '../utils';
 
       settings: [
         {name: 'admins', type: 'string', oracle: 'NOT YET there', init: function() { return ''; }},
+      ],
+
+      preferences: [
         {name: 'language', type: [
           {id: 'en-BE', name: 'ENUM_ENGLISH'},
           {id: 'fr-BE', name: 'ENUM_FRENCH'}
-        ], init: function() { return ''; }} //Not Oracle, is on client base
-      ]
+        ], init: function() { return my.defaultLanguage; }},
+      ],
 
     };
 
@@ -175,6 +179,14 @@ import {dump_obj} from '../utils';
       return model;
     }
 
+    let init = function(o) {
+      let obj = {};
+      data[o.name].map(field => {
+        obj[field.name] = field.init();
+      });
+      return obj;
+    }
+
     //public API
     self.getFormlyFields = function (o) {
       return formly_fields_layout({
@@ -199,13 +211,17 @@ import {dump_obj} from '../utils';
       return o.name + '_' + o.attr;
     }
 
+    self.init = init;
+
     return self;
   }
 
-  angular.module('gecopa.models.meta', [])
+  angular.module('gecopa.models.meta', [
+    'gecopa.common.defaults',
+  ])
     .provider('meta', function metaProvider() {
-      this.$get = function metaConstructorFactory($translate) {
-        return metaConstructor({}, {$translate});
+      this.$get = function metaConstructorFactory($translate, defaultLanguage) {
+        return metaConstructor({}, {$translate, defaultLanguage});
       }
     });
 

@@ -14,23 +14,7 @@ import _ from 'underscore';
       FETCH: 'data/settings.json'
     };
 
-    let data = _.extend(spec, {
-      languages: ['fr-BE', 'en-BE'],
-      language: my.defaultLanguage
-    });
-
-    let get = function(prop) {
-      return self[prop];
-    }
-
-    let set = function(prop, value) {
-      if (angular.isObject(prop)) {
-        angular.extend(self, prop);
-      } else {
-        self[prop] = value;
-      }
-      return self;
-    }
+    let data = _.extend(spec, my.meta.init({name: 'settings'}));
 
     let extract = function(result) {
       return result.data.map(spec => {
@@ -59,8 +43,9 @@ import _ from 'underscore';
       return my.$q(function(resolve) {
         my.$timeout(function() {
           console.debug('FIXME: save the oracle stuff');
+          my.$mdToast.show(my.$mdToast.simple().textContent('Saved settings'));
           resolve(self);
-        }, 100);
+        }, 1000);
       });
     }
 
@@ -89,8 +74,6 @@ import _ from 'underscore';
     }
 
     //Public API
-    self.get = get;
-    self.set = set;
     self.load = load;
     self.update = update;
     self.getFormlyModel = getFormlyModel;
@@ -104,8 +87,8 @@ import _ from 'underscore';
     'gecopa.common.defaults'
   ])
     .provider('settings', function settingsProvider() {
-      this.$get = function settingsConstructorFactory($http, $q, defaultLanguage, meta, $timeout) {
-        return settingsConstructor({}, {$http, $q, defaultLanguage, meta, $timeout});
+      this.$get = function settingsConstructorFactory($http, $q, meta, $timeout, $mdToast) {
+        return settingsConstructor({}, {$http, $q, meta, $timeout, $mdToast});
       }
     })
   ;

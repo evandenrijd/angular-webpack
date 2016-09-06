@@ -3,6 +3,7 @@ import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import {dump_obj} from '../utils';
 import './defaults.module';
+import './models/preferences.module';
 import './models/settings.module';
 
 (function(){
@@ -20,26 +21,12 @@ import './models/settings.module';
       return self;
     }
 
-    let getLanguage = function() {
-      return my.settings.get('language');
-    }
-
-    let setLanguage = function(lang) {
-      if (getLanguage() !== lang) {
-        my.$translate.use(lang);
-        my.settings.set('language', lang);
-      }
-      return self;
-    }
-
     let toString = function(){
       return '{appState: ' + dump_obj({category}) + '}';
     }
 
     self.getCategory = getCategory;
     self.setCategory = setCategory;
-    self.getLanguage = getLanguage;
-    self.setLanguage = setLanguage;
     self.toString = toString;
 
     return self;
@@ -47,6 +34,7 @@ import './models/settings.module';
 
   angular.module('gecopa.common.appState', [
     'gecopa.common.defaults',
+    'gecopa.models.preferences',
     'gecopa.models.settings',
     'pascalprecht.translate',
   ])

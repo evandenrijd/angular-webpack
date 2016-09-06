@@ -1,10 +1,12 @@
 {
   "WELCOME_TITLE": "Welcome",
   "EDIT_CONCOURS_TITLE": "Update concours",
+  "PREFERENCES_TITLE": "Preferences",
 
   "category_concours": "Concours",
   "category_drawings": "Drawing of lots",
   "category_settings": "Settings",
+  "category_preferences": "Preferences",
 
   "concours_code": "Code",
   "concours_title": "Title",
@@ -35,7 +37,7 @@
   "concours_status_ENUM_CLOSED_NOT_DRAW": "Closed not drawn",
   "concours_status_ENUM_CLOSED": "Closed and drawn",
 
-  "settings_language_ENUM_ENGLISH": "English",
-  "settings_language_ENUM_FRENCH": "French"
+  "preferences_language_ENUM_ENGLISH": "English",
+  "preferences_language_ENUM_FRENCH": "French"
 
 }

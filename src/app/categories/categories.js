@@ -3,12 +3,14 @@ import categoriesListController from './categories.list.controller';
 import welcomeController from './welcome.controller';
 import './concours/concours';
 import './settings/settings';
+import './preferences/preferences';
 
 (function() {
 
   angular.module('categories', [
     'categories.concours',
     'categories.settings',
+    'categories.preferences',
     'gecopa.models.category'
   ])
     .config(function ($stateProvider) {

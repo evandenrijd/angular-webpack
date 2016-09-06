@@ -44,6 +44,11 @@ import {dump_obj} from '../../utils';
         name: 'settings',
         icon: 'settings'
       },
+      {
+        id: 4,
+        name: 'preferences',
+        icon: 'settings'
+      },
     ].map((c) => {
       return categoryConstructor(c, my);
     });

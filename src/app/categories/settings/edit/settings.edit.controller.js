@@ -14,12 +14,6 @@ export default function settingsEditControllerConstructor(spec, my) {
         { className: 'flex-33', key: 'admins' },
       ]
     },
-    {
-      className: 'layout-row',
-      fieldGroup: [
-        { className: 'flex-20', key: 'language' }
-      ]
-    }
   ];
 
   my.settings.load().then(function(result) {

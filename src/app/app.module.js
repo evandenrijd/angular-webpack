@@ -11,6 +11,7 @@ import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
 import './common/appState.module';
+import './common/models/preferences.module';
 import './common/models/settings.module';
 
 import './categories/categories';
@@ -41,6 +42,7 @@ import './categories/categories';
     ngFormly,
     ngFormlyMaterial,
     'gecopa.models.settings',
+    'gecopa.models.preferences',
     'gecopa.common.appState',
     'categories',
     'gecopa.models.concours',
