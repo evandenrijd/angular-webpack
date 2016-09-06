@@ -8,17 +8,15 @@
   </formly-form>
 
   <div layout="row"  layout-align="space-around center">
-    <md-button ng-click="vm.submit()">Submit</md-button>
-    <md-button ng-click="vm.cancel()">Cancel</md-button>
+    <md-button ng-click="vm.submit()" aria-label="SUBMIT_BUTTON | translate" translate="SUBMIT_BUTTON"></md-button>
+    <md-button ng-click="vm.cancel()" aria-label="CANCEL_BUTTON | translate" translate="CANCEL_BUTTON"></md-button>
   </div>
 
-  <h2>Image</h2>
-  <pre>{{vm.image | json}}</pre>
-  <h2>Model</h2>
-  <pre>{{vm.model | json}}</pre>
-  <h2>Fields <small>(note, functions are not shown)</small></h2>
-  <pre>{{vm.originalFields | json}}</pre>
-  <h2>Form</h2>
-  <pre>{{vm.fields | json}}</pre>
+  <!-- <h2>Image</h2> -->
+  <!-- <pre>{{vm.image | json}}</pre> -->
+  <!-- <h2>Model</h2> -->
+  <!-- <pre>{{vm.model | json}}</pre> -->
+  <!-- <h2>Fields <small>(note, functions are not shown)</small></h2> -->
+  <!-- <pre>{{vm.fields | json}}</pre> -->
 
 </md-content>

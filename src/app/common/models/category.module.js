@@ -42,7 +42,7 @@ import {dump_obj} from '../../utils';
       {
         id: 3,
         name: 'settings',
-        icon: 'settings'
+        icon: 'save'
       },
       {
         id: 4,

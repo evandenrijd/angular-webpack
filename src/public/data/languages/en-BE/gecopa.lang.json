@@ -3,6 +3,11 @@
   "EDIT_CONCOURS_TITLE": "Update concours",
   "PREFERENCES_TITLE": "Preferences",
 
+  "APPLY_BUTTON": "Apply",
+  "CANCEL_BUTTON": "Cancel",
+  "SUBMIT_BUTTON": "Submit",
+  "UPLOAD_BUTTON": "Upload",
+
   "category_concours": "Concours",
   "category_drawings": "Drawing of lots",
   "category_settings": "Settings",

@@ -19,10 +19,8 @@ import _ from 'underscore';
         my.$timeout(function() {
           let language = get('language');
           if (language !== model.language) {
-            console.debug('Current language: ', my.$translate.use());
             my.$translate.use(model.language).then(function(){
               console.debug('FIXME: set also language into cookie: ', model.language);
-              console.debug('New language: ', my.$translate.use());
               data = _.extend(data, model);
               resolve(self);
             });

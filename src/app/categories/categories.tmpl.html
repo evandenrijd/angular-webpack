@@ -1,7 +1,9 @@
 <md-list>
   <md-list-item ng-repeat="category in vm.getCategories()">
     <md-button flex ng-click="vm.selectCategory(category)"
-               ng-class="{'selected' : category === vm.getSelectedCategory() }">
+               ng-class="{'selected' : category === vm.getSelectedCategory() }"
+               aria-label="{{'category_' + category.get('name') | translate}}"
+               >
       <div layout="row" layout-align="start center">
         <div class="material-icons">{{category.get('icon')}}</div>
         <div translate>{{'category_' + category.get('name')}}</div>
