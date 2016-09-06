@@ -12,6 +12,25 @@ import '../meta.module';
     let formly_fields;
     let formly_model; //copy of the data used in formly
 
+    let getFormlyField = function(key) {
+      let result = undefined;
+      let search = function(field, key) {
+        _.each(field, f => {
+          if (!result) {
+            if (!!f.fieldGroup) {
+              search(f.fieldGroup, key);
+            } else if (!!f.key) {
+              if (f.key === key) {
+                result = f;
+              }
+            }
+          }
+        });
+        return result;
+      };
+      return search(formly_fields, key);
+    }
+
     let layoutEdit = [
 
       {
@@ -64,20 +83,33 @@ import '../meta.module';
             key: 'startDate',
             validators: {
               checkEndDate: {
-                expression: function(viewValue, modelValue, scope) {
-                  let value = modelValue || viewValue;
-                  if (value) value = value.setHours(0,0,0,0); //only compare date not time
+                expression: function($viewValue, $modelValue, scope) {
+                  let value = $modelValue || $viewValue;
                   if (value) {
-                    let drawingDate = scope.model.drawingDate.setHours(0,0,0,0);
-                    let endDate = scope.model.endDate.setHours(0,0,0,0);
-                    if (endDate && drawingDate) endDate = endDate < drawingDate?drawingDate:endDate;
+                    value = value.setHours(0,0,0,0); //only compare date not time
+                    if (!scope.to.data) scope.to.data = {};
+                    scope.to.data.lhs = scope.to.label;
+                    let endDate;
+                    if (scope.model.drawingDate) {
+                      endDate = scope.model.drawingDate.setHours(0,0,0,0);
+                      scope.to.data.rhs = getFormlyField('drawingDate').templateOptions.label;
+                    } else if (scope.model.endDate) {
+                      if (!endDate || (endDate && scope.model.endDate.setHours(0,0,0,0) < endDate)) {
+                        endDate = scope.model.endDate.setHours(0,0,0,0);
+                        scope.to.data.rhs = getFormlyField('endDate').templateOptions.label;
+                      }
+                    } else {
+                      return true; //No end date filled in
+                    }
                     return value < endDate;
                   }
                   return true;
                 },
-                message: '"Should be less then end and/or drawing date."'
+                message: function($viewValue, $modelValue, scope) {
+                  return my.$translate.instant("ERR_LHS_LESS_THEN_RHS", scope.to.data);
+                }
               }
-            }
+            },
           },
           { className: 'flex',
             key: 'endDate',
@@ -85,13 +117,18 @@ import '../meta.module';
               checkDrawingDate: {
                 expression: function(viewValue, modelValue, scope) {
                   let value = modelValue || viewValue;
-                  if (value) value = value.setHours(0,0,0,0); //only compare date not time
-                  if (scope.model.drawingDate) {
+                  if (value && scope.model.drawingDate) {
+                    value = value.setHours(0,0,0,0); //only compare date not time
+                    if (!scope.to.data) scope.to.data = {};
+                    scope.to.data.lhs = scope.to.label;
+                    scope.to.data.rhs = getFormlyField('drawingDate').templateOptions.label;
                     return value <= scope.model.drawingDate.setHours(0,0,0,0);
                   }
                   return true;
                 },
-                message: '"Should be less then or equal to drawing date."'
+                message: function($viewValue, $modelValue, scope) {
+                  return my.$translate.instant("ERR_LHS_LESS_THEN_OR_EQUAL_TO_RHS", scope.to.data);
+                }
               }
             }
           },
@@ -101,13 +138,18 @@ import '../meta.module';
               checkDrawingDate: {
                 expression: function(viewValue, modelValue, scope) {
                   let value = modelValue || viewValue;
-                  if (value) value = value.setHours(0,0,0,0); //only compare date not time
-                  if (scope.model.endDate) {
+                  if (value && scope.model.endDate) {
+                    value = value.setHours(0,0,0,0); //only compare date not time
+                    if (!scope.to.data) scope.to.data = {};
+                    scope.to.data.lhs = scope.to.label;
+                    scope.to.data.rhs = getFormlyField('endDate').templateOptions.label;
                     return value >= scope.model.endDate.setHours(0,0,0,0);
                   }
                   return true;
                 },
-                message: '"Should be bigger then or equal to end date."'
+                message: function($viewValue, $modelValue, scope) {
+                  return my.$translate.instant("ERR_LHS_GREATER_THEN_OR_EQUAL_TO_RHS", scope.to.data);
+                }
               }
             },
           },
@@ -292,7 +334,7 @@ import '../meta.module';
         //FIXME push data into the database + copy a file into the images-directory.
         //  => should be a SPECIAL REST call that does that.
         image.asURL = aConcours.getCachedImage();
-        aConcours.setImage(image); //take the image from the cache if successful.
+        aConcours.setImageObject(image); //take the image from the cache if successful.
       } else {
         //FIXME Normal update REST call
       }

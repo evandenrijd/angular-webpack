@@ -1,4 +1,10 @@
 {
+  "ERR_NOT_AN_IMAGE_TYPE": "Not an image",
+  "ERR_NO_OR_EMPTY_FILE": "Empty or no file",
+  "ERR_LHS_LESS_THEN_RHS": "{{lhs}} must be less then {{rhs}}",
+  "ERR_LHS_LESS_THEN_OR_EQUAL_TO_RHS": "{{lhs}} must be less then or equal to {{rhs}}",
+  "ERR_LHS_GREATER_THEN_OR_EQUAL_TO_RHS": "{{lhs}} must be greater then or equal to {{rhs}}",
+
   "WELCOME_TITLE": "Welcome",
   "EDIT_CONCOURS_TITLE": "Update concours",
   "PREFERENCES_TITLE": "Preferences",

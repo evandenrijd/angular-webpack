@@ -37,7 +37,8 @@
                   type = "image/jpeg";
                   break;
                 default:
-                  type = "unknown"; // Or you can use the blob.type as fallback
+                  type = "unknown";
+                  reject("ERR_NOT_AN_IMAGE_TYPE");
                   break;
                 }
                 image.mime = type;
@@ -46,7 +47,7 @@
               };
               reader.readAsArrayBuffer(file);
             } else {
-              reject('no or empty file');
+              reject('ERR_NO_OR_EMPTY_FILE');
             }
           });
         }
@@ -68,15 +69,11 @@
               resolve(image);
             };
             reader.readAsDataURL(file);            
+          }).catch(function(error) {
+            console.error('Got error: ' + error);
           });
         });
       };
-
-      var setImage = function (scope, image) {        
-        console.debug('args: ', arguments);
-        if (image === '')
-        scope.image = image;
-      }
 
       var link = function (scope, elem, attrs) {
         var button = elem.find('button');
