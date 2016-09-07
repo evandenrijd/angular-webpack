@@ -10,8 +10,8 @@ import {dump_obj} from '../../utils';
       return data[attr];
     }
 
-    //getState give the state string used in ng-ui-router
-    let getState = function() {
+    //getNgUiRouterState give the state string used in ng-ui-router
+    let getNgUiRouterState = function() {
       return 'gecopa.admin.' + get('name');
     }
 
@@ -20,7 +20,7 @@ import {dump_obj} from '../../utils';
     }
 
     self.get = get;
-    self.getState = getState;
+    self.getNgUiRouterState = getNgUiRouterState;
     self.toString = toString;
 
     return self;

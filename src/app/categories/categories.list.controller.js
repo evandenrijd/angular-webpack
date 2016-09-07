@@ -11,12 +11,12 @@ export default function CategoriesListController($log, $state, appState, categor
   }
 
   let selectCategory = function(category) {
-    appState.setCategory(category);
-    $state.go(appState.getCategory().getState());
+    appState.set('category', category);
+    $state.go(appState.get('category').getNgUiRouterState());
   }
 
   let getSelectedCategory = function() {
-    return appState.getCategory();
+    return appState.get('category');
   }
 
   self.getCategories = getCategories;

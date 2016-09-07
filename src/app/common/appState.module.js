@@ -9,24 +9,26 @@ import './models/settings.module';
 (function(){
 
   let appStateConstructor = function(spec, my) {
-    let self = spec || {};
-    let category = null;
+    let self = {};
 
-    let getCategory = function() {
-      return category;
+    let data = spec || {};
+
+    let get = function (attr) {
+      return data && data[attr];
     }
 
-    let setCategory = function(aCategory) {
-      category = aCategory;
+    let set = function (attr, value) {
+      data[attr] = value;
       return self;
     }
 
     let toString = function(){
-      return '{appState: ' + dump_obj({category}) + '}';
+      return '{ category: ' + dump_obj(self.get('category')) + '}';
     }
 
-    self.getCategory = getCategory;
-    self.setCategory = setCategory;
+    //Public API
+    self.get = get;
+    self.set = set;
     self.toString = toString;
 
     return self;

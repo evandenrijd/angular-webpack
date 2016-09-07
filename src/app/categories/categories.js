@@ -32,7 +32,7 @@ import './preferences/preferences';
           views: {
             'content@': { //absolutely targets the named view in root unnamed state.
                           //<div ui-view='content'/> within index.html
-              controller: 'WelcomeController as welcomeController',
+              controller: 'WelcomeController as vm',
               template: require('./welcome.tmpl.html')
             }
           },
