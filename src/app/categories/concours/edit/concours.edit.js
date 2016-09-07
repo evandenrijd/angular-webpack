@@ -1,5 +1,5 @@
 import angular from 'angular';
-import ConcoursEditController from './concours.edit.controller';
+import concoursEditController from './concours.edit.controller';
 import '../../../common/choose_file/choose_image_file';
 
 (function() {
@@ -23,7 +23,7 @@ import '../../../common/choose_file/choose_image_file';
 
       ;
     })
-    .controller('ConcoursEditController', ConcoursEditController)
+    .controller('ConcoursEditController', concoursEditController)
   ;
 })();
 

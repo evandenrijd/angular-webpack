@@ -7,12 +7,16 @@
 
   "WELCOME_TITLE": "Bienvenue",
   "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
+  "CREATE_CONCOURS_TITLE": "Nouveau concours",
   "PREFERENCES_TITLE": "Préférences",
 
   "APPLY_BUTTON": "Appliquer",
   "CANCEL_BUTTON": "Annuler",
   "SUBMIT_BUTTON": "Soumettre",
   "UPLOAD_BUTTON": "Télécharger",
+  "ADD_BUTTON": "Ajouter",
+  "COPY_BUTTON": "Copier",
+  "DELETE_BUTTON": "Effacer",
 
   "category_concours": "Concours",
   "category_drawings": "Tirage au sort",
@@ -47,6 +51,10 @@
   "concours_status_ENUM_LAST_DAY": "Dernier jour",
   "concours_status_ENUM_CLOSED_NOT_DRAW": "Clôturé tirage non effectué",
   "concours_status_ENUM_CLOSED": "Clôturé tirage effectué",
+
+  "concours_db_successful_creation": "La création du concours a réussi",
+  "concours_db_successful_update": "La mise a jour du concours a réussi",
+  "concours_db_successful_delete": "La suppression fu concours a réussi",
 
   "preferences_language_ENUM_ENGLISH": "Anglais",
   "preferences_language_ENUM_FRENCH": "Français"

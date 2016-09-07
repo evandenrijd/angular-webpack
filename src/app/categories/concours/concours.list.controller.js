@@ -3,7 +3,7 @@ export default function concoursListController($log, concoursList, meta) {
   let my = {}; //shared state (global deps);
   let concours = [];
 
-  concoursList.loadAllConcours().then(result => {
+  concoursList.reset({}).then(result => {
     concours = result;
   });
 

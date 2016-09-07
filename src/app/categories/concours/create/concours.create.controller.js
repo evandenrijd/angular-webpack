@@ -1,20 +1,17 @@
 import angular from 'angular';
-import '../../../common/models/concours.module';
+import concoursConstructor from '../../../common/models/concours.constructor';
 import {dump_obj} from '../../../utils';
 
-let concoursEditControllerConstructor = function(spec, my) {
+let concoursCreateControllerConstructor = function(spec, my) {
   let self = {};
   my = my || {}; //shared state (global deps);
-  let concours;
+  let concours = concoursConstructor(undefined, my);
+  //FIXME set creation admin, from appState
 
   const excludeKeys = ['id', 'image', 'imageName', 'imageMime'];
-
-  my.concoursList.getConcoursById(my.$stateParams.id).then(result => {
-    concours = result;
-    self.fields = concours.getFormlyFields({exclude: excludeKeys});
-    self.model = concours.getFormlyModel({exclude: excludeKeys});
-    self.image = concours.getImageObject();
-  });
+  self.fields = concours.getFormlyFields({exclude: excludeKeys});
+  self.model = concours.getFormlyModel({exclude: excludeKeys});
+  self.image = concours.getImageObject();
 
   let getConcours = function() {
     return concours;
@@ -24,7 +21,7 @@ let concoursEditControllerConstructor = function(spec, my) {
     concours.setFormlyModel();
     concours.setImageObject(self.image);
     // alert(concours.toString());
-    my.concoursList.updateConcours(concours);
+    my.concoursList.createConcours(concours);
   }
 
   let cancel = function() {
@@ -40,6 +37,6 @@ let concoursEditControllerConstructor = function(spec, my) {
   return self;
 }
 
-export default function concoursEditController($log, concoursList, $stateParams) {
-  return concoursEditControllerConstructor({}, {$log, concoursList, $stateParams});
+export default function concoursCreateController(meta, $translate, concoursList) {
+  return concoursCreateControllerConstructor({}, {meta, $translate, concoursList});
 };

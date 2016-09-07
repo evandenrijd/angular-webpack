@@ -73,3 +73,7 @@ It will start a local server using `webpack-dev-server` which will watch, build
 
     concours screen date visualisation
         => dd/mm/yyyy
+
+    update to material 1.1.1
+        => solved md-datepicker require visualisation
+            https://github.com/angular/material/commit/2a0517661c1cf7243cdbe6fb3273c654ec05ac4b

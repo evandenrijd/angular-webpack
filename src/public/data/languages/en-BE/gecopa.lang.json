@@ -7,12 +7,16 @@
 
   "WELCOME_TITLE": "Welcome",
   "EDIT_CONCOURS_TITLE": "Update concours",
+  "CREATE_CONCOURS_TITLE": "New concours",
   "PREFERENCES_TITLE": "Preferences",
 
   "APPLY_BUTTON": "Apply",
   "CANCEL_BUTTON": "Cancel",
   "SUBMIT_BUTTON": "Submit",
   "UPLOAD_BUTTON": "Upload",
+  "ADD_BUTTON": "Add",
+  "COPY_BUTTON": "Copy",
+  "DELETE_BUTTON": "Delete",
 
   "category_concours": "Concours",
   "category_drawings": "Drawing of lots",
@@ -47,6 +51,10 @@
   "concours_status_ENUM_LAST_DAY": "Last day",
   "concours_status_ENUM_CLOSED_NOT_DRAW": "Closed not drawn",
   "concours_status_ENUM_CLOSED": "Closed and drawn",
+
+  "concours_db_successful_creation": "Successfully created concours",
+  "concours_db_successful_update": "Successfully updated concours",
+  "concours_db_successful_delete": "Successfully deleted concours",
 
   "preferences_language_ENUM_ENGLISH": "English",
   "preferences_language_ENUM_FRENCH": "French"

@@ -1,6 +1,22 @@
-<h2>Concours</h2>
+
+<div layout="row" layout-align="space-between center">
+  <div>
+    <h2>Concours</h2>
+  </div>
+  <div>
+    <a ui-sref="gecopa.admin.concours.create()">
+      <md-button
+        id="addButton"
+        class="md-fab md-mini md-primary"
+        aria-label="ADD_BUTTON | translate">
+        <md-icon class="material-icons">add</md-icon>
+      </md-button>
+    </a>
+  </div>
+</div>
 
 <table>
+
   <thead>
     <tr>
       <th translate>{{ vm.getAttributeLabelId('image')}}</th>
@@ -17,7 +33,8 @@
         </a>
       </td>
       <td>{{concours.get('title')}}</td>
-      <td>{{concours.get('endDate')}}</td>
+      <td>{{concours.get('endDate') | date: 'dd-MM-yyyy' }}</td>
     </tr>
   </tbody>
+
 </table>
