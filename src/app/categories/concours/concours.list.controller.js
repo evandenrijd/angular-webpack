@@ -1,4 +1,4 @@
-export default function concoursListController($log, concoursList, meta) {
+export default function concoursListController($log, concoursList, meta, $state) {
   let self = {};
   let my = {}; //shared state (global deps);
   let concours = [];
@@ -15,9 +15,14 @@ export default function concoursListController($log, concoursList, meta) {
     return concours;
   }
 
+  let remove = function(where) {
+    concoursList.deleteConcours(where.id);
+  }
+
   //public API
   self.getConcours = getConcours;
   self.getAttributeLabelId = getAttributeLabelId;
+  self.remove = remove;
 
   return self;
 };

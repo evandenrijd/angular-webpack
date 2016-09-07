@@ -22,6 +22,7 @@
       <th translate>{{ vm.getAttributeLabelId('image')}}</th>
       <th translate>{{ vm.getAttributeLabelId('title')}}</th>
       <th translate>{{ vm.getAttributeLabelId('endDate')}}</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -34,6 +35,16 @@
       </td>
       <td>{{concours.get('title')}}</td>
       <td>{{concours.get('endDate') | date: 'dd-MM-yyyy' }}</td>
+      <td>
+        <md-button
+          id="deleteButton"
+          class="md-fab md-mini md-primary"
+          aria-label="DELETE_BUTTON | translate"
+          ng-click="vm.remove({id: concours.get('id')})"
+          >
+          <md-icon class="material-icons">delete</md-icon>
+        </md-button>
+      </td>
     </tr>
   </tbody>
 

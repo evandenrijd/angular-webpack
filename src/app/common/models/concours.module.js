@@ -94,13 +94,14 @@ import concoursConstructor from './concours.constructor';
       });
     };
 
-    let deleteConcours = function (aConcours) {
+    let deleteConcours = function (concoursId) {
       return my.$q(function(resolve) {
-        loadAllConcours().then(() => {
+        getConcoursById(concoursId).then((c) => {
           my.$timeout(function() { //FIXME 1s simulation of delete
-            _.remove(concours, function (b) { //FIXME Normal delete REST call
-              return b.get('id') === aConcours.get('id');
+            let index = _.findIndex(concours, function (b) { //FIXME Normal delete REST call
+              return b.get('id') === c.get('id');
             });
+            concours.splice(index, 1);
             my.$translate('concours_db_successful_delete').then(result => {
               my.$mdToast.show(my.$mdToast.simple().textContent(result));
             });
