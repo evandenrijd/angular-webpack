@@ -1,11 +1,26 @@
 <md-content layout="column">
   <h2 translate="PREFERENCES_TITLE"></h2>
-  <formly-form model="vm.model" fields="vm.fields" form="vm.form">
-    <div layout="row"  layout-align="space-around center">
-      <md-button ng-click="vm.apply()" aria-label="APPLY_BUTTON | translate" translate="APPLY_BUTTON"></md-button>
-      <md-button ng-click="vm.cancel()" aria-label="CANCEL_BUTTON | translate" translate="CANCEL_BUTTON"></md-button>
-    </div>
-  </formly-form>
+
+  <form novalidate>
+    <formly-form model="vm.model" fields="vm.fields" form="vm.form">
+      <div layout="row" layout-align="space-around center">
+        <md-button
+          type="submit"
+          class="btn btn-primary submit-button"
+          ng-disabled="vm.form.$invalid || !vm.form.$dirty"
+          ng-click="vm.apply()"
+          aria-label="APPLY_BUTTON | translate"
+          translate="APPLY_BUTTON">
+        </md-button>
+        <md-button
+          class="btn btn-primary"
+          ng-click="vm.cancel()"
+          aria-label="CANCEL_BUTTON | translate"
+          translate="CANCEL_BUTTON">
+        </md-button>
+      </div>
+    </formly-form>
+  </form>
 
   <!-- <h2>Model</h2> -->
   <!-- <pre>{{vm.model | json}}</pre> -->

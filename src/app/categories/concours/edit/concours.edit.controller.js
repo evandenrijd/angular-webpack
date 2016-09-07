@@ -23,6 +23,7 @@ let concoursEditControllerConstructor = function(spec, my) {
   let submit = function() {
     concours.setFormlyModel();
     concours.setImageObject(self.image);
+    // alert(concours.toString());
     my.concoursList.updateConcours(concours);
   }
 
