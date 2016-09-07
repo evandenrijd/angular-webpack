@@ -326,10 +326,7 @@ import '../meta.module';
     };
 
     self.updateConcours = function (aConcours) {
-      var index = _.findIndex(concours, function (b) {
-        return b.get('id') === aConcours.getId();
-      });
-      let image = aConcours.getImage();
+      let image = aConcours.getImageObject();
       if (image.asURL.match(/^data:/)) {
         //FIXME push data into the database + copy a file into the images-directory.
         //  => should be a SPECIAL REST call that does that.
@@ -338,13 +335,16 @@ import '../meta.module';
       } else {
         //FIXME Normal update REST call
       }
+      var index = _.findIndex(concours, function (b) {
+        return b.get('id') === aConcours.get('id');
+      });
       concours[index] = aConcours;
     };
 
     self.deleteConcours = function (aConcours) {
       //FIXME Normal delete REST call
       _.remove(concours, function (b) {
-        return b.get('id') === aConcours.getId();
+        return b.get('id') === aConcours.get('id');
       });
     };
 
