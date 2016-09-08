@@ -14,7 +14,7 @@
     "angular-animate": "^1.5.8",
     "angular-formly": "^8.3.0",
     "angular-formly-material": "^0.14.3",
-    "angular-material": "^1.1.0-rc.5",
+    "angular-material": "^1.1.1",
     "angular-messages": "^1.5.8",
     "angular-translate": "^2.11.1",
     "angular-translate-loader-static-files": "^2.11.1",
