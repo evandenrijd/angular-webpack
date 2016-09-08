@@ -8,7 +8,7 @@ import _ from 'underscore';
     let self = {};
     my = my || {};
 
-    let data = _.extend(spec, my.meta.init({name: 'preferences'}));
+    let data = _.extend(my.meta.init({name: 'preferences'}), spec);
 
     let get = function(attr) {
       return data && data[attr];
@@ -20,8 +20,8 @@ import _ from 'underscore';
           let language = get('language');
           if (language !== model.language) {
             my.$translate.use(model.language).then(function(){
-              console.debug('FIXME: set also language into cookie: ', model.language);
               data = _.extend(data, model);
+              my.$window.localStorage.setItem('gecopa.admin.language', model.language);
               resolve(self);
             });
           } else {
@@ -69,8 +69,8 @@ import _ from 'underscore';
     'gecopa.common.defaults'
   ])
     .provider('preferences', function preferencesProvider() {
-      this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate) {
-        return preferencesConstructor({}, {$q, meta, $timeout, $translate});
+      this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate, $window) {
+        return preferencesConstructor({}, {$q, meta, $timeout, $translate, $window});
       }
     })
   ;

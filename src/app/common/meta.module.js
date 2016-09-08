@@ -50,7 +50,10 @@ import './defaults.module';
         {name: 'language', type: [
           {id: 'en-BE', name: 'ENUM_ENGLISH'},
           {id: 'fr-BE', name: 'ENUM_FRENCH'}
-        ], init: function() { return my.defaultLanguage; }},
+        ], init: function() {
+          return my.$window.localStorage.getItem('gecopa.admin.language') ||
+            my.defaultLanguage;
+        }},
       ],
 
     };
@@ -220,8 +223,8 @@ import './defaults.module';
     'gecopa.common.defaults',
   ])
     .provider('meta', function metaProvider() {
-      this.$get = function metaConstructorFactory($translate, defaultLanguage) {
-        return metaConstructor({}, {$translate, defaultLanguage});
+      this.$get = function metaConstructorFactory($translate, defaultLanguage, $window) {
+        return metaConstructor({}, {$translate, defaultLanguage, $window});
       }
     });
 
