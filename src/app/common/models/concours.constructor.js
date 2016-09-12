@@ -212,35 +212,11 @@ export default function concoursConstructor(spec, my) {
     return self;
   }
 
-  let getFormlyFields = function(o) {
-    if (!formly_fields) {
-      formly_fields = my.meta.getFormlyFields(_.extend({
-        name: 'concours',
-        layout: layoutUsefulFields
-      }, o));
-    }
-    return formly_fields;
+  let getImageAggregatedAttributes = function() {
+    return ['image', 'imageName', 'imageMime'];
   }
 
-  let getFormlyModel = function(o) {
-    formly_model = my.meta.getFormlyModel(_.extend({
-      name: 'concours',
-      model: data
-    }, o));
-    return formly_model;
-  }
-
-  let setFormlyModel = function() {
-    //FIXME: TODO dates are not set back
-    data = formly_model;
-    return self;
-  }
-
-  let getCachedImage = function () {
-    return 'images/GECOPA.CONCOURS_CCR_T.IMAGE_CCR.' + get('id');
-  }
-
-  let getImageObject = function () {
+  let getImageAggregate = function () {
     let image = {
       asURL: data && data.image,
       filename: data && data.imageName,
@@ -249,7 +225,7 @@ export default function concoursConstructor(spec, my) {
     return image;
   }
 
-  let setImageObject = function (image) {
+  let setImageAggregate = function (image) {
     if (data.image !== image.asURL) {
       data.image = image.asURL;
     }
@@ -262,12 +238,62 @@ export default function concoursConstructor(spec, my) {
     return data.image;
   }
 
+
+  let getFormlyFields = function(o) {
+    if (!formly_fields) {
+      //get fields from meta (directly related to db) by excluding the
+      //aggregated fields
+      formly_fields = my.meta.getFormlyFields(_.extend({
+        name: 'concours',
+        layout: layoutUsefulFields
+      }, o, {
+        exclude: [...o.exclude, ...getImageAggregatedAttributes()]
+      }));
+      //add the aggregated fields layout
+      formly_fields.unshift({
+        className: 'layout-column',
+        key: 'imageAggregate',
+        type: 'chooseImageFile',  //custom formly type
+        templateOptions: {
+          label: 'Image file',
+          required: true
+        }
+      });
+    }
+    return formly_fields;
+  }
+
+  let getFormlyModel = function(o) {
+    //add the model from meta without the aggregated model
+    formly_model = my.meta.getFormlyModel(_.extend({
+      name: 'concours',
+      model: data
+    }, o, {
+      exclude: [...o.exclude, ...getImageAggregatedAttributes()]
+    }));
+    //add the aggregated model
+    formly_model.imageAggregate = getImageAggregate();
+    return formly_model;
+  }
+
+  let setFormlyModel = function() {
+    //FIXME: TODO dates are not set back
+    data = formly_model;
+    setImageAggregate(formly_model.imageAggregate);
+    return self;
+  }
+
+  let getCachedImage = function () {
+    return 'images/GECOPA.CONCOURS_CCR_T.IMAGE_CCR.' + get('id');
+  }
+
   self.getFormlyModel = getFormlyModel;
   self.setFormlyModel = setFormlyModel;
   self.getFormlyFields = getFormlyFields;
   self.toString = toString;
-  self.getImageObject = getImageObject;
-  self.setImageObject = setImageObject;
+  self.getImageAggregatedAttributes = getImageAggregatedAttributes;
+  self.getImageAggregate = getImageAggregate;
+  self.setImageAggregate = setImageAggregate;
   self.getCachedImage = getCachedImage;
 
   self.get = get;

@@ -72,12 +72,12 @@ import concoursConstructor from './concours.constructor';
       return my.$q(function(resolve) {
         loadAllConcours().then(() => {
           my.$timeout(function() { //FIXME 1s simulation of update
-            let image = aConcours.getImageObject();
+            let image = aConcours.getImageAggregate();
             if (image.asURL.match(/^data:/)) {
               //FIXME push data into the database + copy a file into the images-directory.
               //  => should be a SPECIAL REST call that does that.
               image.asURL = aConcours.getCachedImage();
-              aConcours.setImageObject(image); //take the image from the cache if successful.
+              aConcours.setImageAggregate(image); //take the image from the cache if successful.
             } else {
               //FIXME Normal update REST call
             }

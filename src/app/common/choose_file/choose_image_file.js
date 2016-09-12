@@ -1,14 +1,20 @@
+import angular from 'angular';
+
 (function() {
 
   angular.module('gecopa.common.chooseImageFile', ['ngMaterial'])
     .directive('chooseImageFile', function($q) {
-
-      var updateImage = function(event) {
-        let image = {   //result image object
+      
+      let defaultImageConstructor = function() {
+        return {
           filename: '', //filename of the original
           asURL: '',    //URL representing the file's data as a base64 encoded string
           mime: ''      //MIME type of the image, determined by its magic number
         };
+      }
+
+      let updateImage = function(event) {
+        let image = defaultImageConstructor();
 
         var updateImageMime = function(event) { //via magic number
           return $q(function(resolve, reject) {
@@ -23,7 +29,6 @@
                   header += arr[i].toString(16);
                 }
                 var type = '';
-                image.header = header;
                 switch (header) {
                 case "89504e47":
                   type = "image/png";
@@ -38,7 +43,7 @@
                   break;
                 default:
                   type = "unknown";
-                  reject("ERR_NOT_AN_IMAGE_TYPE");
+                  reject('ERR_UNKNOWN_MIME');
                   break;
                 }
                 image.mime = type;
@@ -53,8 +58,8 @@
         }
 
         return $q(function(resolve, reject) {
-          updateImageMime(event).then(function(result) {
-            var file = result.file;
+          updateImageMime(event).then(function() {
+            var file = image.file;
             var reader = new FileReader();
             reader.onload = function(e) {
               image.asURL = e.target.result;
@@ -66,29 +71,41 @@
                   image.asURL = image.asURL.replace(re, mime);
                 }
               }
+              delete image.file; //makes angular 1.5.8 crash
               resolve(image);
             };
             reader.readAsDataURL(file);            
           }).catch(function(error) {
-            console.error('Got error: ' + error);
+            reject(error);
           });
         });
       };
 
-      var link = function (scope, elem, attrs) {
+      var link = function (scope, elem, attrs/*, ctrl*/) {
         var button = elem.find('button');
         var input = angular.element(elem[0].querySelector('#fileInput'));
+        var pseudoInputCtrl = angular
+            .element(elem[0].querySelector('#pseudoFileInput'))
+            .controller('ngModel');
         button.bind('click', function() {
           input[0].click();
         });
         input.bind('change', function(e) {
           updateImage(e).then(function(result) {
             scope.image = result;
+            pseudoInputCtrl.$setValidity("noCorrectImage", true);
+          }).catch(function(error) {
+            console.error('got error: ', error);
+            scope.image = defaultImageConstructor();
+            pseudoInputCtrl.$setValidity("noCorrectImage", false);
+          }).finally(function(){
+            pseudoInputCtrl.$setDirty();
           });
         });
       };
 
       return {
+        // require: '^form',
         restrict: 'E',
         scope: {
           image: '='

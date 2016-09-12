@@ -7,13 +7,12 @@ let concoursEditControllerConstructor = function(spec, my) {
   my = my || {}; //shared state (global deps);
   let concours;
 
-  const excludeKeys = ['id', 'image', 'imageName', 'imageMime'];
+  let excludeKeys = ['id'];
 
   my.concoursList.getConcoursById(my.$stateParams.id).then(result => {
     concours = result;
     self.fields = concours.getFormlyFields({exclude: excludeKeys});
     self.model = concours.getFormlyModel({exclude: excludeKeys});
-    self.image = concours.getImageObject();
   });
 
   let getConcours = function() {
@@ -22,14 +21,11 @@ let concoursEditControllerConstructor = function(spec, my) {
 
   let submit = function() {
     concours.setFormlyModel();
-    concours.setImageObject(self.image);
-    // alert(concours.toString());
     my.concoursList.updateConcours(concours);
   }
 
   let cancel = function() {
     self.model = concours.getFormlyModel({exclude: excludeKeys});
-    self.image = concours.getImageObject();
     return self;
   }
 

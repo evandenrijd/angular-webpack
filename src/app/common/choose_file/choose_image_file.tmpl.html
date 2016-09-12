@@ -1,20 +1,31 @@
-<div>
-  <div ng-hide="{{image.filename}}"><img ng-src="{{image.asURL}}" /></div>
-  <div layout="row">
-    <input id="fileInput" type="file" class="ng-hide">
-    <md-input-container flex class="md-block" flex="33">
-      <input type="text" ng-model="image.filename"
-             disabled
-             aria-label="select image-file"
-             placeholder="image file">
-    </md-input-container>
-    <div>
-      <md-button
-        id="uploadButton"
-        class="md-fab md-mini md-primary"
-        aria-label="UPLOAD_BUTTON | translate">
-        <md-icon class="material-icons">attach_file</md-icon>
-      </md-button>
+<form name="myForm">
+  <div>
+    <img ng-show="!!image.filename" ng-src="{{image.asURL}}" />
+    <div layout="row">
+      <input id="fileInput" type="file" class="ng-hide">
+      <md-input-container flex class="md-block" flex="33">
+        <input
+          id="pseudoFileInput"
+          type="text"
+          ng-model="image.filename"
+          disabled
+          required
+          aria-label="'concours_imageName' | translate"
+          placeholder="{{'concours_imageName' | translate}}"
+          />
+      </md-input-container>
+      <div>
+        <md-button
+          id="uploadButton"
+          class="md-fab md-mini md-primary"
+          aria-label="UPLOAD_BUTTON | translate">
+          <md-icon class="material-icons">attach_file</md-icon>
+        </md-button>
+      </div>
     </div>
+    <div ng-messages="myForm.fileInput.$error" style="color:maroon" role="alert">
+      <div ng-message="noCorrectImage">No correct image</div>
+    </div>
+    <!-- <pre>image: {{ image | json }}</pre> -->
   </div>
-</div>
+</form>

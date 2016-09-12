@@ -8,10 +8,10 @@ let concoursCreateControllerConstructor = function(spec, my) {
   let concours = concoursConstructor(undefined, my);
   //FIXME set creation admin, from appState
 
-  const excludeKeys = ['id', 'image', 'imageName', 'imageMime'];
+  let excludeKeys = ['id'];
+
   self.fields = concours.getFormlyFields({exclude: excludeKeys});
   self.model = concours.getFormlyModel({exclude: excludeKeys});
-  self.image = concours.getImageObject();
 
   let getConcours = function() {
     return concours;
@@ -19,14 +19,11 @@ let concoursCreateControllerConstructor = function(spec, my) {
 
   let submit = function() {
     concours.setFormlyModel();
-    concours.setImageObject(self.image);
-    // alert(concours.toString());
     my.concoursList.createConcours(concours);
   }
 
   let cancel = function() {
     self.model = concours.getFormlyModel({exclude: excludeKeys});
-    self.image = concours.getImageObject();
     return self;
   }
 

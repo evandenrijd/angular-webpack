@@ -2,8 +2,6 @@
   <h2 translate="CREATE_CONCOURS_TITLE"></h2>
 
   <form novalidate>
-    <choose-image-file layout="column" flex image="vm.image">
-    </choose-image-file>
     <formly-form model="vm.model" fields="vm.fields" form="vm.form">
       <div layout="row" layout-align="space-around center">
         <md-button
@@ -25,7 +23,7 @@
   </form>
 
   <!-- <h2>Image</h2> -->
-  <!-- <pre>{{vm.image | json}}</pre> -->
+  <!-- <pre>{{vm.model.imageAggregate | json}}</pre> -->
   <!-- <h2>Model</h2> -->
   <!-- <pre>{{vm.model | json}}</pre> -->
   <!-- <h2>Fields <small>(note, functions are not shown)</small></h2> -->

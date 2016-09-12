@@ -90,6 +90,13 @@ import './categories/categories';
     })
 
     .controller('GecopaController', gecopaConstructor)
+
+    .run(function(formlyConfig) { //Specify custom formly templates
+      formlyConfig.setType({
+        name: 'chooseImageFile',
+        template: require('./common/formly/chooseImageFile.tmpl.html')
+      });
+    });
   ;
 
 })();
