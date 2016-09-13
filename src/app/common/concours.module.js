@@ -1,7 +1,7 @@
 import angular from 'angular';
 import _ from 'underscore';
-import {dump_obj} from '../../utils';
-import '../meta.module';
+import {dump_obj} from '../utils';
+import './meta.module';
 import concoursConstructor from './concours.constructor';
 
 (function(){
@@ -14,14 +14,14 @@ import concoursConstructor from './concours.constructor';
     };
     let concours;
 
-    function extract(result) {
+    let extract = function(result) {
       // console.debug('result: ', result);
       return result.data.map(spec => {
         return concoursConstructor(spec, my);
       });
     }
 
-    function cacheConcours(result) {
+    let cacheConcours = function(result) {
       concours = extract(result);
       // console.debug('concours: ', concours);
       return concours;
@@ -121,9 +121,9 @@ import concoursConstructor from './concours.constructor';
     return self;
   }
 
-  angular.module('gecopa.models.concours', [
+  angular.module('gecopa.common.concours', [
     'gecopa.common.appState', //Use for translation
-    'gecopa.models.meta'
+    'gecopa.common.meta'
   ])
     .provider('concoursList', function concoursListProvider() {
       this.$get = function concoursListConstructorFactory($http, $q, $translate, meta, $mdToast, $timeout) {

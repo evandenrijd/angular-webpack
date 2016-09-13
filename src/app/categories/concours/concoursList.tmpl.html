@@ -26,7 +26,7 @@
     </tr>
   </thead>
 
-  <tbody ng-repeat="concours in vm.getConcours()">
+  <tbody ng-repeat="concours in vm.getConcoursList()">
     <tr>
       <td>
         <a ui-sref="gecopa.admin.concours.edit({id: concours.get('id')})">

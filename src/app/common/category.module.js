@@ -1,4 +1,4 @@
-import {dump_obj} from '../../utils';
+import {dump_obj} from '../utils';
 
 (function() {
 
@@ -63,9 +63,9 @@ import {dump_obj} from '../../utils';
     return self;
   }
 
-  angular.module('gecopa.models.category', [
+  angular.module('gecopa.common.category', [
     'gecopa.common.appState', //Use for translation
-    'gecopa.models.meta'
+    'gecopa.common.meta'
   ])
     .provider('categoryList', function categoryListProvider() {
       this.$get = function categoryListConstructorFactory($http, $q, $translate, meta) {

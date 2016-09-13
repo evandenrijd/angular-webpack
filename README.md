@@ -57,6 +57,8 @@ It will start a local server using `webpack-dev-server` which will watch, build
 
     user login
 
+    drawing of lots
+
     list of concours
         => not yet into material
             => make better table

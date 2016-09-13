@@ -1,5 +1,5 @@
 import angular from 'angular';
-import './edit/preferences.edit';
+import './edit/preferences.edit.module';
 
 (function() {
   angular.module('categories.preferences', [

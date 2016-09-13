@@ -1,5 +1,5 @@
 import angular from 'angular';
-import '../defaults.module';
+import './defaults.module';
 import _ from 'underscore';
 
 (function(){
@@ -65,7 +65,7 @@ import _ from 'underscore';
     return self;
   }
 
-  angular.module('gecopa.models.preferences', [
+  angular.module('gecopa.common.preferences', [
     'gecopa.common.defaults'
   ])
     .provider('preferences', function preferencesProvider() {

@@ -11,21 +11,22 @@ import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
 import './common/appState.module';
-import './common/models/preferences.module';
-import './common/models/settings.module';
+import './common/preferences.module';
+import './common/settings.module';
 
-import './categories/categories';
+import './categories/categories.module';
 
 (function () {
 
-  let gecopaConstructor = function($mdSidenav, $log, appState) {
+  let gecopaConstructor = function(spec, my) {
     let self = {};
+    my = my || {};
 
     //private variables
     let selected = null;
 
     let toggleCategories = function() {
-      $mdSidenav('left').toggle();
+      my.$mdSidenav('left').toggle();
     }
 
     //public API
@@ -41,11 +42,11 @@ import './categories/categories';
     ngMessages,
     ngFormly,
     ngFormlyMaterial,
-    'gecopa.models.settings',
-    'gecopa.models.preferences',
+    'gecopa.common.settings',
+    'gecopa.common.preferences',
     'gecopa.common.appState',
     'categories',
-    'gecopa.models.concours',
+    'gecopa.common.concours',
   ])
 
     .config(function(settingsProvider){
@@ -89,7 +90,9 @@ import './categories/categories';
       console.debug('app bootstrapped at ' + date);
     })
 
-    .controller('GecopaController', gecopaConstructor)
+    .controller('GecopaController', function($mdSidenav, $log, appState) {
+      return gecopaConstructor({}, {$mdSidenav, $log, appState});
+    })
 
     .run(function(formlyConfig) { //Specify custom formly templates
       formlyConfig.setType({

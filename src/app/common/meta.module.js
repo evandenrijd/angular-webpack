@@ -219,7 +219,7 @@ import './defaults.module';
     return self;
   }
 
-  angular.module('gecopa.models.meta', [
+  angular.module('gecopa.common.meta', [
     'gecopa.common.defaults',
   ])
     .provider('meta', function metaProvider() {

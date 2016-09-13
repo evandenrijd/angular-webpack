@@ -3,8 +3,8 @@ import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import {dump_obj} from '../utils';
 import './defaults.module';
-import './models/preferences.module';
-import './models/settings.module';
+import './preferences.module';
+import './settings.module';
 
 (function(){
 
@@ -36,8 +36,8 @@ import './models/settings.module';
 
   angular.module('gecopa.common.appState', [
     'gecopa.common.defaults',
-    'gecopa.models.preferences',
-    'gecopa.models.settings',
+    'gecopa.common.preferences',
+    'gecopa.common.settings',
     'pascalprecht.translate',
   ])
 

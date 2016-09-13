@@ -1,7 +1,7 @@
 import angular from 'angular';
 import _ from 'underscore';
-import {dump_obj} from '../../utils';
-import '../meta.module';
+import {dump_obj} from '../utils';
+import './meta.module';
 
 export default function concoursConstructor(spec, my) {
   let self = {};
