@@ -1,6 +1,6 @@
 <form name="myForm">
   <div>
-    <img ng-show="!!image.filename" ng-src="{{image.asURL}}" />
+    <img ng-show="!!image.asURL && !hasErrors()" ng-src="{{image.asURL}}" />
     <div layout="row">
       <input id="fileInput" type="file" class="ng-hide">
       <md-input-container flex class="md-block" flex="33">
@@ -17,15 +17,19 @@
       <div>
         <md-button
           id="uploadButton"
-          class="md-fab md-mini md-primary"
+          class="md-fab md-mini"
+          ng-class="{'md-primary': !hasErrors(), 'md-warning': hasErrors()}"
           aria-label="UPLOAD_BUTTON | translate">
           <md-icon class="material-icons">attach_file</md-icon>
         </md-button>
       </div>
     </div>
-    <div ng-messages="myForm.fileInput.$error" style="color:maroon" role="alert">
-      <div ng-message="noCorrectImage">No correct image</div>
+    <div ng-messages="$error" style="color:maroon" role="alert">
+      <div ng-message="ERR_NOT_AN_IMAGE_TYPE" translate="ERR_NOT_AN_IMAGE_TYPE"></div>
+      <div ng-message="ERR_NO_OR_EMPTY_FILE" translate="ERR_NO_OR_EMPTY_FILE"></div>
     </div>
     <!-- <pre>image: {{ image | json }}</pre> -->
+    <!-- <pre>$error: {{ $error | json }}</pre> -->
+    <!-- <pre>has errors: {{ hasErrors() }}</pre> -->
   </div>
 </form>

@@ -253,7 +253,7 @@ export default function concoursConstructor(spec, my) {
       formly_fields.unshift({
         className: 'layout-column',
         key: 'imageAggregate',
-        type: 'chooseImageFile',  //custom formly type
+        type: 'inputImageFile',  //custom formly type
         templateOptions: {
           label: 'Image file',
           required: true

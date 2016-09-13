@@ -1,4 +1,5 @@
 import angular from 'angular';
+import _ from 'underscore';
 
 (function() {
 
@@ -13,8 +14,9 @@ import angular from 'angular';
         };
       }
 
+      let image = defaultImageConstructor();
+
       let updateImage = function(event) {
-        let image = defaultImageConstructor();
 
         var updateImageMime = function(event) { //via magic number
           return $q(function(resolve, reject) {
@@ -43,7 +45,8 @@ import angular from 'angular';
                   break;
                 default:
                   type = "unknown";
-                  reject('ERR_UNKNOWN_MIME');
+                  image.mime = type;
+                  reject({ERR_NOT_AN_IMAGE_TYPE: {header, type}});
                   break;
                 }
                 image.mime = type;
@@ -52,7 +55,7 @@ import angular from 'angular';
               };
               reader.readAsArrayBuffer(file);
             } else {
-              reject('ERR_NO_OR_EMPTY_FILE');
+              reject({ERR_NO_OR_EMPTY_FILE: {}});
             }
           });
         }
@@ -60,6 +63,7 @@ import angular from 'angular';
         return $q(function(resolve, reject) {
           updateImageMime(event).then(function() {
             var file = image.file;
+            delete image.file; //FIXME: same under
             var reader = new FileReader();
             reader.onload = function(e) {
               image.asURL = e.target.result;
@@ -71,7 +75,6 @@ import angular from 'angular';
                   image.asURL = image.asURL.replace(re, mime);
                 }
               }
-              delete image.file; //makes angular 1.5.8 crash
               resolve(image);
             };
             reader.readAsDataURL(file);            
@@ -81,7 +84,25 @@ import angular from 'angular';
         });
       };
 
-      var link = function (scope, elem, attrs/*, ctrl*/) {
+      var link = function (scope, elem, attrs) {
+        scope.$error = {};
+
+        let correctImage = function(image) {
+          return image &&
+            image.asURL &&
+            image.filename &&
+            image.mime && scope.image.mime !== 'unkwown';
+        }
+
+        let clearErrors = function() {
+          scope.$error = {}; //reset the error
+          pseudoInputCtrl.$setValidity("noCorrectImage", true);
+        }
+
+        let hasErrors = function() {
+          return !_.isEmpty(scope.$error);
+        }
+        
         var button = elem.find('button');
         var input = angular.element(elem[0].querySelector('#fileInput'));
         var pseudoInputCtrl = angular
@@ -92,20 +113,38 @@ import angular from 'angular';
         });
         input.bind('change', function(e) {
           updateImage(e).then(function(result) {
-            scope.image = result;
-            pseudoInputCtrl.$setValidity("noCorrectImage", true);
+            clearErrors();
           }).catch(function(error) {
             console.error('got error: ', error);
-            scope.image = defaultImageConstructor();
+            scope.$error = error;
             pseudoInputCtrl.$setValidity("noCorrectImage", false);
+            pseudoInputCtrl.$render();
           }).finally(function(){
+            if (image.file) delete image.file; //FIXME: makes angular 1.5.8
+                                               //crash on equals with Illegal
+                                               //Invocation
+            scope.image = image;
             pseudoInputCtrl.$setDirty();
           });
         });
+
+        //Needed when the parent scope reset the image, via the cancel button,
+        //  coming from a wrong image and going toward a correct image, in that
+        //  case we want the errors to be cleared.
+        scope.$watch(function() { return scope.image; },
+                     function(newValue, oldValue) {
+                       if (correctImage(newValue) &&
+                           !correctImage(oldValue) &&
+                           hasErrors()) {
+                         clearErrors();
+                       }
+                     });
+
+        //Public API
+        scope.hasErrors = hasErrors;
       };
 
       return {
-        // require: '^form',
         restrict: 'E',
         scope: {
           image: '='

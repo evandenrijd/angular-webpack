@@ -57,19 +57,18 @@ It will start a local server using `webpack-dev-server` which will watch, build
 
     user login
 
+    list of concours
+        => not yet into material
+            => make better table
+              checkout http://codepen.io/jbltx/pen/WbdRRb/
+
     creation of concours
     creation of concours from copy
     update concours
     delete concours
 
-    concours status
-        => enum
-
     concours image
-
-    concours screen validation
-        => startDate <= endDate <= drawingDate
-        => creationDate, drawingAdmin readonly
+        => resize image to 135x85
 
     concours screen date visualisation
         => dd/mm/yyyy
