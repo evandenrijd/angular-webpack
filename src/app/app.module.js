@@ -9,7 +9,6 @@ import ngMessages from 'angular-messages';
 import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
-import routing from './routing';
 import './common/preferences.module';
 import './common/settings.module';
 import 'angular-translate';
@@ -18,53 +17,6 @@ import 'angular-translate-loader-static-files';
 import './categories/categories.module';
 
 (function () {
-
-  let gecopaConstructor = function(spec, my) {
-    let self = {};
-    my = my || {};
-
-    //private variables
-    let selected = null;
-
-    let toggleCategories = function() {
-      my.$mdSidenav('left').toggle();
-    }
-
-    //public API
-    self.toggleCategories = toggleCategories;
-
-    return self;
-  }
-
-  let appStateConstructor = function(spec, my) {
-    let self = {};
-    let data = spec || {};
-
-    //Public API
-    self.get = get;
-    self.set = set;
-    self.toString = toString;
-
-    function get(attr) {
-      return data && data[attr];
-    }
-
-    function set(attr, value) {
-      data[attr] = value;
-      return self;
-    }
-
-    function toString(){
-      let result = '{';
-      Object.keys(data).map(a => {
-        result = result + a + ': ' + dump_obj(self.get(a));
-      });
-      result = result + '}';
-      return result;
-    }
-
-    return self;
-  }
 
   angular.module('gecopa.app', [
     ngAnimate,
@@ -78,20 +30,26 @@ import './categories/categories.module';
     'categories',
     'gecopa.common.concours',
     'pascalprecht.translate',
-  ])
-
-    .config(function(settingsProvider){
-      //Nothing to initialize
-    })
-
-    .config(function($mdThemingProvider) { //ngMaterial theme
+  ]).config(function($mdThemingProvider) { //ngMaterial theme
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
     })
 
-    .config(routing) //ui-router
+    .config(function uiRouter($urlRouterProvider, $locationProvider, $stateProvider) { //ui-router
+      $stateProvider.state('gecopa', {
+        url: '',
+        abstract: true
+      });
+      // $locationProvider.html5Mode(true);
 
-    .run(function($rootScope, $state) { //ui-router error handling
+      $urlRouterProvider.when("", "/welcome");
+      $urlRouterProvider.when("/", "/welcome");
+
+      // For any unmatched url
+      $urlRouterProvider.otherwise('/');
+    })
+
+    .run(function uiRouterErrorHandler($rootScope, $state) { //ui-router error handling
       $rootScope.$on('$stateChangeError',
                      (event, toState, toParams,
                       fromState, fromParams, error) => {
@@ -172,5 +130,52 @@ import './categories/categories.module';
     })
 
   ;
+
+  function gecopaConstructor(spec, my) {
+    let self = {};
+    my = my || {};
+
+    //public API
+    self.toggleCategories = toggleCategories;
+
+    //private variables
+    let selected = null;
+
+    function toggleCategories() {
+      my.$mdSidenav('left').toggle();
+    }
+
+    return self;
+  }
+
+  function appStateConstructor(spec, my) {
+    let self = {};
+    let data = spec || {};
+
+    //Public API
+    self.get = get;
+    self.set = set;
+    self.toString = toString;
+
+    function get(attr) {
+      return data && data[attr];
+    }
+
+    function set(attr, value) {
+      data[attr] = value;
+      return self;
+    }
+
+    function toString(){
+      let result = '{';
+      Object.keys(data).map(a => {
+        result = result + a + ': ' + dump_obj(self.get(a));
+      });
+      result = result + '}';
+      return result;
+    }
+
+    return self;
+  }
 
 })();

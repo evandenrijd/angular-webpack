@@ -3,9 +3,24 @@ import _ from 'underscore';
 
 (function(){
 
-  let settingsConstructor = function (spec, my) {
+  angular.module('gecopa.common.settings', [])
+    .provider('settings', function settingsProvider() {
+      this.$get = function settingsConstructorFactory($http, $q, meta, $timeout, $mdToast) {
+        return settingsConstructor({}, {$http, $q, meta, $timeout, $mdToast});
+      }
+    })
+  ;
+
+  function settingsConstructor(spec, my) {
     let self = {};
     my = my || {};
+
+    //Public API
+    self.load = load;
+    self.update = update;
+    self.getFormlyModel = getFormlyModel;
+    self.setFormlyModel = setFormlyModel;
+    self.getFormlyFields = getFormlyFields;
 
     let settings; //array coming from db (contains normally only one row)
 
@@ -15,13 +30,13 @@ import _ from 'underscore';
 
     let data = _.extend(spec, my.meta.init({name: 'settings'}));
 
-    let extract = function(result) {
+    function extract(result) {
       return result.data.map(spec => {
         return spec;
       });
     }
 
-    let cache = function(result) {
+    function cache(result) {
       settings = extract(result);
       if (settings) {
         data = _.extend(data, settings[0]);
@@ -29,7 +44,7 @@ import _ from 'underscore';
       return self;
     }
 
-    let load = function () {
+    function load() {
       return my.$q(function(resolve) {
         resolve((settings)?self:my.$http.get(URLS.FETCH).then(result => {
           return cache(result);
@@ -37,7 +52,7 @@ import _ from 'underscore';
       });
     }
 
-    let update = function(model) {
+    function update(model) {
       data = _.extend(data, model);
       return my.$q(function(resolve) {
         my.$timeout(function() {
@@ -49,7 +64,7 @@ import _ from 'underscore';
     }
 
     let formly_fields;
-    let getFormlyFields = function(o) {
+    function getFormlyFields(o) {
       if (!formly_fields) {
         formly_fields = my.meta.getFormlyFields(_.extend({
           name: 'settings'
@@ -59,7 +74,7 @@ import _ from 'underscore';
     }
 
     let formly_model;
-    let getFormlyModel = function(o) {
+    function getFormlyModel(o) {
       formly_model = my.meta.getFormlyModel(_.extend({
         name: 'settings',
         model: data
@@ -67,27 +82,13 @@ import _ from 'underscore';
       return formly_model;
     }
 
-    let setFormlyModel = function() {
+    function setFormlyModel() {
       data = formly_model;
       return self;
     }
 
-    //Public API
-    self.load = load;
-    self.update = update;
-    self.getFormlyModel = getFormlyModel;
-    self.setFormlyModel = setFormlyModel;
-    self.getFormlyFields = getFormlyFields;
-
     return self;
   }
 
-  angular.module('gecopa.common.settings', [])
-    .provider('settings', function settingsProvider() {
-      this.$get = function settingsConstructorFactory($http, $q, meta, $timeout, $mdToast) {
-        return settingsConstructor({}, {$http, $q, meta, $timeout, $mdToast});
-      }
-    })
-  ;
 })();
 

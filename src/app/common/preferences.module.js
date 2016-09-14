@@ -3,17 +3,31 @@ import _ from 'underscore';
 
 (function(){
 
-  let preferencesConstructor = function(spec, my) {
+  angular.module('gecopa.common.preferences', [])
+    .provider('preferences', function preferencesProvider() {
+      this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate, languagePreferenceFactory) {
+        return preferencesConstructor({}, {$q, meta, $timeout, $translate, languagePreferenceFactory});
+      }
+    })
+  ;
+
+  function preferencesConstructor(spec, my) {
     let self = {};
     my = my || {};
 
+    //Public API
+    self.update = update;
+    self.getFormlyModel = getFormlyModel;
+    self.setFormlyModel = setFormlyModel;
+    self.getFormlyFields = getFormlyFields;
+
     let data = _.extend(my.meta.init({name: 'preferences'}), spec);
 
-    let get = function(attr) {
+    function get(attr) {
       return data && data[attr];
     }
 
-    let update = function(model) {
+    function update(model) {
       return my.$q(function(resolve) {
         my.$timeout(function() {
           let language = get('language');
@@ -32,7 +46,7 @@ import _ from 'underscore';
     }
 
     let formly_fields;
-    let getFormlyFields = function(o) {
+    function getFormlyFields(o) {
       if (!formly_fields) {
         formly_fields = my.meta.getFormlyFields(_.extend({
           name: 'preferences'
@@ -42,7 +56,7 @@ import _ from 'underscore';
     }
 
     let formly_model;
-    let getFormlyModel = function(o) {
+    function getFormlyModel(o) {
       formly_model = my.meta.getFormlyModel(_.extend({
         name: 'preferences',
         model: data
@@ -50,28 +64,14 @@ import _ from 'underscore';
       return formly_model;
     }
 
-    let setFormlyModel = function() {
+    function setFormlyModel() {
       data = formly_model;
       return self;
     }
 
-    //Public API
-    self.update = update;
-    self.getFormlyModel = getFormlyModel;
-    self.setFormlyModel = setFormlyModel;
-    self.getFormlyFields = getFormlyFields;
-
     return self;
   }
 
-  angular.module('gecopa.common.preferences', [])
-    .provider('preferences', function preferencesProvider() {
-      this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate, languagePreferenceFactory) {
-        return preferencesConstructor({}, {$q, meta, $timeout, $translate, languagePreferenceFactory});
-      }
-    })
-
-  ;
 
 })();
 

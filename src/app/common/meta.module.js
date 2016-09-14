@@ -4,59 +4,89 @@ import {dump_obj} from '../utils';
 
 (function(){
 
-  let metaConstructor = function(spec, my) {
+  angular.module('gecopa.common.meta', [])
+
+    .factory('metaDataFactory', function metaDataFactory(languagePreferenceFactory) {
+      self = {};
+
+      //Public API
+      self.get = get;
+
+      function get() {
+        const data = {
+
+          concours: [
+            { name: 'id', type: 'number', oracle: 'PK_CCR', init: function() { return null; } },
+            { name: 'code', type: 'string', required: true, oracle: 'CODE_CCR', init: function() { return null; } },
+            { name: 'title', type: 'string', required: true, oracle: 'INTITULE_CCR', init: function() { return null; } },
+            { name: 'description', type: 'string', required: true, oracle: 'DESCRIPTION_CCR', init: function() { return null; } },
+            { name: 'image', type: 'blob', oracle: 'IMAGE_CCR', init: function() { return null; } },
+            { name: 'startDate', type: 'date', oracle: 'DATE_DEBUT_CCR', init: function() { return null; } },
+            { name: 'endDate', type: 'date', required: true, oracle: 'DATE_FIN_CCR', init: function() { return null; } },
+            { name: 'winners', type: 'number', required: true, oracle: 'NOMBRE_CCR', init: function() { return 0; } },
+            { name: 'question', type: 'string', oracle: 'QUESTION_CCR', init: function() { return null; } },
+            { name: 'answer', type: 'string', oracle: 'REPONSE_CCR', init: function() { return null; } },
+            { name: 'status', type: [{ id: 0, name: 'ENUM_NO_SHOW'},
+                                     { id: 1, name: 'ENUM_SHOW'},
+                                     { id: 2, name: 'ENUM_LAST_DAY'},
+                                     { id: 3, name: 'ENUM_CLOSED_NOT_DRAW'},
+                                     { id: 4, name: 'ENUM_CLOSED'
+                                     },
+                                    ], oracle: 'STATUT_CCR', init: function() { return 1; } },
+            { name: 'link', type: 'string', oracle: 'LIEN_CCR', init: function() { return null; } },
+            { name: 'admins', type: 'string', oracle: 'GESTIONNAIRE_CCR', init: function() { return null; } },
+            { name: 'comments', type: 'string', oracle: 'COMMENTAIRE_CCR', init: function() { return null; } },
+            { name: 'mailWinners', type: 'string', oracle: 'GAGNANT_CCR', init: function() { return ''; } },
+            { name: 'mailLosers', type: 'string', oracle: 'PERDANT_CCR', init: function() { return ''; } },
+            { name: 'drawingDate', type: 'date', required: true, oracle: 'TIRAGE_DATE_CCR', init: function() { return null; } },
+            { name: 'drawingAdmin', type: 'string', oracle: 'TIREUR_CCR', init: function() { return null; } },
+            { name: 'exclusionRule', type: 'string', oracle: 'EXCLUSION_CCR', init: function() { return null; } },
+            { name: 'creationDate', type: 'date', readonly: true, oracle: 'CREATION_CCR', init: function() { return new Date(); } },
+            { name: 'creationAdmin', type: 'string', readonly: true, oracle: 'CREATEUR_CCR', init: function() { return null; } },
+            { name: 'imageName', type: 'string', oracle: 'IMAGE_NOM_CCR', init: function() { return null; } },
+            { name: 'imageMime', type: 'string', oracle: 'IMAGE_TYPE_CCR', init: function() { return null; } }
+          ],
+
+          settings: [
+            {name: 'admins', type: 'string', oracle: 'FIXME NOT YET there', init: function() { return ''; }},
+          ],
+
+          preferences: [
+            {name: 'language', type: [
+              {id: 'en-BE', name: 'ENUM_ENGLISH'},
+              {id: 'fr-BE', name: 'ENUM_FRENCH'}
+            ], init: function() {
+              return languagePreferenceFactory.getLanguage();
+            }},
+          ],
+
+        };
+        return data;
+      }
+
+      return self;
+    })
+
+    .provider('meta', function metaProvider() {
+      this.$get = function metaConstructorFactory($translate, languagePreferenceFactory, metaDataFactory) {
+        return metaConstructor({}, {$translate, languagePreferenceFactory, metaDataFactory});
+      }
+    })
+
+  ;
+
+  function metaConstructor(spec, my) {
     let self = spec || {};
 
-    let data = {
+    //Public API
+    self.getFormlyFields = getFormlyFields;
+    self.getFormlyModel = getFormlyModel;
+    self.getAttributeLabelId = getAttributeLabelId;
+    self.init = init;
 
-      concours: [
-        { name: 'id', type: 'number', oracle: 'PK_CCR', init: function() { return null; } },
-        { name: 'code', type: 'string', required: true, oracle: 'CODE_CCR', init: function() { return null; } },
-        { name: 'title', type: 'string', required: true, oracle: 'INTITULE_CCR', init: function() { return null; } },
-        { name: 'description', type: 'string', required: true, oracle: 'DESCRIPTION_CCR', init: function() { return null; } },
-        { name: 'image', type: 'blob', oracle: 'IMAGE_CCR', init: function() { return null; } },
-        { name: 'startDate', type: 'date', oracle: 'DATE_DEBUT_CCR', init: function() { return null; } },
-        { name: 'endDate', type: 'date', required: true, oracle: 'DATE_FIN_CCR', init: function() { return null; } },
-        { name: 'winners', type: 'number', required: true, oracle: 'NOMBRE_CCR', init: function() { return 0; } },
-        { name: 'question', type: 'string', oracle: 'QUESTION_CCR', init: function() { return null; } },
-        { name: 'answer', type: 'string', oracle: 'REPONSE_CCR', init: function() { return null; } },
-        { name: 'status', type: [{ id: 0, name: 'ENUM_NO_SHOW'},
-                                 { id: 1, name: 'ENUM_SHOW'},
-                                 { id: 2, name: 'ENUM_LAST_DAY'},
-                                 { id: 3, name: 'ENUM_CLOSED_NOT_DRAW'},
-                                 { id: 4, name: 'ENUM_CLOSED'
-                                 },
-                                ], oracle: 'STATUT_CCR', init: function() { return 1; } },
-        { name: 'link', type: 'string', oracle: 'LIEN_CCR', init: function() { return null; } },
-        { name: 'admins', type: 'string', oracle: 'GESTIONNAIRE_CCR', init: function() { return null; } },
-        { name: 'comments', type: 'string', oracle: 'COMMENTAIRE_CCR', init: function() { return null; } },
-        { name: 'mailWinners', type: 'string', oracle: 'GAGNANT_CCR', init: function() { return ''; } },
-        { name: 'mailLosers', type: 'string', oracle: 'PERDANT_CCR', init: function() { return ''; } },
-        { name: 'drawingDate', type: 'date', required: true, oracle: 'TIRAGE_DATE_CCR', init: function() { return null; } },
-        { name: 'drawingAdmin', type: 'string', oracle: 'TIREUR_CCR', init: function() { return null; } },
-        { name: 'exclusionRule', type: 'string', oracle: 'EXCLUSION_CCR', init: function() { return null; } },
-        { name: 'creationDate', type: 'date', readonly: true, oracle: 'CREATION_CCR', init: function() { return new Date(); } },
-        { name: 'creationAdmin', type: 'string', readonly: true, oracle: 'CREATEUR_CCR', init: function() { return null; } },
-        { name: 'imageName', type: 'string', oracle: 'IMAGE_NOM_CCR', init: function() { return null; } },
-        { name: 'imageMime', type: 'string', oracle: 'IMAGE_TYPE_CCR', init: function() { return null; } }
-      ],
+    const data = my.metaDataFactory.get();
 
-      settings: [
-        {name: 'admins', type: 'string', oracle: 'NOT YET there', init: function() { return ''; }},
-      ],
-
-      preferences: [
-        {name: 'language', type: [
-          {id: 'en-BE', name: 'ENUM_ENGLISH'},
-          {id: 'fr-BE', name: 'ENUM_FRENCH'}
-        ], init: function() {
-          return my.languagePreferenceFactory.getLanguage();
-        }},
-      ],
-
-    };
-
-    let formly_fields = function(o) {
+    function formly_fields(o) {
       return data[o.name]
         .filter(d => {
           if (!o.exclude) return true;
@@ -105,7 +135,7 @@ import {dump_obj} from '../utils';
       ;
     }
 
-    let formly_fields_layout = function(o) {
+    function formly_fields_layout(o) {
       let ffs = formly_fields(o);
       let index = {};
       ffs.map(ff => {
@@ -114,11 +144,11 @@ import {dump_obj} from '../utils';
       let group = 0;
       let input = 0;
 
-      let special_extend = function (field, ...args) {
+      function special_extend(field, ...args) {
         //we want className be appended
         let className = [field, ...args]
-          .filter(arg => { return arg.className})
-          .map(arg => { return arg.className;})
+            .filter(arg => { return arg.className})
+            .map(arg => { return arg.className;})
           .join(' ');
         //we want templateOptions to extend, not override
         let templateOptions = _.extend(...[field, ...args]
@@ -131,7 +161,7 @@ import {dump_obj} from '../utils';
         return field;
       }
 
-      let enrich = function(ff) {
+      function enrich(ff) {
         let field = {};
         if (ff.key) {
           field.className = 'rtbf-formly-' + o.name + '-' + ff.key + '-' + input++;
@@ -161,7 +191,7 @@ import {dump_obj} from '../utils';
       return ffs_with_layout;
     };
 
-    let get_formly_model = function(o) {
+    function get_formly_model(o) {
       let ffs = formly_fields(o);
       let model = {}; //copy of the model
       ffs.map(ff => {
@@ -180,7 +210,7 @@ import {dump_obj} from '../utils';
       return model;
     }
 
-    let init = function(o) {
+    function init(o) {
       let obj = {};
       data[o.name].map(field => {
         obj[field.name] = field.init();
@@ -188,8 +218,7 @@ import {dump_obj} from '../utils';
       return obj;
     }
 
-    //public API
-    self.getFormlyFields = function (o) {
+    function getFormlyFields(o) {
       return formly_fields_layout({
         exclude: o.exclude,
         name: o.name,
@@ -199,7 +228,7 @@ import {dump_obj} from '../utils';
 
     //getFormlyModel: Massage the values of the model, but the keys stay as is,
     //  except the excluded one's will not appear.
-    self.getFormlyModel = function (o) {
+    function getFormlyModel(o) {
       return get_formly_model({
         exclude: o.exclude,
         name: o.name,
@@ -208,20 +237,11 @@ import {dump_obj} from '../utils';
     };
 
     //e.g. {name: 'concours', attr: 'id'}
-    self.getAttributeLabelId = function (o) {
+    function getAttributeLabelId(o) {
       return o.name + '_' + o.attr;
     }
 
-    self.init = init;
-
     return self;
   }
-
-  angular.module('gecopa.common.meta', [])
-    .provider('meta', function metaProvider() {
-      this.$get = function metaConstructorFactory($translate, languagePreferenceFactory) {
-        return metaConstructor({}, {$translate, languagePreferenceFactory});
-      }
-    });
 
 })();
