@@ -150,12 +150,12 @@ import './categories/categories.module';
     })
 
   //setup i18n
-    .config(function ($translateProvider, settingsProvider, defaultLanguageProvider) {
+    .config(function ($translateProvider, settingsProvider, languagePreferenceFactoryProvider) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'data/languages/',
         suffix: '/gecopa.lang.json'
       });
-      $translateProvider.preferredLanguage(defaultLanguageProvider.$get());
+      $translateProvider.preferredLanguage(languagePreferenceFactoryProvider.$get().getLanguage());
       $translateProvider.useSanitizeValueStrategy(null); //FIXME: allow for XSS
     })
 
