@@ -64,7 +64,6 @@ import {dump_obj} from '../utils';
   }
 
   angular.module('gecopa.common.category', [
-    'gecopa.common.appState', //Use for translation
     'gecopa.common.meta'
   ])
     .provider('categoryList', function categoryListProvider() {

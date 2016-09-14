@@ -1,5 +1,4 @@
 import angular from 'angular';
-import './defaults.module';
 import _ from 'underscore';
 
 (function(){
@@ -21,7 +20,7 @@ import _ from 'underscore';
           if (language !== model.language) {
             my.$translate.use(model.language).then(function(){
               data = _.extend(data, model);
-              my.$window.localStorage.setItem('gecopa.admin.language', model.language);
+              my.languagePreferenceFactory.setLanguage(model.language);
               resolve(self);
             });
           } else {
@@ -65,14 +64,13 @@ import _ from 'underscore';
     return self;
   }
 
-  angular.module('gecopa.common.preferences', [
-    'gecopa.common.defaults'
-  ])
+  angular.module('gecopa.common.preferences', [])
     .provider('preferences', function preferencesProvider() {
-      this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate, $window) {
-        return preferencesConstructor({}, {$q, meta, $timeout, $translate, $window});
+      this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate, languagePreferenceFactory) {
+        return preferencesConstructor({}, {$q, meta, $timeout, $translate, languagePreferenceFactory});
       }
     })
+
   ;
 
 })();

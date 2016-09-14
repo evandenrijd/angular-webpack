@@ -122,7 +122,6 @@ import concoursConstructor from './concours.constructor';
   }
 
   angular.module('gecopa.common.concours', [
-    'gecopa.common.appState', //Use for translation
     'gecopa.common.meta'
   ])
     .provider('concoursList', function concoursListProvider() {

@@ -1,7 +1,6 @@
 import angular from 'angular';
 import _ from 'underscore';
 import {dump_obj} from '../utils';
-import './defaults.module';
 
 (function(){
 
@@ -51,8 +50,7 @@ import './defaults.module';
           {id: 'en-BE', name: 'ENUM_ENGLISH'},
           {id: 'fr-BE', name: 'ENUM_FRENCH'}
         ], init: function() {
-          return my.$window.localStorage.getItem('gecopa.admin.language') ||
-            my.defaultLanguage;
+          return my.languagePreferenceFactory.getLanguage();
         }},
       ],
 
@@ -219,12 +217,10 @@ import './defaults.module';
     return self;
   }
 
-  angular.module('gecopa.common.meta', [
-    'gecopa.common.defaults',
-  ])
+  angular.module('gecopa.common.meta', [])
     .provider('meta', function metaProvider() {
-      this.$get = function metaConstructorFactory($translate, defaultLanguage, $window) {
-        return metaConstructor({}, {$translate, defaultLanguage, $window});
+      this.$get = function metaConstructorFactory($translate, languagePreferenceFactory) {
+        return metaConstructor({}, {$translate, languagePreferenceFactory});
       }
     });
 

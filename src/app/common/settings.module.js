@@ -1,5 +1,4 @@
 import angular from 'angular';
-import './defaults.module';
 import _ from 'underscore';
 
 (function(){
@@ -83,9 +82,7 @@ import _ from 'underscore';
     return self;
   }
 
-  angular.module('gecopa.common.settings', [
-    'gecopa.common.defaults'
-  ])
+  angular.module('gecopa.common.settings', [])
     .provider('settings', function settingsProvider() {
       this.$get = function settingsConstructorFactory($http, $q, meta, $timeout, $mdToast) {
         return settingsConstructor({}, {$http, $q, meta, $timeout, $mdToast});

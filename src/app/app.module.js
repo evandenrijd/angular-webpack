@@ -10,9 +10,10 @@ import ngFormly from 'angular-formly';
 import ngFormlyMaterial from 'angular-formly-material';
 import {dump_obj} from './utils';
 import routing from './routing';
-import './common/appState.module';
 import './common/preferences.module';
 import './common/settings.module';
+import 'angular-translate';
+import 'angular-translate-loader-static-files';
 
 import './categories/categories.module';
 
@@ -35,6 +36,36 @@ import './categories/categories.module';
     return self;
   }
 
+  let appStateConstructor = function(spec, my) {
+    let self = {};
+    let data = spec || {};
+
+    //Public API
+    self.get = get;
+    self.set = set;
+    self.toString = toString;
+
+    function get(attr) {
+      return data && data[attr];
+    }
+
+    function set(attr, value) {
+      data[attr] = value;
+      return self;
+    }
+
+    function toString(){
+      let result = '{';
+      Object.keys(data).map(a => {
+        result = result + a + ': ' + dump_obj(self.get(a));
+      });
+      result = result + '}';
+      return result;
+    }
+
+    return self;
+  }
+
   angular.module('gecopa.app', [
     ngAnimate,
     ngMaterial,
@@ -44,16 +75,12 @@ import './categories/categories.module';
     ngFormlyMaterial,
     'gecopa.common.settings',
     'gecopa.common.preferences',
-    'gecopa.common.appState',
     'categories',
     'gecopa.common.concours',
+    'pascalprecht.translate',
   ])
 
     .config(function(settingsProvider){
-      //Nothing to initialize
-    })
-
-    .config(function(appStateProvider) {
       //Nothing to initialize
     })
 
@@ -90,16 +117,60 @@ import './categories/categories.module';
       console.debug('app bootstrapped at ' + date);
     })
 
-    .controller('GecopaController', function($mdSidenav, $log, appState) {
-      return gecopaConstructor({}, {$mdSidenav, $log, appState});
-    })
-
     .run(function(formlyConfig) { //Specify custom formly templates
       formlyConfig.setType({
         name: 'inputImageFile',
         template: require('./common/formly/inputImageFile.tmpl.html')
       });
-    });
+    })
+
+    .value('defaultLanguage', 'en-BE')
+
+    .factory('languagePreferenceFactory', function languagePreferenceFactory($window, defaultLanguage) {
+      'use strict';
+      let store = $window.localStorage;
+      let key = 'gecopa.admin.language';
+
+      return {
+        getLanguage: getLanguage,
+        setLanguage: setLanguage
+      };
+
+      function getLanguage() {
+        return store.getItem(key) || defaultLanguage;
+      }
+
+      function setLanguage(lang) {
+        if (lang) {
+          store.setItem(key, lang);
+        } else {
+          store.removeItem(key);
+        }
+      }
+    })
+
+  //setup i18n
+    .config(function ($translateProvider, settingsProvider, defaultLanguageProvider) {
+      $translateProvider.useStaticFilesLoader({
+        prefix: 'data/languages/',
+        suffix: '/gecopa.lang.json'
+      });
+      $translateProvider.preferredLanguage(defaultLanguageProvider.$get());
+      $translateProvider.useSanitizeValueStrategy(null); //FIXME: allow for XSS
+    })
+
+    .provider('appState', function appState() {
+      let self = {};
+      self.$get = function appStateConstructorFactory($translate, settings) {
+        return appStateConstructor({}, {$translate, settings});
+      }
+      return self;
+    })
+
+    .controller('GecopaController', function gecopaController($mdSidenav, $log, appState) {
+      return gecopaConstructor({}, {$mdSidenav, $log, appState});
+    })
+
   ;
 
 })();
