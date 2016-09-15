@@ -12,12 +12,17 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = function makeWebpackConfig(env) {
   var config = {};
 
+  var distPath = path.resolve(__dirname, 'public', 'dist');
+  var mainPath = path.resolve(__dirname, 'src', 'app', 'app.module.js');
+  // var indexPath = path.resolve(__dirname, 'public', 'index.html');
+
   /**
    * Env
    * Get npm lifecycle event to identify the environment
    */
   var isTest = false;
   var isProd = env === 'prod';
+  var isNode = env === 'dev';
   console.log('env: ', env, ' isTest: ', isTest, ' isProd: ', isProd);
 
   /**
@@ -25,7 +30,7 @@ module.exports = function makeWebpackConfig(env) {
    * Reference: http://webpack.github.io/docs/configuration.html
    * This is the object where all configuration gets set
    */
-  config.context = path.resolve(__dirname, 'src')
+  // config.context = path.resolve(__dirname, 'src');
 
   /**
    * Entry
@@ -35,7 +40,7 @@ module.exports = function makeWebpackConfig(env) {
    */
   config.entry = isTest ? {} : {
     app: [// Our exported app as one last in the list
-      './app/app.module.js']
+      mainPath]
   };
   if (!isProd) {
     // For hot style updates
@@ -51,20 +56,17 @@ module.exports = function makeWebpackConfig(env) {
    * Karma will handle setting it up for you when it's a test build
    */
   config.output = isTest ? {} : {
-    // Absolute output directory
-    path: path.resolve(__dirname, 'dist'),
+    // We need to give Webpack a path. It does not actually need it,
+    // because files are kept in memory in webpack-dev-server, but an
+    // error will occur if nothing is specified. We use the buildPath
+    // as that points to where the files will eventually be bundled
+    // in production
+    path: distPath,
+    filename: '[name].bundle.js',
 
-    // Output path from the view of the page
-    // Uses webpack-dev-server in development
-    publicPath: isProd ? '/' : 'http://localhost:8080/',
-
-    // Filename for entry points
-    // Only adds hash in build mode
-    filename: isProd ? '[name].[hash].js' : '[name].bundle.js',
-
-    // Filename for non-entry points
-    // Only adds hash in build mode
-    chunkFilename: isProd ? '[name].[hash].js' : '[name].bundle.js'
+    // Everything related to Webpack should go through a build path,
+    // localhost:3000/build. That makes proxying easier to handle
+    publicPath: '/dist/'
   };
 
   /**
@@ -167,6 +169,11 @@ module.exports = function makeWebpackConfig(env) {
    * List: http://webpack.github.io/docs/list-of-plugins.html
    */
   config.plugins = [];
+  if (isNode) { // From node, we have to manually add the Hot Replacement plugin
+                // when running
+    console.log('Manually add HotModuleReplacementPlugin');
+    config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
+  }
 
   // Skip rendering index.html in test mode
   if (!isTest) {
@@ -174,9 +181,13 @@ module.exports = function makeWebpackConfig(env) {
     // Render index.html
     config.plugins.push(
       new HtmlWebpackPlugin({
-        template: 'public/index.html', //relative from context
+        template: 'public/index.html',
         inject: 'body'
       }),
+      // new HtmlWebpackPlugin({
+      //   template: indexPath,
+      //   inject: 'body'
+      // }),
 
       // Reference: https://github.com/webpack/extract-text-webpack-plugin
       // Extract css files
@@ -214,7 +225,7 @@ module.exports = function makeWebpackConfig(env) {
    * Reference: http://webpack.github.io/docs/webpack-dev-server.html
    */
   config.devServer = {
-    contentBase: './dist',
+    contentBase: distPath,
     stats: 'minimal'
   };
 

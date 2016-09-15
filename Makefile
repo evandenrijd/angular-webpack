@@ -7,8 +7,8 @@ all: clean-dist copy-files
 dist: clean-dist copy-files
 	npm run prod
 
-copy-files: ./dist/.keep_directory
-	cp -R ./src/public/* ./dist/
+copy-files: ./public/dist/.keep_directory
+	- cp -R ./src/public/* ./public/dist/
 
 clean-dist:
-	rm -fR ./dist
+	rm -fR ./public/dist
