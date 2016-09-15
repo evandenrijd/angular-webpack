@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "description": "admin tools for GECOPA",
   "scripts": {
-    "build": "rimraf dist && webpack --bail --progress --profile",
-    "server": "webpack-dev-server --history-api-fallback --inline --progress",
-    "test": "karma start",
-    "test-watch": "karma start --auto-watch --no-single-run",
-    "start": "npm run server"
+    "prod": "webpack --bail --progress --profile",
+    "dev": "webpack-dev-server --inline --progress"
   },
   "dependencies": {
     "angular": "^1.5.8",
@@ -22,8 +19,10 @@
     "angular-ui-router": "^0.3.1",
     "api-check": "^7.5.5",
     "bootstrap": "^3.3.7",
+    "eslint": "^3.5.0",
     "jquery": "^3.1.0",
     "normalize.css": "^4.2.0",
+    "path": "^0.12.7",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -56,6 +55,7 @@
     "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.13",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.14.1",
+    "webpack-validator": "^2.2.7"
   }
 }

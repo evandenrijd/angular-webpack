@@ -1,27 +1,30 @@
 'use strict';
 
 // Modules
+var path = require('path');
 var webpack = require('webpack');
+var webpackValidator = require('webpack-validator');
 var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-/**
- * Env
- * Get npm lifecycle event to identify the environment
- */
-var ENV = process.env.npm_lifecycle_event;
-var isTest = ENV === 'test' || ENV === 'test-watch';
-var isProd = ENV === 'build';
+module.exports = function makeWebpackConfig(env) {
+  /**
+   * Env
+   * Get npm lifecycle event to identify the environment
+   */
+  var isTest = false;
+  var isProd = env === 'prod';
+  console.log('env: ', env, ' isTest: ', isTest, ' isProd: ', isProd);
 
-module.exports = function makeWebpackConfig () {
   /**
    * Config
    * Reference: http://webpack.github.io/docs/configuration.html
    * This is the object where all configuration gets set
    */
   var config = {};
+  config.context = path.resolve(__dirname, 'src')
 
   /**
    * Entry
@@ -30,7 +33,7 @@ module.exports = function makeWebpackConfig () {
    * Karma will set this when it's a test build
    */
   config.entry = isTest ? {} : {
-    app: './src/app/app.module.js'
+    app: './app/app.module.js'
   };
 
   /**
@@ -41,7 +44,8 @@ module.exports = function makeWebpackConfig () {
    */
   config.output = isTest ? {} : {
     // Absolute output directory
-    path: 'src/public',
+    path: path.resolve(__dirname, 'dist'),
+    // path: 'src/public',
 
     // Output path from the view of the page
     // Uses webpack-dev-server in development
@@ -66,7 +70,8 @@ module.exports = function makeWebpackConfig () {
   } else if (isProd) {
     config.devtool = 'source-map';
   } else {
-    config.devtool = 'eval-source-map';
+    // config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-eval-source-map';
   }
 
   /**
@@ -162,7 +167,7 @@ module.exports = function makeWebpackConfig () {
     // Render index.html
     config.plugins.push(
       new HtmlWebpackPlugin({
-        template: './src/public/index.html',
+        template: 'public/index.html', //relative from context
         inject: 'body'
       }),
 
@@ -186,13 +191,13 @@ module.exports = function makeWebpackConfig () {
 
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
       // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin(),
+      new webpack.optimize.UglifyJsPlugin()
 
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin
-      new CopyWebpackPlugin([{
-        from: __dirname + '/src/public'
-      }])
+      // new CopyWebpackPlugin([{
+      //   from: __dirname + '/src/public'
+      // }])
     )
   }
 
@@ -202,9 +207,9 @@ module.exports = function makeWebpackConfig () {
    * Reference: http://webpack.github.io/docs/webpack-dev-server.html
    */
   config.devServer = {
-    contentBase: './src/public',
+    contentBase: './dist',
     stats: 'minimal'
   };
 
-  return config;
-}();
+  return webpackValidator(config);
+}(process.env.npm_lifecycle_event);
