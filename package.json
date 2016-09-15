@@ -4,7 +4,7 @@
   "description": "admin tools for GECOPA",
   "scripts": {
     "prod": "webpack --bail --progress --profile",
-    "dev": "webpack-dev-server --inline --progress"
+    "dev": "webpack-dev-server --inline --hot --progress"
   },
   "dependencies": {
     "angular": "^1.5.8",

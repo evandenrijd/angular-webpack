@@ -10,6 +10,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = function makeWebpackConfig(env) {
+  var config = {};
+
   /**
    * Env
    * Get npm lifecycle event to identify the environment
@@ -23,7 +25,6 @@ module.exports = function makeWebpackConfig(env) {
    * Reference: http://webpack.github.io/docs/configuration.html
    * This is the object where all configuration gets set
    */
-  var config = {};
   config.context = path.resolve(__dirname, 'src')
 
   /**
@@ -33,8 +34,15 @@ module.exports = function makeWebpackConfig(env) {
    * Karma will set this when it's a test build
    */
   config.entry = isTest ? {} : {
-    app: './app/app.module.js'
+    app: [// Our exported app as one last in the list
+      './app/app.module.js']
   };
+  if (!isProd) {
+    // For hot style updates
+    config.entry.app.unshift('webpack/hot/dev-server');
+    // The script refreshing the browser on none hot updates
+    config.entry.app.unshift('webpack-dev-server/client?http://localhost:8080');
+  }
 
   /**
    * Output
