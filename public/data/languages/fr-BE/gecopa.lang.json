@@ -5,7 +5,10 @@
   "ERR_LHS_LESS_THEN_OR_EQUAL_TO_RHS": "{{lhs}} doit être plus petit ou égal à {{rhs}}",
   "ERR_LHS_GREATER_THEN_OR_EQUAL_TO_RHS": "{{lhs}} doit être plus grand ou égal à {{rhs}}",
 
-  "WELCOME_TITLE": "Bienvenue",
+  "WELCOME_TITLE": "Bienvenue, {{ username }}",
+  "login_username": "Login:",
+  "login_password": "Mot de passe:",
+
   "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
   "CREATE_CONCOURS_TITLE": "Nouveau concours",
   "PREFERENCES_TITLE": "Préférences",

@@ -117,10 +117,80 @@ import './categories/categories.module';
       $translateProvider.useSanitizeValueStrategy(null); //FIXME: allow for XSS
     })
 
+    .constant('USER_REST_API_URL', 'http://localhost:3000')
+
+    .factory('userFactory', function userFactory($http, USER_REST_API_URL, authTokenFactory, $q) {
+      return {
+        login: login,
+        logout: logout,
+        getUser: getUser
+      };
+
+      function login(username, password) {
+        return $http.post(USER_REST_API_URL + '/login', {
+          username: username,
+          password: password
+        }).then(function (response) {
+          authTokenFactory.setToken(response.data.token);
+          return response;
+        });
+      }
+
+      function logout() {
+        authTokenFactory.setToken();
+      }
+
+      function getUser() {
+        if (authTokenFactory.getToken()) {
+          return $http.get(USER_REST_API_URL + '/me');
+        } else {
+          return $q.reject({ data: 'client has no auth token' });
+        }
+      }
+
+    })
+
+    .factory('authTokenFactory', function authTokenFactory($window) {
+      let store = $window.localStorage;
+      let key = 'auth-token';
+
+      return {
+        getToken: getToken,
+        setToken: setToken
+      };
+
+      function getToken() {
+        return store.getItem(key);
+      }
+
+      function setToken(token) {
+        if (token) {
+          store.setItem(key, token);
+        } else {
+          store.removeItem(key);
+        }
+      }
+    })
+
+    .factory('authInterceptor', function authInterceptor(authTokenFactory) {
+      return {
+        request: addToken
+      };
+
+      function addToken(config) {
+        var token = authTokenFactory.getToken();
+        if (token) {
+          config.headers = config.headers || {};
+          config.headers.Authorization = 'Bearer ' + token;
+        }
+        return config;
+      }
+    })
+
     .provider('appState', function appState() {
       let self = {};
-      self.$get = function appStateConstructorFactory($translate, settings) {
-        return appStateConstructor({}, {$translate, settings});
+      self.$get = function appStateConstructorFactory($translate, settings, userFactory) {
+        return appStateConstructor({}, {$translate, settings, userFactory});
       }
       return self;
     })
@@ -136,10 +206,17 @@ import './categories/categories.module';
     my = my || {};
 
     //public API
+    self.get = get;
     self.toggleCategories = toggleCategories;
+    my.appState.userAPIMixin(self);
 
-    //private variables
-    let selected = null;
+    function get(attr) {
+      return self[attr];
+    }
+
+    function set(attr, value) {
+      return self[attr] = value;
+    }
 
     function toggleCategories() {
       my.$mdSidenav('left').toggle();
@@ -155,15 +232,62 @@ import './categories/categories.module';
     //Public API
     self.get = get;
     self.set = set;
+    self.getUserIdentifier = getUserIdentifier;
+    self.isLoggedIn = isLoggedIn;
+    self.login = login;
+    self.logout = logout;
     self.toString = toString;
+    self.userAPIMixin = userAPIMixin;
+
+    //Initialisation, we get the username based on the auth-token
+    my.userFactory.getUser().then(function (response) {
+      console.log('got response ', response.data);
+      set('username', response.data.username); //cache only username, not password
+    }).catch(function (error) {
+      set('username', null);
+    });
 
     function get(attr) {
       return data && data[attr];
     }
 
     function set(attr, value) {
+      console.log('assign ', attr, ' to ', value);
       data[attr] = value;
       return self;
+    }
+
+    //Expose the user API by delegation
+    function userAPIMixin(that) {
+      that.getUserIdentifier = self.getUserIdentifier;
+      that.isLoggedIn = self.isLoggedIn;
+      that.login = self.login;
+      that.logout = self.logout;
+      return that
+    }
+
+    function getUserIdentifier() {
+      return get('username');
+    };
+
+    function isLoggedIn() {
+      return !!get('username');
+    }
+
+    function login(username, password) {
+      my.userFactory.login(username, password).then(function(response) {
+        set('username', response.data.username);
+      }, handleError);
+    }
+
+    function logout() {
+      my.userFactory.logout();
+      set('username', null);
+    }
+
+    function handleError(response) {
+      set('username', null);
+      alert('Error: ' + response.data);
     }
 
     function toString(){
@@ -171,6 +295,7 @@ import './categories/categories.module';
       Object.keys(data).map(a => {
         result = result + a + ': ' + dump_obj(self.get(a));
       });
+      result = result + 'data: ' + dump_obj(data);
       result = result + '}';
       return result;
     }

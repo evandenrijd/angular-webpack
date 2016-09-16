@@ -56,6 +56,7 @@ It will start a local server using `webpack-dev-server` which will watch, build
 ## 1.0.0
 
     user login
+        => only the token is stored, no user information.
 
     drawing of lots
 

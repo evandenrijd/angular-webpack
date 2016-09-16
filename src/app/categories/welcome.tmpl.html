@@ -1,4 +1,15 @@
 <md-content flex>
-  <h1 translate="WELCOME_TITLE"></h1>
+  <h1 translate="WELCOME_TITLE" translate_values="{ username: vm.getUserIdentifier() }"></h1>
+
+  <div ng-hide="vm.isLoggedIn()">
+    <md-form>
+      <md-label translate="login_username"></md-label><input type="text" ng-model="vm.input_username"/><br/>
+      <md-label translate="login_password"></md-label><input type="password" ng-model="vm.input_password"/><br/>
+      <md-button type="submit" ng-click="vm.login(vm.input_username, vm.input_password)">Login</md-button>
+    </md-form>
+  </div>
+
+  <!-- <pre>isLoggedIn: {{ vm.isLoggedIn() }}</pre> -->
+  <!-- <pre>{{ vm | json }}</pre> -->
   <pre>{{ vm.env | json }}</pre>
 </md-content>

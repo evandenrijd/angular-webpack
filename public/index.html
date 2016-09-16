@@ -37,14 +37,32 @@
 
   <body ng-app="gecopa.app" layout="column" ng-controller="GecopaController as vm" ng-cloak>
 
-    <md-toolbar layout="row" layout-align="start center">
+    <md-toolbar layout="row" layout-align="space-around center">
       <md-button class="menu"
                  hide-gt-sm
                  ng-click="vm.toggleCategories()"
-                 aria-label="Show Categories">
+                 aria-label="Show Categories"
+                 ng-show="vm.isLoggedIn()"
+                 >
         <i class="material-icons">menu</i>
       </md-button>
       <md-button ui-sref="gecopa.admin.welcome"><h1>GECOPA</h1></md-button>
+
+      <h1>
+        <md-menu-bar ng-show="vm.isLoggedIn()">
+          <md-menu>
+            <md-button ng-click="$mdOpenMenu($event)" aria-label="user options">
+              <div layout="row" layout-align="end center">
+                <md-label>{{ vm.getUserIdentifier() }}</md-label>
+                <div class="material-icons">arrow_drop_down</div>
+              </div>
+            </md-button>
+            <md-menu-content>
+              <md-menu-item><md-button ng-click="vm.logout()">Logout</md-button></md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </md-menu-bar>
+      </h1>
     </md-toolbar>
 
     <div flex layout="row">
