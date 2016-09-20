@@ -8,6 +8,7 @@
   "WELCOME_TITLE": "Welcome, {{ username }}",
   "login_username": "Login:",
   "login_password": "Password:",
+  "ERR_login_wrong_username_or_password": "Wrong login or password",
 
   "EDIT_CONCOURS_TITLE": "Update concours",
   "CREATE_CONCOURS_TITLE": "New concours",
@@ -16,6 +17,8 @@
   "APPLY_BUTTON": "Apply",
   "CANCEL_BUTTON": "Cancel",
   "SUBMIT_BUTTON": "Submit",
+  "LOGIN_BUTTON": "Login",
+  "RESET_BUTTON": "Reset",
   "UPLOAD_BUTTON": "Upload",
   "ADD_BUTTON": "Add",
   "COPY_BUTTON": "Copy",

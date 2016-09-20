@@ -48,9 +48,9 @@ import './preferences/preferences.module';
       return categoriesListControllerConstructor({}, {$log, $state, appState, categoryList});
     })
 
-    .controller('WelcomeController', function($log, appState){
+    .controller('WelcomeController', function($log, appState, $translate){
       "ngInject";
-      return welcomeControllerConstructor({}, {$log, appState});
+      return welcomeControllerConstructor({}, {$log, appState, $translate});
     })
   ;
 
@@ -85,15 +85,75 @@ import './preferences/preferences.module';
     let self = {};
     my = my || {}; //shared state (global deps);
 
-    let getFormlyVersion = function() {
+    //public API
+    my.appState.userAPIMixin(self);
+    self.onSubmit = onSubmit;
+    self.onReset = onReset;
+
+    self.fields = [
+      {
+        className: 'layout-column',
+        fieldGroup: [
+          {
+            key: 'username',
+            className: 'layout-row flex-33',
+            type: 'input',
+            templateOptions: {
+              label: 'Username:', //overwritten by expressionProperties
+              required: true,
+            },
+            expressionProperties: {
+              'templateOptions.label': () => {
+                return my.$translate('login_username');
+              }
+            }
+          },
+          {
+            key: 'password',
+            className: 'layout-row flex-33',
+            type: 'input',
+            templateOptions: {
+              label: 'Password:', //overwritten by expressionProperties
+              required: true,
+            },
+            expressionProperties: {
+              'templateOptions.label': () => {
+                return my.$translate('login_password');
+              }
+            }
+          },
+        ],
+      },
+    ];
+
+    self.model = {
+      username: '',
+      password: ''
+    };
+
+    self.options = {};
+
+    function onSubmit() {
+      self.login(self.model.username, self.model.password).then(() => {
+        console.debug('model OK');
+        self.options.updateInitialValue();
+      }).catch(() => {
+        console.debug('reset model');
+        onReset();
+      });
+    }
+
+    function onReset() {
+      self.model.username = '';
+      self.model.password = '';
+    }
+
+    function getFormlyVersion() {
       var versionGetter = /formly-js\/angular-formly\/(.*?)\/dist\//;
       var script = document.querySelector('script[src$="formly.js"]');
       var match = script && script.src && versionGetter.exec(script.src);
       return match && match[1];
     };
-
-    //public API
-    my.appState.userAPIMixin(self);
 
     self.env = {};
     if (angular.version.full) self.env.angularVersion = angular.version.full;
