@@ -126,6 +126,7 @@ import concoursConstructor from './concours.constructor';
   ])
     .provider('concoursList', function concoursListProvider() {
       this.$get = function concoursListConstructorFactory($http, $q, $translate, meta, $mdToast, $timeout) {
+        "ngInject";
         return concoursListConstructor({}, {$http, $q, $translate, meta, $mdToast, $timeout});
       }
     });

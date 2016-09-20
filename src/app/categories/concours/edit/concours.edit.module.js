@@ -10,6 +10,7 @@ import {dump_obj} from '../../../utils';
     'gecopa.common.chooseImageFile'
   ])
     .config(function ($stateProvider) {
+      "ngInject";
       $stateProvider
 
         .state('gecopa.admin.concours.edit', {
@@ -26,6 +27,7 @@ import {dump_obj} from '../../../utils';
       ;
     })
     .controller('ConcoursEditController', function($log, concoursList, $stateParams) {
+      "ngInject";
       return concoursEditControllerConstructor({}, {$log, concoursList, $stateParams});
     })
   ;

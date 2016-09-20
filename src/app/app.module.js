@@ -31,11 +31,13 @@ import './categories/categories.module';
     'gecopa.common.concours',
     'pascalprecht.translate',
   ]).config(function($mdThemingProvider) { //ngMaterial theme
+      "ngInject";
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
     })
 
     .config(function uiRouter($urlRouterProvider, $locationProvider, $stateProvider) { //ui-router
+      "ngInject";
       $stateProvider.state('gecopa', {
         url: '',
         abstract: true
@@ -50,6 +52,7 @@ import './categories/categories.module';
     })
 
     .run(function uiRouterErrorHandler($rootScope, $state) { //ui-router error handling
+      "ngInject";
       $rootScope.$on('$stateChangeError',
                      (event, toState, toParams,
                       fromState, fromParams, error) => {
@@ -76,6 +79,7 @@ import './categories/categories.module';
     })
 
     .run(function(formlyConfig) { //Specify custom formly templates
+      "ngInject";
       formlyConfig.setType({
         name: 'inputImageFile',
         template: require('./common/formly/inputImageFile.tmpl.html')
@@ -85,7 +89,7 @@ import './categories/categories.module';
     .value('defaultLanguage', 'en-BE')
 
     .factory('languagePreferenceFactory', function languagePreferenceFactory($window, defaultLanguage) {
-      'use strict';
+      "ngInject";
       let store = $window.localStorage;
       let key = 'gecopa.admin.language';
 
@@ -109,6 +113,7 @@ import './categories/categories.module';
 
   //setup i18n
     .config(function ($translateProvider, settingsProvider, languagePreferenceFactoryProvider) {
+      "ngInject";
       $translateProvider.useStaticFilesLoader({
         prefix: 'data/languages/',
         suffix: '/gecopa.lang.json'
@@ -120,6 +125,7 @@ import './categories/categories.module';
     .constant('USER_REST_API_URL', 'http://localhost:3000')
 
     .factory('userFactory', function userFactory($http, USER_REST_API_URL, authTokenFactory, $q) {
+      "ngInject";
       return {
         login: login,
         logout: logout,
@@ -151,6 +157,7 @@ import './categories/categories.module';
     })
 
     .factory('authTokenFactory', function authTokenFactory($window) {
+      "ngInject";
       let store = $window.localStorage;
       let key = 'auth-token';
 
@@ -191,11 +198,15 @@ import './categories/categories.module';
       let self = {};
       self.$get = function appStateConstructorFactory($translate, settings, userFactory) {
         return appStateConstructor({}, {$translate, settings, userFactory});
+      self.$get = function appStateConstructorFactory($translate, settings, userFactory, $state, $window, $q, $injector) {
+        "ngInject";
+        return appStateConstructor({}, {$translate, settings, userFactory, $state, $window, $q, $injector});
       }
       return self;
     })
 
     .controller('GecopaController', function gecopaController($mdSidenav, $log, appState) {
+      "ngInject";
       return gecopaConstructor({}, {$mdSidenav, $log, appState});
     })
 

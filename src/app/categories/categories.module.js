@@ -15,6 +15,7 @@ import './preferences/preferences.module';
     'gecopa.common.category'
   ])
     .config(function ($stateProvider) {
+      "ngInject";
       $stateProvider
 
         .state('gecopa.admin', {
@@ -43,10 +44,12 @@ import './preferences/preferences.module';
     })
 
     .controller('CategoriesListController', function ($log, $state, appState, categoryList) {
+      "ngInject";
       return categoriesListControllerConstructor({}, {$log, $state, appState, categoryList});
     })
 
     .controller('WelcomeController', function($log, appState){
+      "ngInject";
       return welcomeControllerConstructor({}, {$log, appState});
     })
   ;

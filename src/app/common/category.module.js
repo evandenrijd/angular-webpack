@@ -68,6 +68,7 @@ import {dump_obj} from '../utils';
   ])
     .provider('categoryList', function categoryListProvider() {
       this.$get = function categoryListConstructorFactory($http, $q, $translate, meta) {
+        "ngInject";
         return categoryListConstructor({}, {meta});
       }
     });

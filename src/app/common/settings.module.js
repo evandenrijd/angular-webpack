@@ -6,6 +6,7 @@ import _ from 'underscore';
   angular.module('gecopa.common.settings', [])
     .provider('settings', function settingsProvider() {
       this.$get = function settingsConstructorFactory($http, $q, meta, $timeout, $mdToast) {
+        "ngInject";
         return settingsConstructor({}, {$http, $q, meta, $timeout, $mdToast});
       }
     })

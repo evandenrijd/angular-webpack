@@ -41,6 +41,7 @@ import '../../common/concours.module';
     'gecopa.common.concours',
   ])
     .config(function ($stateProvider) {
+      "ngInject";
       $stateProvider
 
         .state('gecopa.admin.concours', {
@@ -58,6 +59,7 @@ import '../../common/concours.module';
     })
 
     .controller('ConcoursListController', function($log, concoursList, meta, $state) {
+      "ngInject";
       return concoursListControllerConstructor({}, {$log, concoursList, meta, $state})
     })
   ;

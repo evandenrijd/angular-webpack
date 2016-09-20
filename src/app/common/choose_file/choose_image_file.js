@@ -5,6 +5,7 @@ import _ from 'underscore';
 
   angular.module('gecopa.common.chooseImageFile', ['ngMaterial'])
     .directive('chooseImageFile', function($q) {
+      "ngInject";
       
       let defaultImageConstructor = function() {
         return {

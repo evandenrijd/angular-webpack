@@ -7,6 +7,7 @@ import {dump_obj} from '../utils';
   angular.module('gecopa.common.meta', [])
 
     .factory('metaDataFactory', function metaDataFactory(languagePreferenceFactory) {
+      "ngInject";
       self = {};
 
       //Public API
@@ -69,6 +70,7 @@ import {dump_obj} from '../utils';
 
     .provider('meta', function metaProvider() {
       this.$get = function metaConstructorFactory($translate, languagePreferenceFactory, metaDataFactory) {
+        "ngInject";
         return metaConstructor({}, {$translate, languagePreferenceFactory, metaDataFactory});
       }
     })

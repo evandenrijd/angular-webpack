@@ -6,6 +6,7 @@ import _ from 'underscore';
   angular.module('gecopa.common.preferences', [])
     .provider('preferences', function preferencesProvider() {
       this.$get = function preferencesConstructorFactory($q, meta, $timeout, $translate, languagePreferenceFactory) {
+        "ngInject";
         return preferencesConstructor({}, {$q, meta, $timeout, $translate, languagePreferenceFactory});
       }
     })

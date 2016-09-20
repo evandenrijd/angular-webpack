@@ -41,6 +41,7 @@ import {dump_obj} from '../../../utils';
 
   angular.module('categories.settings.edit', [])
     .config(function ($stateProvider) {
+      "ngInject";
       $stateProvider
 
         .state('gecopa.admin.settings', {
@@ -58,6 +59,7 @@ import {dump_obj} from '../../../utils';
     })
 
     .controller('SettingsEditController', function settingsEditControllerFactory($log, settings, $stateParams) {
+      "ngInject";
       return settingsEditControllerConstructor({}, {$log, settings, $stateParams});
     })
 

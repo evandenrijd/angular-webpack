@@ -41,6 +41,7 @@ import {dump_obj} from '../../../utils';
 
   angular.module('categories.preferences.edit', [])
     .config(function ($stateProvider) {
+      "ngInject";
       $stateProvider
 
         .state('gecopa.admin.preferences', {
@@ -58,6 +59,7 @@ import {dump_obj} from '../../../utils';
     })
 
     .controller('PreferencesEditController', function preferencesEditControllerFactory($log, preferences, $stateParams, $timeout) {
+      "ngInject";
       return preferencesEditControllerConstructor({}, {$log, preferences, $stateParams, $timeout});
     })
   ;
