@@ -31,6 +31,20 @@ import './categories/categories.module';
     'gecopa.common.concours',
     'pascalprecht.translate',
   ]).config(function($mdThemingProvider) { //ngMaterial theme
+  ])
+
+    .config(function($compileProvider, $logProvider) {
+      "ngInject";
+      if ('prod' === process.env.npm_lifecycle_event) {
+        console.debug('production version enabled');
+        $compileProvider.debugInfoEnabled(false);
+        $logProvider.debugEnabled(false);
+      } else {
+        console.debug('none production version');
+      }
+    })
+
+    .config(function($mdThemingProvider) { //ngMaterial theme
       "ngInject";
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
