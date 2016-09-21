@@ -135,10 +135,8 @@ import './preferences/preferences.module';
 
     function onSubmit() {
       self.login(self.model.username, self.model.password).then(() => {
-        console.debug('model OK');
         self.options.updateInitialValue();
       }).catch(() => {
-        console.debug('reset model');
         onReset();
       });
     }

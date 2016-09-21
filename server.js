@@ -18,10 +18,18 @@ var publicPath = path.resolve(__dirname, 'public');
 
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
-// app.use(expressJwt({ secret: jwtSecret }).unless({ path: [ '/login' ]}));
+var re = new RegExp('');
+app.use(expressJwt({ secret: jwtSecret }).unless({
+  path: [
+      /\/dist\/.*/,             //Need the app.bundle.js and app.*.hot-fixes.js
+                                //before login
+      /\/data\/languages\/.*/,  //Need languages before login
+    '/login']                   //Need login API before login
+}));
 
 // We only want to run the workflow when not in production
 if (!isProduction) {
+  console.info('Enable proxy to webpack-dev-server');
   var bundle = require('./bundle.js');
   bundle();
   // Any requests to localhost:3000/dist is proxied

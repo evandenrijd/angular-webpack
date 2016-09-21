@@ -30,7 +30,6 @@ import './categories/categories.module';
     'categories',
     'gecopa.common.concours',
     'pascalprecht.translate',
-  ]).config(function($mdThemingProvider) { //ngMaterial theme
   ])
 
     .config(function($compileProvider, $logProvider) {
@@ -57,10 +56,8 @@ import './categories/categories.module';
         abstract: true
       });
       // $locationProvider.html5Mode(true);
-
       $urlRouterProvider.when("", "/welcome");
       $urlRouterProvider.when("/", "/welcome");
-
       // For any unmatched url
       $urlRouterProvider.otherwise('/');
     })
@@ -136,14 +133,20 @@ import './categories/categories.module';
       $translateProvider.useSanitizeValueStrategy(null); //FIXME: allow for XSS
     })
 
+  //setup JWT
     .constant('USER_REST_API_URL', 'http://localhost:3000')
+    .config(function($httpProvider) {
+      "ngInject";
+      $httpProvider.interceptors.push('authInterceptor');
+    })
 
     .factory('userFactory', function userFactory($http, USER_REST_API_URL, authTokenFactory, $q) {
       "ngInject";
       return {
         login: login,
         logout: logout,
-        getUser: getUser
+        getUser: getUser,
+        isLoggedIn: isLoggedIn,
       };
 
       function login(username, password) {
@@ -157,7 +160,10 @@ import './categories/categories.module';
       }
 
       function logout() {
-        authTokenFactory.setToken();
+        return $q(function (resolve, reject){
+          authTokenFactory.setToken();
+          resolve(self);
+        });
       }
 
       function getUser() {
@@ -168,12 +174,16 @@ import './categories/categories.module';
         }
       }
 
+      function isLoggedIn() {
+        return authTokenFactory.getToken();
+      }
+
     })
 
     .factory('authTokenFactory', function authTokenFactory($window) {
       "ngInject";
       let store = $window.localStorage;
-      let key = 'auth-token';
+      let key = 'gecopa.admin.auth-token';
 
       return {
         getToken: getToken,
@@ -193,12 +203,26 @@ import './categories/categories.module';
       }
     })
 
-    .factory('authInterceptor', function authInterceptor(authTokenFactory) {
+    .factory('authInterceptor', function authInterceptor($q, authTokenFactory) {
+      "ngInject";
       return {
-        request: addToken
+        request: addToken,
+        requestError: function(rejection) {
+          console.error('rejection: ', rejection);
+          return $q.reject(rejection);
+        },
+        response: function(answer) {
+          return answer || $q.when(answer);
+        },
+        responseError: function(rejection) {
+          console.error('rejection: ', rejection);
+          return $q.reject(rejection);
+        }
+
       };
 
       function addToken(config) {
+        // console.debug('interceptor called', config);
         var token = authTokenFactory.getToken();
         if (token) {
           config.headers = config.headers || {};
@@ -206,15 +230,15 @@ import './categories/categories.module';
         }
         return config;
       }
+
     })
 
+  //Use the appState to communicate between the different controllers
     .provider('appState', function appState() {
       let self = {};
-      self.$get = function appStateConstructorFactory($translate, settings, userFactory) {
-        return appStateConstructor({}, {$translate, settings, userFactory});
-      self.$get = function appStateConstructorFactory($translate, settings, userFactory, $state, $window, $q, $injector) {
+      self.$get = function appStateConstructorFactory($translate, settings, userFactory, $state, $window, $q, $mdToast, authTokenFactory) {
         "ngInject";
-        return appStateConstructor({}, {$translate, settings, userFactory, $state, $window, $q, $injector});
+        return appStateConstructor({}, {$translate, settings, userFactory, $state, $window, $q, $mdToast, authTokenFactory});
       }
       return self;
     })
@@ -252,11 +276,12 @@ import './categories/categories.module';
 
   function appStateConstructor(spec, my) {
     let self = {};
-    let data = spec || {};
+    let data = {};
 
     //Public API
     self.get = get;
     self.set = set;
+    self.init = init;
     self.getUserIdentifier = getUserIdentifier;
     self.isLoggedIn = isLoggedIn;
     self.login = login;
@@ -265,19 +290,26 @@ import './categories/categories.module';
     self.userAPIMixin = userAPIMixin;
 
     //Initialisation, we get the username based on the auth-token
-    my.userFactory.getUser().then(function (response) {
-      console.log('got response ', response.data);
-      set('username', response.data.username); //cache only username, not password
-    }).catch(function (error) {
-      set('username', null);
-    });
+    init();
+    return self;
+
+    function init() {
+      return my.$q(function(resolve, reject) {
+        my.userFactory.getUser().then(function (response) {
+          set('username', response.data.username); //cache only username, not password
+          resolve(self);
+        }).catch(function (error) {
+          set('username', null);
+          reject(error);
+        });
+      });
+    }
 
     function get(attr) {
       return data && data[attr];
     }
 
     function set(attr, value) {
-      console.log('assign ', attr, ' to ', value);
       data[attr] = value;
       return self;
     }
@@ -296,23 +328,39 @@ import './categories/categories.module';
     };
 
     function isLoggedIn() {
-      return !!get('username');
+      return my.userFactory.isLoggedIn();
     }
 
     function login(username, password) {
-      my.userFactory.login(username, password).then(function(response) {
-        set('username', response.data.username);
-      }, handleError);
+      return my.$q(function(resolve, reject){
+        my.userFactory.login(username, password).then(function(response) {
+          set('username', response.data.username);
+          my.$window.location.reload();
+          resolve(self);
+        }).catch(function(error){
+          set('username', null);
+          console.error('login error: ', error);
+          toast('ERR_login_wrong_username_or_password');
+          reject(error);
+        });
+      });
+    }
+
+    function toast(id) {
+      return my.$translate(id).then(result => {
+        my.$mdToast.show(my.$mdToast.simple().textContent(result));
+      });
     }
 
     function logout() {
-      my.userFactory.logout();
-      set('username', null);
-    }
-
-    function handleError(response) {
-      set('username', null);
-      alert('Error: ' + response.data);
+      return my.$q(function(resolve) {
+        my.userFactory.logout().then(() => {
+          set('username', null);
+          my.$state.go('gecopa.admin.welcome');
+          my.$window.location.reload();
+          resolve(self);
+        });
+      });
     }
 
     function toString(){
@@ -324,8 +372,6 @@ import './categories/categories.module';
       result = result + '}';
       return result;
     }
-
-    return self;
   }
 
 })();

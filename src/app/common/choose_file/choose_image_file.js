@@ -72,7 +72,7 @@ import _ from 'underscore';
                 let re = /^data\:\;base64\,/;
                 if (image.asURL.match(re)) {
                   let mime = 'data:' + image.mime + ';base64,'
-                  console.debug('patched URL with missing mime: ' + mime);
+                  // console.debug('patched URL with missing mime: ' + mime);
                   image.asURL = image.asURL.replace(re, mime);
                 }
               }
