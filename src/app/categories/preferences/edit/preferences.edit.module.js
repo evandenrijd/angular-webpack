@@ -4,41 +4,6 @@ import {dump_obj} from '../../../utils';
 
 (function() {
 
-  let preferencesEditControllerConstructor = function(spec, my) {
-    let self = {};
-    my = my || {};
-    let preferences;
-
-    let layout = [
-      {
-        className: 'layout-row',
-        fieldGroup: [
-          { className: 'flex-20', key: 'language' }
-        ]
-      },
-    ];
-
-    my.$timeout(function() {
-      preferences = my.preferences
-      self.fields = preferences.getFormlyFields({layout: layout});
-      self.model = preferences.getFormlyModel();
-    }, 0);
-
-    let apply = function() {
-      preferences.update(self.model);
-    }
-
-    let init = function() {
-      self.model = preferences.getFormlyModel();
-      return self;
-    }
-
-    self.apply = apply;
-    self.cancel = init;
-
-    return self;
-  };
-
   angular.module('categories.preferences.edit', [])
     .config(function ($stateProvider) {
       "ngInject";
@@ -58,9 +23,46 @@ import {dump_obj} from '../../../utils';
       ;
     })
 
-    .controller('PreferencesEditController', function preferencesEditControllerFactory($log, preferences, $stateParams, $timeout) {
+    .controller('PreferencesEditController', function preferencesEditControllerFactory($log, preferences, $stateParams, $timeout, $window, $state) {
       "ngInject";
-      return preferencesEditControllerConstructor({}, {$log, preferences, $stateParams, $timeout});
+      return preferencesEditControllerConstructor({}, {$log, preferences, $stateParams, $timeout, $window, $state});
     })
   ;
+
+  function preferencesEditControllerConstructor(spec, my) {
+    let self = {};
+    my = my || {};
+
+    let layout = [
+      {
+        className: 'layout-row',
+        fieldGroup: [
+          { className: 'flex-20', key: 'language' }
+        ]
+      },
+    ];
+
+    my.$timeout(function() {
+      self.fields = my.preferences.getFormlyFields({layout: layout});
+      self.model = my.preferences.getFormlyModel();
+    }, 0);
+
+    self.apply = apply;
+    self.cancel = init;
+
+    function apply() {
+      my.preferences.update(self.model).then(() => {
+        my.$window.location.reload(); //To make the select input also change
+                                      //language
+      });
+    }
+
+    function init() {
+      self.model = my.preferences.getFormlyModel();
+      return self;
+    }
+
+    return self;
+  };
+
 })();
