@@ -203,23 +203,12 @@ import './categories/categories.module';
       }
     })
 
-    .factory('authInterceptor', function authInterceptor($q, authTokenFactory) {
+    .factory('authInterceptor', function authInterceptor($q, authTokenFactory, $injector) {
       "ngInject";
       return {
         request: addToken,
-        requestError: function(rejection) {
-          console.error('rejection: ', rejection);
-          return $q.reject(rejection);
-        },
-        response: function(answer) {
-          return answer || $q.when(answer);
-        },
-        responseError: function(rejection) {
-          console.error('rejection: ', rejection);
-          return $q.reject(rejection);
-        }
-
-      };
+        responseError: handleResponseError
+      }
 
       function addToken(config) {
         // console.debug('interceptor called', config);
@@ -231,6 +220,16 @@ import './categories/categories.module';
         return config;
       }
 
+      function handleResponseError(error) {
+        let appState = $injector.get('appState');
+        console.error('response error: ', error);
+        if (error.data.match(/jwt expired/)) {
+          appState.logout('ERR_login_jwt_expired')
+        } else {
+          appState.logout('ERR_login_please_login_again')
+        }
+        return $q.reject(error);
+      }
     })
 
   //Use the appState to communicate between the different controllers
@@ -352,14 +351,15 @@ import './categories/categories.module';
       });
     }
 
-    function logout() {
+    function logout(id) {
       return my.$q(function(resolve) {
         my.userFactory.logout().then(() => {
           set('username', null);
           my.$state.go('gecopa.admin.welcome');
-          my.$window.location.reload();
           resolve(self);
         });
+      }).then(() => {
+        if (id) toast(id);
       });
     }
 

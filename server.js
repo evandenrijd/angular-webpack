@@ -48,12 +48,20 @@ var user = {
 };
 
 app.post('/login', authenticate, function (req, res) {
-  var token = jwt.sign({
+  let days = 24*60*60; //one day in seconds
+  let token = jwt.sign({
     username: user.username
-  }, jwtSecret);
-  res.send({
-    token: token,
-    user: user
+  }, jwtSecret, {
+    expiresIn: 3*days, //expiresIn seconds
+  }, (err, token) => {
+    if (err) {
+      res.status(500).end(err);
+    } else {
+      res.send({
+        token: token,
+        user: user
+      });
+    }
   });
 });
 
@@ -79,7 +87,7 @@ proxy.on('error', function(e) {
   console.log('Could not connect to proxy, please try again...');
 });
 
-//Following is better seen from google chrome devtools|network
+//Following logging is better seen from google chrome devtools|network
 // proxy.on('proxyRes', function (proxyRes, req, res) {
 //   console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
 // });
