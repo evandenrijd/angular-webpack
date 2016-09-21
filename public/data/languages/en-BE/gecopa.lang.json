@@ -11,6 +11,7 @@
   "ERR_login_wrong_username_or_password": "Wrong login or password",
   "ERR_login_jwt_expired": "JWT expired, please login again",
   "ERR_login_please_login_again": "Please login again",
+  "ERR_login_user_has_no_admin_role": "You do not have admin privileges",
 
   "EDIT_CONCOURS_TITLE": "Update concours",
   "CREATE_CONCOURS_TITLE": "New concours",

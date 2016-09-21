@@ -56,7 +56,10 @@ It will start a local server using `webpack-dev-server` which will watch, build
 ## 1.0.0
 
     user login
-        => only the token is stored, no user information.
+        => only the token is stored, no user information (DONE)
+        => token expires in 3 days (DONE)
+        => verify the admin role (set via settings) (DONE)
+        => handle users from RTBF
 
     drawing of lots
 
@@ -70,8 +73,15 @@ It will start a local server using `webpack-dev-server` which will watch, build
     update concours
     delete concours
 
+    preferences
+        update preferences (DONE)
+
+    settings
+        update settings
+
     concours image
-        => resize image to 135x85
+        check mime type, not based on suffix (DONE)
+        resize image to 135x85
 
     concours screen date visualisation
         => dd/mm/yyyy

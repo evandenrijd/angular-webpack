@@ -225,6 +225,8 @@ import './categories/categories.module';
         console.error('response error: ', error);
         if (error.data.match(/jwt expired/)) {
           appState.logout('ERR_login_jwt_expired')
+        } else if (error.data.match(/has no admin role/)) {
+          appState.logout('ERR_login_user_has_no_admin_role');
         } else {
           appState.logout('ERR_login_please_login_again')
         }

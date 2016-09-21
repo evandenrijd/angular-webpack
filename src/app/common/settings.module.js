@@ -26,7 +26,7 @@ import _ from 'underscore';
     let settings; //array coming from db (contains normally only one row)
 
     let URLS = {
-      FETCH: 'data/settings.json'
+      FETCH: 'http://localhost:3000/settings'
     };
 
     let data = _.extend(spec, my.meta.init({name: 'settings'}));
