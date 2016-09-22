@@ -4,65 +4,56 @@ import _ from 'underscore';
 (function(){
 
   angular.module('gecopa.common.settings', [])
+
     .provider('settings', function settingsProvider() {
-      this.$get = function settingsConstructorFactory($http, $q, meta, $timeout, $mdToast) {
+      this.$get = function settingsClientFactoryCtorFactory(meta, $http, $q) {
         "ngInject";
-        return settingsConstructor({}, {$http, $q, meta, $timeout, $mdToast});
+        return settingsClientFactoryCtor({}, {meta, $http, $q});
       }
     })
+
   ;
 
-  function settingsConstructor(spec, my) {
+  function settingsCtor(spec, my) {
     let self = {};
+    spec = spec || my.meta.init({name: 'settings'});
     my = my || {};
 
+    self.get = get;
+    self.hasUserAdminRole = hasUserAdminRole;
+
+    return self;
+
+    function get() {
+      return spec;
+    }
+
+    function _splitAdmins() {
+      return spec['admins'].split(':').map((admin) => {
+        return admin.toUpperCase();
+      });
+    }
+
+    function _check() {
+      let admins = _splitAdmins();
+      return !!admins.length;
+    }
+
+    function hasUserAdminRole(user) {
+      return !!_splitAdmins().filter((admin) => {
+        return user.username.toUpperCase() === admin;
+      }).length;
+    }
+  }
+
+  //extend the settingsCtor with formly use for client only.
+  function settingsClientCtor(spec, my) {
+    let self = settingsCtor(spec, my);
+
     //Public API
-    self.load = load;
-    self.update = update;
-    self.getFormlyModel = getFormlyModel;
-    self.setFormlyModel = setFormlyModel;
     self.getFormlyFields = getFormlyFields;
-
-    let settings; //array coming from db (contains normally only one row)
-
-    let URLS = {
-      FETCH: 'http://localhost:3000/settings'
-    };
-
-    let data = _.extend(spec, my.meta.init({name: 'settings'}));
-
-    function extract(result) {
-      return result.data.map(spec => {
-        return spec;
-      });
-    }
-
-    function cache(result) {
-      settings = extract(result);
-      if (settings) {
-        data = _.extend(data, settings[0]);
-      }
-      return self;
-    }
-
-    function load() {
-      return my.$q(function(resolve) {
-        resolve((settings)?self:my.$http.get(URLS.FETCH).then(result => {
-          return cache(result);
-        }));
-      });
-    }
-
-    function update(model) {
-      data = _.extend(data, model);
-      return my.$q(function(resolve) {
-        my.$timeout(function() {
-          console.debug('FIXME: save the oracle stuff');
-          my.$mdToast.show(my.$mdToast.simple().textContent('Saved settings'));
-          resolve(self);
-        }, 1000);
-      });
-    }
+    self.getFormlyModel = getFormlyModel;
+    return self;
 
     let formly_fields;
     function getFormlyFields(o) {
@@ -74,21 +65,64 @@ import _ from 'underscore';
       return formly_fields;
     }
 
-    let formly_model;
+    let formly_model; //copy of the spec
     function getFormlyModel(o) {
       formly_model = my.meta.getFormlyModel(_.extend({
         name: 'settings',
-        model: data
+        model: spec
       }, o));
       return formly_model;
     }
 
     function setFormlyModel() {
-      data = formly_model;
+      spec = formly_model;
       return self;
     }
 
+  }
+
+  //Will create settingCtor objects for the client, remotely.
+  function settingsClientFactoryCtor(spec, my) {
+    let self = {};
+    my = my || {};
+
+    let data = {};
+
+    let URLS = {
+      FETCH: 'http://localhost:3000/settings',
+      POST: 'http://localhost:3000/settings'
+    };
+
+    //Public API
+    self.get = get;
+    self.set = set;
+    self.load = load;
+    self.store = store;
+
     return self;
+
+    function get() {
+      return data;
+    }
+
+    function set(spec) {
+      data = settingsClientCtor(spec, my);
+      return self;
+    }
+
+    function load() {
+      return my.$q(function(resolve) {
+        my.$http.get(URLS.FETCH).then(response => {
+          data = settingsClientCtor(response.data, my);
+          resolve(self);
+        });
+      });
+    }
+
+    function store() {
+      return my.$http.post(URLS.POST, data.get());
+    }
+
   }
 
 })();
