@@ -25,32 +25,73 @@ function readJSON(filename, enc) {
   });
 }
 
-let settings = function settingsCtor() {
+function writeJSON(filename, enc, data) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(filename,
+                 JSON.stringify(data, null, '  '),
+                 enc,
+                 (err) => {
+                   if (err) reject(err);
+                   resolve(data);
+                 });
+  });
+}
+
+let settingsApi = function settingsCtor() {
   let self = {};
   let filename = 'data/settings.json'
   console.log('loading: ', filename);
-  load(filename).then(data => {
-    console.log('checking: ', filename);
-    let admins = data[0]['admins'].split(':').map((admin) => {
-      return admin.toUpperCase();
-    });
-    if (!admins.length) {
-      console.error('No admins specified, check your db PARAMETRE_PRM_T');
+  _load(filename).then(data => { //already catching load errors during startup
+    _check(data).catch(err => {
+      console.error(err);
       process.exit(1);
-    }
-    console.log('checked: ', filename);
-  }).catch(err => { //already catching errors during startup
+    });
+  }).catch(err => {
     console.error(err);
     process.exit(1);
   });
 
   //Public API
   self.get = get;
+  self.set = set;
   self.hasUserAdminRole = hasUserAdminRole;
 
   return self;
 
-  function load(filename) {
+  function get() {
+    return _load(filename);
+  }
+
+  function set(data) {
+    console.log('data:', data);
+    return new Promise((resolve, reject) => {
+      _check(data).then(dummy => {
+        _store(data).then(dummy => {
+          console.log('stored settings');
+          resolve(self);
+        }).catch(err => {
+          reject(err);
+        });
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
+  function hasUserAdminRole(user) {
+    return new Promise((resolve, reject) => {
+      _load(filename).then(data => {
+        resolve(!!_splitAdmins(data).filter((admin) => {
+          return user.username.toUpperCase() === admin;
+        }).length);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+    return
+  }
+
+  function _load(filename) {
     return new Promise((resolve, reject) => {
       readJSON(filename, 'UTF8').then(data => {
         resolve(data);
@@ -60,28 +101,29 @@ let settings = function settingsCtor() {
     });
   }
 
-  function get() {
-    return load(filename);
+ function _splitAdmins(data) {
+   if (!data) return [];
+   return data['admins'].split(':').map((admin) => {
+     return admin.toUpperCase();
+   });
+ }
+
+  function _check(data) {
+    return new Promise((resolve, reject) => {
+      console.log('checking: ', filename);
+      let admins = _splitAdmins(data);
+      if (!admins.length) {
+        reject('No admins specified, check your db PARAMETRE_PRM_T');
+      }
+      console.log('checked: ', filename);
+      resolve(self);
+    });
   }
 
-  function hasUserAdminRole(user) {
-    return new Promise((resolve, reject) => {
-      load(filename).then(data => {
-        let admins = data[0]['admins'].split(':').map((admin) => {
-          return admin.toUpperCase();
-        });
-        let result = admins.filter((admin) => {
-          return user.username.toUpperCase() === admin;
-        }).length
-        resolve(admins.filter((admin) => {
-          return user.username.toUpperCase() === admin;
-        }).length);
-      }).catch(err => {
-        reject(err);
-      });
-    });
-    return
+  function _store(data) {
+    return writeJSON(filename, 'UTF8', data);
   }
+
 }();
 
 var express = require('express');
@@ -134,7 +176,7 @@ var user = {
 };
 
 app.post('/login', authenticate, function (req, res) {
-  settings.hasUserAdminRole(user).then(hasAdminRole => {
+  settingsApi.hasUserAdminRole(user).then(hasAdminRole => {
     if (hasAdminRole) {
       let days = 24*60*60; //one day in seconds
       let token = jwt.sign({
@@ -163,19 +205,33 @@ app.post('/login', authenticate, function (req, res) {
 });
 
 app.get('/me', function (req, res) {
+  console.log('req: ', req.user);
   res.send(req.user);
 });
 
 app.get('/settings', function (req, res) {
-  settings.get().then(data => {
+  settingsApi.get().then(data => {
     res.send(data);
   }).catch(err => {
     res.status(500).end(err);
   });
 });
 
+app.post('/settings', function (req, res) {
+  let body = req.body;
+  settingsApi.set(body).then(dummy => {
+    settingsApi.get().then(data => {
+      res.send(data);
+    }).catch(err => {
+      res.status(500).end(err);
+    });
+  }).catch(err => {
+    res.status(500).end(err);
+  });
+});
+
 function authenticate(req, res, next) {
-  var body = req.body;
+  let body = req.body;
   if (!body.username || !body.password) {
     res.status(400).end('Must provide username or password');
   } else if (body.username !== user.username || body.password !== user.password) {
