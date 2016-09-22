@@ -1,48 +1,13 @@
-'use strict';
+import fileCtor from './src/common/file_ctor.plain';
+import settingsCtor from './src/common/settings_ctor.plain';
 
-const fs = require('fs');
-
-function readFile(filename, enc){
-  return new Promise((resolve, reject) => {
-    fs.readFile(filename, enc, function (err, res){
-      if (err) reject(err);
-      else resolve(res);
-    });
-  });
-}
-
-function readJSON(filename, enc) {
-  return new Promise((resolve, reject) => {
-    readFile(filename, enc).then(data => {
-      try {
-        resolve(JSON.parse(data));
-      } catch (err) {
-        reject(err + ' on \'' + filename + '\'');
-      }
-    }).catch(err => {
-      reject(err);
-    });
-  });
-}
-
-function writeJSON(filename, enc, data) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filename,
-                 JSON.stringify(data, null, '  '),
-                 enc,
-                 (err) => {
-                   if (err) reject(err);
-                   resolve(data);
-                 });
-  });
-}
-
-let settingsApi = function settingsCtor() {
+let settingsApi = function _settingsCtor() {
   let self = {};
-  let filename = 'data/settings.json'
-  console.log('loading: ', filename);
-  _load(filename).then(data => { //already catching load errors during startup
-    _check(data).catch(err => {
+  let file = fileCtor({filename: 'data/settings.json', 
+                       enc: 'utf8'});
+  console.log('loading: ', file.filename);
+  _load().then(data => { //already catching load errors during startup
+    settingsCtor(data).check().catch(err => {
       console.error(err);
       process.exit(1);
     });
@@ -59,18 +24,16 @@ let settingsApi = function settingsCtor() {
   return self;
 
   function get() {
-    return _load(filename);
+    return _load();
   }
 
   function set(data) {
     console.log('data:', data);
     return new Promise((resolve, reject) => {
-      _check(data).then(dummy => {
+      settingsCtor(data).check().then(dummy => {
         _store(data).then(dummy => {
           console.log('stored settings');
           resolve(self);
-        }).catch(err => {
-          reject(err);
         });
       }).catch(err => {
         reject(err);
@@ -80,10 +43,8 @@ let settingsApi = function settingsCtor() {
 
   function hasUserAdminRole(user) {
     return new Promise((resolve, reject) => {
-      _load(filename).then(data => {
-        resolve(!!_splitAdmins(data).filter((admin) => {
-          return user.username.toUpperCase() === admin;
-        }).length);
+      _load().then(data => {
+        resolve(settingsCtor(data).hasUserAdminRole(user));
       }).catch(err => {
         reject(err);
       });
@@ -91,9 +52,9 @@ let settingsApi = function settingsCtor() {
     return
   }
 
-  function _load(filename) {
+  function _load() {
     return new Promise((resolve, reject) => {
-      readJSON(filename, 'UTF8').then(data => {
+      file.readJSON().then(data => {
         resolve(data);
       }).catch(err => {
         reject(err);
@@ -101,27 +62,8 @@ let settingsApi = function settingsCtor() {
     });
   }
 
- function _splitAdmins(data) {
-   if (!data) return [];
-   return data['admins'].split(':').map((admin) => {
-     return admin.toUpperCase();
-   });
- }
-
-  function _check(data) {
-    return new Promise((resolve, reject) => {
-      console.log('checking: ', filename);
-      let admins = _splitAdmins(data);
-      if (!admins.length) {
-        reject('No admins specified, check your db PARAMETRE_PRM_T');
-      }
-      console.log('checked: ', filename);
-      resolve(self);
-    });
-  }
-
   function _store(data) {
-    return writeJSON(filename, 'UTF8', data);
+    return file.writeJSON(data);
   }
 
 }();

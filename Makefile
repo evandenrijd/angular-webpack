@@ -1,7 +1,13 @@
 .PHONY: all clean-dist copy-files
 include tools.mk
 
-all: clean-dist copy-files
+SOURCES = server.js \
+	./src/common/meta_data_factory_ctor.js \
+	./src/common/settings_ctor.js \
+	./src/common/file_ctor.js
+TARGETS=$(patsubst %.js,%.plain.js,$(SOURCES))
+
+all: clean-dist copy-files $(TARGETS)
 	npm run dev
 
 dist: clean-dist copy-files
@@ -9,6 +15,9 @@ dist: clean-dist copy-files
 
 copy-files: ./public/dist/.keep_directory
 	- cp -R ./src/public/* ./public/dist/
+
+clean:
+	rm -fR $(TARGETS)
 
 clean-dist:
 	rm -fR ./public/dist

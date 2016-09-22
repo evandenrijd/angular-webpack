@@ -1,92 +1,30 @@
 import angular from 'angular';
 import _ from 'underscore';
 import {dump_obj} from '../utils';
+import metaDataFactoryCtor from '../../common/meta_data_factory_ctor';
 
 (function(){
 
   angular.module('gecopa.common.meta', [])
 
-    .factory('metaDataFactory', function metaDataFactory(languagePreferenceFactory) {
-      "ngInject";
-      self = {};
-
-      //Public API
-      self.get = get;
-
-      function get() {
-        const data = {
-
-          concours: [
-            { name: 'id', type: 'number', oracle: 'PK_CCR', init: function() { return null; } },
-            { name: 'code', type: 'string', required: true, oracle: 'CODE_CCR', init: function() { return null; } },
-            { name: 'title', type: 'string', required: true, oracle: 'INTITULE_CCR', init: function() { return null; } },
-            { name: 'description', type: 'string', required: true, oracle: 'DESCRIPTION_CCR', init: function() { return null; } },
-            { name: 'image', type: 'blob', oracle: 'IMAGE_CCR', init: function() { return null; } },
-            { name: 'startDate', type: 'date', oracle: 'DATE_DEBUT_CCR', init: function() { return null; } },
-            { name: 'endDate', type: 'date', required: true, oracle: 'DATE_FIN_CCR', init: function() { return null; } },
-            { name: 'winners', type: 'number', required: true, oracle: 'NOMBRE_CCR', init: function() { return 0; } },
-            { name: 'question', type: 'string', oracle: 'QUESTION_CCR', init: function() { return null; } },
-            { name: 'answer', type: 'string', oracle: 'REPONSE_CCR', init: function() { return null; } },
-            { name: 'status', type: [{ id: 0, name: 'ENUM_NO_SHOW'},
-                                     { id: 1, name: 'ENUM_SHOW'},
-                                     { id: 2, name: 'ENUM_LAST_DAY'},
-                                     { id: 3, name: 'ENUM_CLOSED_NOT_DRAW'},
-                                     { id: 4, name: 'ENUM_CLOSED'
-                                     },
-                                    ], oracle: 'STATUT_CCR', init: function() { return 1; } },
-            { name: 'link', type: 'string', oracle: 'LIEN_CCR', init: function() { return null; } },
-            { name: 'admins', type: 'string', oracle: 'GESTIONNAIRE_CCR', init: function() { return null; } },
-            { name: 'comments', type: 'string', oracle: 'COMMENTAIRE_CCR', init: function() { return null; } },
-            { name: 'mailWinners', type: 'string', oracle: 'GAGNANT_CCR', init: function() { return ''; } },
-            { name: 'mailLosers', type: 'string', oracle: 'PERDANT_CCR', init: function() { return ''; } },
-            { name: 'drawingDate', type: 'date', required: true, oracle: 'TIRAGE_DATE_CCR', init: function() { return null; } },
-            { name: 'drawingAdmin', type: 'string', oracle: 'TIREUR_CCR', init: function() { return null; } },
-            { name: 'exclusionRule', type: 'string', oracle: 'EXCLUSION_CCR', init: function() { return null; } },
-            { name: 'creationDate', type: 'date', readonly: true, oracle: 'CREATION_CCR', init: function() { return new Date(); } },
-            { name: 'creationAdmin', type: 'string', readonly: true, oracle: 'CREATEUR_CCR', init: function() { return null; } },
-            { name: 'imageName', type: 'string', oracle: 'IMAGE_NOM_CCR', init: function() { return null; } },
-            { name: 'imageMime', type: 'string', oracle: 'IMAGE_TYPE_CCR', init: function() { return null; } }
-          ],
-
-          settings: [
-            {name: 'admins', type: 'string', oracle: 'FIXME NOT YET there', init: function() { return ''; }},
-          ],
-
-          preferences: [
-            {name: 'language', type: [
-              {id: 'en-BE', name: 'ENUM_ENGLISH'},
-              {id: 'fr-BE', name: 'ENUM_FRENCH'}
-            ], init: function() {
-              return languagePreferenceFactory.getLanguage();
-            }},
-          ],
-
-        };
-        return data;
-      }
-
-      return self;
-    })
-
     .provider('meta', function metaProvider() {
-      this.$get = function metaConstructorFactory($translate, languagePreferenceFactory, metaDataFactory) {
+      this.$get = function metaConstructorFactory($translate, languagePreferenceFactory) {
         "ngInject";
-        return metaConstructor({}, {$translate, languagePreferenceFactory, metaDataFactory});
+        return metaConstructor({}, {$translate, languagePreferenceFactory});
       }
     })
 
   ;
 
   function metaConstructor(spec, my) {
-    let self = spec || {};
+    let self = metaDataFactoryCtor(spec, my);
 
     //Public API
     self.getFormlyFields = getFormlyFields;
     self.getFormlyModel = getFormlyModel;
     self.getAttributeLabelId = getAttributeLabelId;
-    self.init = init;
 
-    const data = my.metaDataFactory.get();
+    const data = self.get();
 
     function formly_fields(o) {
       return data[o.name]
@@ -210,14 +148,6 @@ import {dump_obj} from '../utils';
         model[ff.key] = value;
       });
       return model;
-    }
-
-    function init(o) {
-      let obj = {};
-      data[o.name].map(field => {
-        obj[field.name] = field.init();
-      });
-      return obj;
     }
 
     function getFormlyFields(o) {

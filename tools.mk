@@ -20,8 +20,14 @@ rm := rm -f
 echo := echo
 touch:= touch
 
+#JS specifics
+babel := ./node_modules/.bin/babel
+
 %/.keep_directory:
 	$(noecho)$(install_dir) $(dir $@)
 	$(noecho)$(touch) $@
 
 .PRECIOUS: %/.keep_directory
+
+%.plain.js : %.js
+	$(babel) $< > $@

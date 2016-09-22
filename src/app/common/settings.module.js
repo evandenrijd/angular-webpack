@@ -1,54 +1,33 @@
 import angular from 'angular';
 import _ from 'underscore';
+import settingsCtor from '../../common/settings_ctor';
 
 (function(){
 
   angular.module('gecopa.common.settings', [])
 
-    .provider('settings', function settingsProvider() {
-      this.$get = function settingsClientFactoryCtorFactory(meta, $http, $q) {
-        "ngInject";
-        return settingsClientFactoryCtor({}, {meta, $http, $q});
+    .factory('gcpSettingsCtorFactory', function(meta, $q) {
+      "ngInject";
+      let factory = function(spec) {
+        return settingsCtor(spec, {meta, promise: function(executor){
+          return $q(executor);
+        }});
       }
+      return factory;
+    })
+
+    .service('gcpSettingsService', function(meta, $http, $q) {
+      "ngInject";
+      return settingsClientFactoryCtor({}, {meta, $http, $q});
     })
 
   ;
 
-  function settingsCtor(spec, my) {
-    let self = {};
-    spec = spec || my.meta.init({name: 'settings'});
-    my = my || {};
-
-    self.get = get;
-    self.hasUserAdminRole = hasUserAdminRole;
-
-    return self;
-
-    function get() {
-      return spec;
-    }
-
-    function _splitAdmins() {
-      return spec['admins'].split(':').map((admin) => {
-        return admin.toUpperCase();
-      });
-    }
-
-    function _check() {
-      let admins = _splitAdmins();
-      return !!admins.length;
-    }
-
-    function hasUserAdminRole(user) {
-      return !!_splitAdmins().filter((admin) => {
-        return user.username.toUpperCase() === admin;
-      }).length;
-    }
-  }
-
   //extend the settingsCtor with formly use for client only.
   function settingsClientCtor(spec, my) {
-    let self = settingsCtor(spec, my);
+    let self = settingsCtor(spec, _.extend(my, { promise: function(executor) {
+      return my.$q(executor);
+    }}));
 
     //Public API
     self.getFormlyFields = getFormlyFields;
