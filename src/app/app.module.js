@@ -123,7 +123,7 @@ import './categories/categories.module';
     })
 
   //setup i18n
-    .config(function ($translateProvider, settingsProvider, languagePreferenceFactoryProvider) {
+    .config(function ($translateProvider, languagePreferenceFactoryProvider) {
       "ngInject";
       $translateProvider.useStaticFilesLoader({
         prefix: 'data/languages/',
@@ -237,9 +237,18 @@ import './categories/categories.module';
   //Use the appState to communicate between the different controllers
     .provider('appState', function appState() {
       let self = {};
-      self.$get = function appStateConstructorFactory($translate, settings, userFactory, $state, $window, $q, $mdToast, authTokenFactory) {
+      self.$get = function appStateConstructorFactory(userFactory, $state, $window, $q, toastMixin) {
         "ngInject";
-        return appStateConstructor({}, {$translate, settings, userFactory, $state, $window, $q, $mdToast, authTokenFactory});
+        return toastMixin.mixin(appStateConstructor({}, {userFactory, $state, $window, $q}));
+      }
+      return self;
+    })
+
+    .provider('toastMixin', function toastMixin() {
+      let self = {};
+      self.$get = function toastMixinFactory($translate, $mdToast, $q) {
+        "ngInject";
+        return toastMixinConstructor({}, {$translate, $mdToast, $q});
       }
       return self;
     })
@@ -273,6 +282,38 @@ import './categories/categories.module';
     }
 
     return self;
+  }
+
+  function toastMixinConstructor(spec, my) {
+    let self = {};
+
+    //Public API
+    self.toast = toast;
+    self.mixin = mixin;
+    return self;
+
+
+    function _toastMsg(msg) {
+      return my.$mdToast.show(my.$mdToast.simple().textContent(msg));
+    }
+
+    function toast(o) {
+      if (o.id) {
+        return my.$translate(o.id).then(msg => {
+          _toastMsg(msg);
+        }).catch(err => {
+          console.error('Got translation error:', err);
+          _toastMsg(o.id);
+        });
+      } else {
+        return my.$q.resolve(_toastMsg(o.msg));
+      }
+    }
+
+    function mixin(that) {
+      that.toast = toast;
+      return that;
+    }
   }
 
   function appStateConstructor(spec, my) {
@@ -341,15 +382,9 @@ import './categories/categories.module';
         }).catch(function(error){
           set('username', null);
           console.error('login error: ', error);
-          toast('ERR_login_wrong_username_or_password');
+          self.toast({id: 'ERR_login_wrong_username_or_password'});
           reject(error);
         });
-      });
-    }
-
-    function toast(id) {
-      return my.$translate(id).then(result => {
-        my.$mdToast.show(my.$mdToast.simple().textContent(result));
       });
     }
 
@@ -361,7 +396,7 @@ import './categories/categories.module';
           resolve(self);
         });
       }).then(() => {
-        if (id) toast(id);
+        if (id) self.toast({id: id});
       });
     }
 
