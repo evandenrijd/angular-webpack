@@ -31,14 +31,11 @@ function settingsCtor(spec, my) {
       if (!!/^[A-Z]+(:?:[A-Z]+)*$/.test(spec.admins)) {
         let admins = _splitAdmins();
         if (!!admins.length) {
-          console.debug('check OK for spec:', spec);
           resolve(self);
         } else {
-          console.debug('check NOK for spec:', spec);
           reject('ERR_NEED_AT_LEAST_ONE_ADMIN');
         }
       } else {
-        console.debug('check RE NOK for spec:', spec);
         reject('ERR_NO_COLON_SEPARATED_LIST');
       }
     });

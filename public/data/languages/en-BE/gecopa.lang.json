@@ -4,6 +4,8 @@
   "ERR_LHS_LESS_THEN_RHS": "{{lhs}} must be less then {{rhs}}",
   "ERR_LHS_LESS_THEN_OR_EQUAL_TO_RHS": "{{lhs}} must be less then or equal to {{rhs}}",
   "ERR_LHS_GREATER_THEN_OR_EQUAL_TO_RHS": "{{lhs}} must be greater then or equal to {{rhs}}",
+  "ERR_NO_COLON_SEPARATED_LIST": "Only allow for colon separated list",
+  "ERR_NEED_AT_LEAST_ONE_ADMIN": "At least one admin is needed",
 
   "WELCOME_TITLE": "Welcome, {{ username }}",
   "login_username": "Login:",

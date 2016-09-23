@@ -25,9 +25,9 @@ import settingsCtor from '../../../../common/settings_ctor';
     })
 
     .controller('SettingsEditController',
-                function settingsEditControllerFactory(gcpSettingsCtorFactory, gcpSettingsService, toastMixin) {
+                function settingsEditControllerFactory(gcpSettingsCtorFactory, gcpSettingsService, $q, $translate, toastMixin) {
                   "ngInject";
-                  return toastMixin.mixin(settingsEditControllerCtor({}, {gcpSettingsCtorFactory, gcpSettingsService}));
+                  return toastMixin.mixin(settingsEditControllerCtor({}, {gcpSettingsCtorFactory, gcpSettingsService, $q, $translate}));
                 })
 
   ;
@@ -40,7 +40,6 @@ import settingsCtor from '../../../../common/settings_ctor';
 
     //Public API
     self.submit = submit;
-    self.cancel = init;
 
     let layout = [
       {
@@ -49,14 +48,22 @@ import settingsCtor from '../../../../common/settings_ctor';
           {
             className: 'flex',
             key: 'admins',
-            validators: {
+            asyncValidators: {
               checkListSeparatedByColons: {
                 expression: function($modelValue, $viewValue, scope) {
                   let value = $modelValue || $viewValue;
-                  return my.gcpSettingsCtorFactory({admins: value}).check();
+                  let settings = my.gcpSettingsCtorFactory({admins: value});
+                  return my.$q((resolve, reject) => {
+                    settings.check().then(result => {
+                      resolve(result);
+                    }).catch(err => {
+                      scope.to.data = { err: err };
+                      reject(err);
+                    })
+                  });
                 },
                 message: function($modelValue, $viewValue, scope) {
-                  return 'Not good';
+                  return my.$translate.instant(scope.to.data.err);
                 }
               }
             }
@@ -75,6 +82,7 @@ import settingsCtor from '../../../../common/settings_ctor';
     function submit() {
       my.gcpSettingsService.set(self.model);
       my.gcpSettingsService.store().then(response => {
+        self.form.$setPristine();
         self.toast({id: 'DATA_PERSISTED'});
       }).catch(err => {
         console.error('Failed to store settings, ', err);
@@ -82,10 +90,6 @@ import settingsCtor from '../../../../common/settings_ctor';
       });
     }
 
-    function init() {
-      self.model = settings.getFormlyModel();
-      return self;
-    }
   };
 
 })();

@@ -2,7 +2,7 @@
   <h2>Settings:</h2>
 
   <form novalidate>
-    <formly-form model="vm.model" fields="vm.fields" form="vm.form">
+    <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
       <div layout="row"  layout-align="space-around center">
         <md-button
           type="submit"
@@ -14,7 +14,7 @@
         </md-button>
         <md-button
           class="md-primary md-raised"
-          ng-click="vm.cancel()"
+          ng-click="vm.options.resetModel()"
           aria-label="CANCEL_BUTTON | translate"
           translate="CANCEL_BUTTON">
         </md-button>
@@ -22,13 +22,11 @@
     </formly-form>
   </form>
 
-  <h2>Model</h2>
-  <pre>{{vm.model | json}}</pre>
-  <h2>Form</h2>
-  <pre>{{vm.form | json}}</pre>
-  <!-- <h2>Fields <small>(note, functions are not shown)</small></h2> -->
-  <!-- <pre>{{vm.originalFields | json}}</pre> -->
+  <!-- <h2>Model</h2> -->
+  <!-- <pre>{{vm.model | json}}</pre> -->
   <!-- <h2>Form</h2> -->
+  <!-- <pre>{{vm.form | json}}</pre> -->
+  <!-- <h2>Fields</h2> -->
   <!-- <pre>{{vm.fields | json}}</pre> -->
 
 </md-content>
