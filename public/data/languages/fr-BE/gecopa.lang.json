@@ -16,7 +16,7 @@
   "ERR_login_user_has_no_admin_role": "Vous n'avez pas de privilèges admin",
 
   "DATA_PERSISTED": "Les données sont mises à jour",
-  "DATA_NOT_PERSISTED": "Les données ne sont pas mises à jour",
+  "ERR_DATA_NOT_PERSISTED": "Les données ne sont pas mises à jour",
 
   "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
   "CREATE_CONCOURS_TITLE": "Nouveau concours",

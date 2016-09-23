@@ -86,7 +86,7 @@ import settingsCtor from '../../../../common/settings_ctor';
         self.toast({id: 'DATA_PERSISTED'});
       }).catch(err => {
         console.error('Failed to store settings, ', err);
-        self.toast({id: 'DATA_NOT_PERSISTED'});
+        self.toast({id: 'ERR_DATA_NOT_PERSISTED'});
       });
     }
 

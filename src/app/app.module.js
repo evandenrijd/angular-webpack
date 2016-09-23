@@ -47,6 +47,8 @@ import './categories/categories.module';
       "ngInject";
       $mdThemingProvider.theme('default')
         .primaryPalette('indigo');
+      $mdThemingProvider.theme("success-toast");
+      $mdThemingProvider.theme("error-toast");
     })
 
     .config(function uiRouter($urlRouterProvider, $locationProvider, $stateProvider) { //ui-router
@@ -285,23 +287,41 @@ import './categories/categories.module';
 
   function toastMixinConstructor(spec, my) {
     let self = {};
+    let delay = 2000;
 
     //Public API
     self.toast = toast;
     self.mixin = mixin;
     return self;
 
-    function _toastMsg(msg) {
-      return my.$mdToast.show(my.$mdToast.simple().textContent(msg));
+    function _toastMsg(msg, type) {
+      let toast = my.$mdToast
+          .simple()
+          .textContent(msg)
+          .hideDelay(delay);
+      if (!type) {
+        return my.$mdToast.show(toast);
+      } else {
+        return my.$mdToast.show(toast.theme(type + '-toast'));
+      }
+    }
+
+    function _typeBasedOnId(id) {
+      if (/^ERR_/.test(id)) {
+        return 'error';
+      } else {
+        return 'success';
+      }
     }
 
     function toast(o) {
       if (o.id) {
+        let type = _typeBasedOnId(o.id);
         return my.$translate(o.id).then(msg => {
-          _toastMsg(msg);
+          _toastMsg(msg, type);
         }).catch(err => {
           console.error('Got translation error:', err);
-          _toastMsg(o.id);
+          _toastMsg(o.id, type);
         });
       } else {
         return my.$q.resolve(_toastMsg(o.msg));
