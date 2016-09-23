@@ -98,6 +98,7 @@ import metaDataFactoryCtor from '../../common/meta_data_factory_ctor';
         if (className) special.className = className;
         if (templateOptions) special.templateOptions = templateOptions;
         _.extend(field, ...args, special);
+        // console.debug('extend:', field);
         return field;
       }
 

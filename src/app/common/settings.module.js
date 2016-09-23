@@ -16,7 +16,7 @@ import settingsCtor from '../../common/settings_ctor';
       return factory;
     })
 
-    .service('gcpSettingsService', function(meta, $http, $q) {
+    .service('gcpSettingsDataService', function(meta, $http, $q) {
       "ngInject";
       return settingsClientFactoryCtor({}, {meta, $http, $q});
     })
