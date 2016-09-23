@@ -35,7 +35,7 @@ import {dump_obj} from '../../../utils';
     let self = {};
     my = my || {}; //shared state (global deps);
     let concours = concoursConstructor(undefined, my);
-    //FIXME set creation admin, from appState
+    //FIXME set creation admin, from gcpAppState
 
     let excludeKeys = ['id'];
 

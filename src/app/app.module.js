@@ -137,10 +137,10 @@ import './categories/categories.module';
     .constant('USER_REST_API_URL', 'http://localhost:3000')
     .config(function($httpProvider) {
       "ngInject";
-      $httpProvider.interceptors.push('authInterceptor');
+      $httpProvider.interceptors.push('gcpAuthInterceptor');
     })
 
-    .factory('userFactory', function userFactory($http, USER_REST_API_URL, authTokenFactory, $q) {
+    .factory('gcpUserFactory', function gcpUserFactory($http, USER_REST_API_URL, gcpAuthTokenFactory, $q) {
       "ngInject";
       return {
         login: login,
@@ -154,20 +154,20 @@ import './categories/categories.module';
           username: username,
           password: password
         }).then(function (response) {
-          authTokenFactory.setToken(response.data.token);
+          gcpAuthTokenFactory.setToken(response.data.token);
           return response;
         });
       }
 
       function logout() {
         return $q(function (resolve, reject){
-          authTokenFactory.setToken();
+          gcpAuthTokenFactory.setToken();
           resolve(self);
         });
       }
 
       function getUser() {
-        if (authTokenFactory.getToken()) {
+        if (gcpAuthTokenFactory.getToken()) {
           return $http.get(USER_REST_API_URL + '/me');
         } else {
           return $q.reject({ data: 'client has no auth token' });
@@ -175,12 +175,12 @@ import './categories/categories.module';
       }
 
       function isLoggedIn() {
-        return authTokenFactory.getToken();
+        return gcpAuthTokenFactory.getToken();
       }
 
     })
 
-    .factory('authTokenFactory', function authTokenFactory($window) {
+    .factory('gcpAuthTokenFactory', function gcpAuthTokenFactory($window) {
       "ngInject";
       let store = $window.localStorage;
       let key = 'gecopa.admin.auth-token';
@@ -203,7 +203,7 @@ import './categories/categories.module';
       }
     })
 
-    .factory('authInterceptor', function authInterceptor($q, authTokenFactory, $injector) {
+    .factory('gcpAuthInterceptor', function gcpAuthInterceptor($q, gcpAuthTokenFactory, $injector) {
       "ngInject";
       return {
         request: addToken,
@@ -212,7 +212,7 @@ import './categories/categories.module';
 
       function addToken(config) {
         // console.debug('interceptor called', config);
-        var token = authTokenFactory.getToken();
+        var token = gcpAuthTokenFactory.getToken();
         if (token) {
           config.headers = config.headers || {};
           config.headers.Authorization = 'Bearer ' + token;
@@ -221,25 +221,25 @@ import './categories/categories.module';
       }
 
       function handleResponseError(error) {
-        let appState = $injector.get('appState');
+        let gcpAppState = $injector.get('gcpAppState');
         console.error('response error: ', error);
         if (error.data.match(/jwt expired/)) {
-          appState.logout('ERR_login_jwt_expired')
+          gcpAppState.logout('ERR_login_jwt_expired')
         } else if (error.data.match(/has no admin role/)) {
-          appState.logout('ERR_login_user_has_no_admin_role');
+          gcpAppState.logout('ERR_login_user_has_no_admin_role');
         } else {
-          appState.logout('ERR_login_please_login_again')
+          gcpAppState.logout('ERR_login_please_login_again')
         }
         return $q.reject(error);
       }
     })
 
-  //Use the appState to communicate between the different controllers
-    .provider('appState', function appState() {
+  //Use the gcpAppState to communicate between the different controllers
+    .provider('gcpAppState', function gcpAppState() {
       let self = {};
-      self.$get = function appStateConstructorFactory(userFactory, $state, $window, $q, toastMixin) {
+      self.$get = function gcpAppStateCtorFactory(gcpUserFactory, $state, $window, $q, toastMixin) {
         "ngInject";
-        return toastMixin.mixin(appStateConstructor({}, {userFactory, $state, $window, $q}));
+        return toastMixin.mixin(gcpAppStateCtor({}, {gcpUserFactory, $state, $window, $q}));
       }
       return self;
     })
@@ -253,9 +253,9 @@ import './categories/categories.module';
       return self;
     })
 
-    .controller('GecopaController', function gecopaController($mdSidenav, $log, appState) {
+    .controller('GecopaController', function gecopaController($mdSidenav, $log, gcpAppState) {
       "ngInject";
-      return gecopaConstructor({}, {$mdSidenav, $log, appState});
+      return gecopaConstructor({}, {$mdSidenav, $log, gcpAppState});
     })
 
   ;
@@ -267,7 +267,8 @@ import './categories/categories.module';
     //public API
     self.get = get;
     self.toggleCategories = toggleCategories;
-    my.appState.userAPIMixin(self);
+    my.gcpAppState.userAPIMixin(self);
+    return self;
 
     function get(attr) {
       return self[attr];
@@ -280,8 +281,6 @@ import './categories/categories.module';
     function toggleCategories() {
       my.$mdSidenav('left').toggle();
     }
-
-    return self;
   }
 
   function toastMixinConstructor(spec, my) {
@@ -291,7 +290,6 @@ import './categories/categories.module';
     self.toast = toast;
     self.mixin = mixin;
     return self;
-
 
     function _toastMsg(msg) {
       return my.$mdToast.show(my.$mdToast.simple().textContent(msg));
@@ -316,7 +314,7 @@ import './categories/categories.module';
     }
   }
 
-  function appStateConstructor(spec, my) {
+  function gcpAppStateCtor(spec, my) {
     let self = {};
     let data = {};
 
@@ -337,7 +335,7 @@ import './categories/categories.module';
 
     function init() {
       return my.$q(function(resolve, reject) {
-        my.userFactory.getUser().then(function (response) {
+        my.gcpUserFactory.getUser().then(function (response) {
           set('username', response.data.username); //cache only username, not password
           resolve(self);
         }).catch(function (error) {
@@ -370,12 +368,12 @@ import './categories/categories.module';
     };
 
     function isLoggedIn() {
-      return my.userFactory.isLoggedIn();
+      return my.gcpUserFactory.isLoggedIn();
     }
 
     function login(username, password) {
       return my.$q(function(resolve, reject){
-        my.userFactory.login(username, password).then(function(response) {
+        my.gcpUserFactory.login(username, password).then(function(response) {
           set('username', response.data.username);
           my.$window.location.reload();
           resolve(self);
@@ -390,7 +388,7 @@ import './categories/categories.module';
 
     function logout(id) {
       return my.$q(function(resolve) {
-        my.userFactory.logout().then(() => {
+        my.gcpUserFactory.logout().then(() => {
           set('username', null);
           my.$state.go('gecopa.admin.welcome');
           resolve(self);

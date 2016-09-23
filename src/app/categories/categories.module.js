@@ -43,42 +43,41 @@ import './preferences/preferences.module';
       ;
     })
 
-    .controller('CategoriesListController', function ($log, $state, appState, categoryList) {
+    .controller('CategoriesListController', function ($log, $state, gcpAppState, gcpCategoryService) {
       "ngInject";
-      return categoriesListControllerConstructor({}, {$log, $state, appState, categoryList});
+      return categoriesListControllerConstructor({}, {$log, $state, gcpAppState, gcpCategoryService});
     })
 
-    .controller('WelcomeController', function($log, appState, $translate){
+    .controller('WelcomeController', function($log, gcpAppState, $translate){
       "ngInject";
-      return welcomeControllerConstructor({}, {$log, appState, $translate});
+      return welcomeControllerConstructor({}, {$log, gcpAppState, $translate});
     })
   ;
 
   function categoriesListControllerConstructor(spec, my) {
     let self = {};
     my = my || {}; //shared state (global deps);
-
-    let categories = my.categoryList.getCategories();
-
-    let getCategories = function () {
-      return categories;
-    }
-
-    let selectCategory = function(category) {
-      my.appState.set('category', category);
-      my.$state.go(my.appState.get('category').getNgUiRouterState());
-    }
-
-    let getSelectedCategory = function() {
-      return my.appState.get('category');
-    }
+    let categories = my.gcpCategoryService.load();
 
     //Public API
     self.getCategories = getCategories;
     self.selectCategory = selectCategory;
     self.getSelectedCategory = getSelectedCategory;
-
     return self;
+
+    function getCategories() {
+      return categories;
+    }
+
+    function selectCategory(category) {
+      my.gcpAppState.set('category', category);
+      my.$state.go(my.gcpAppState.get('category').getNgUiRouterState());
+    }
+
+    function getSelectedCategory() {
+      return my.gcpAppState.get('category');
+    }
+
   }
 
   function welcomeControllerConstructor(spec, my) {
@@ -86,7 +85,7 @@ import './preferences/preferences.module';
     my = my || {}; //shared state (global deps);
 
     //public API
-    my.appState.userAPIMixin(self);
+    my.gcpAppState.userAPIMixin(self);
     self.onSubmit = onSubmit;
     self.onReset = onReset;
 
@@ -156,7 +155,7 @@ import './preferences/preferences.module';
     self.env = {};
     if (angular.version.full) self.env.angularVersion = angular.version.full;
     if (getFormlyVersion()) self.env.formlyVersion = getFormlyVersion();
-    if (my.appState.toString()) self.env.appState = my.appState.toString();
+    if (my.gcpAppState.toString()) self.env.gcpAppState = my.gcpAppState.toString();
 
     return self;
   }

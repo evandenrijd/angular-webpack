@@ -39,6 +39,18 @@ It will start a local server using `webpack-dev-server` which will watch, build
 
 ## Developing
 
+### Style guide
+
+    Follow the recommendations of https://github.com/johnpapa/angular-styleguide
+    for Angular 1.x apps.
+
+    [Y052] Accessible members on top for constructor function. Additionally, we
+    like to add a suffix of Ctor to them.
+
+    [Y073] We use the prefix gcp for all angular factories, services and
+    directives, by removing the vowels of gecopa. So the prefix gcp means an
+    Anglified artifact, that can only be used by the client, not the server.
+
 ### Build files
 
 * single run: `npm run build`

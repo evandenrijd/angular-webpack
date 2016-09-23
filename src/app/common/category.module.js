@@ -2,32 +2,40 @@ import {dump_obj} from '../utils';
 
 (function() {
 
-  let categoryConstructor = function(spec) {
+  angular.module('gecopa.common.category', [
+    'gecopa.common.meta'
+  ])
+
+    .service('gcpCategoryService', function() {
+      return categoryListCtor({}, {});
+    })
+
+  ;
+
+  function categoryCtor(spec) {
     let self = {};
     let data = spec || {};
+    self.get = get;
+    self.getNgUiRouterState = getNgUiRouterState;
+    self.toString = toString;
+    return self;
 
-    let get = function(attr) {
+    function get(attr) {
       return data[attr];
     }
 
     //getNgUiRouterState give the state string used in ng-ui-router
-    let getNgUiRouterState = function() {
+    function getNgUiRouterState() {
       return 'gecopa.admin.' + get('name');
     }
 
-    let toString = function(){
+    function toString(){
       return dump_obj(data);
     }
 
-    self.get = get;
-    self.getNgUiRouterState = getNgUiRouterState;
-    self.toString = toString;
-
-    return self;
   };
 
-  let categoryListConstructor = function(spec, my) {
-
+  function categoryListCtor(spec, my) {
     let categories = [
       {
         id: 1,
@@ -50,27 +58,17 @@ import {dump_obj} from '../utils';
         icon: 'settings'
       },
     ].map((c) => {
-      return categoryConstructor(c, my);
+      return categoryCtor(c, my);
     });
 
-    let getCategories = function () {
+    //public API
+    self.load = load;
+    return self;
+
+    function load() {
       return categories;
     }
     
-    //public API
-    self.getCategories = getCategories;
-
-    return self;
   }
-
-  angular.module('gecopa.common.category', [
-    'gecopa.common.meta'
-  ])
-    .provider('categoryList', function categoryListProvider() {
-      this.$get = function categoryListConstructorFactory($http, $q, $translate, meta) {
-        "ngInject";
-        return categoryListConstructor({}, {meta});
-      }
-    });
   
 })();
