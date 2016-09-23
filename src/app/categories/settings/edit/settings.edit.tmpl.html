@@ -1,7 +1,7 @@
 <md-content layout="column">
   <h2>Settings:</h2>
 
-  <form novalidate>
+  <form novalidate ng-if="vm.model">
     <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
       <div layout="row"  layout-align="space-around center">
         <md-button
@@ -21,6 +21,10 @@
       </div>
     </formly-form>
   </form>
+
+  <div  ng-if="!vm.model">
+    Loading...
+  </div>
 
   <!-- <h2>Model</h2> -->
   <!-- <pre>{{vm.model | json}}</pre> -->

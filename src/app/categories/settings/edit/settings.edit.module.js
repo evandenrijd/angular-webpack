@@ -83,8 +83,9 @@ import settingsCtor from '../../../../common/settings_ctor';
     function submit() {
       my.gcpSettingsDataService.set(self.model);
       my.gcpSettingsDataService.store().then(response => {
-        self.form.$setPristine();
         self.toast({id: 'DATA_PERSISTED'});
+        self.form && self.form.$setPristine();
+        self.options && self.options.updateInitialValue();
       }).catch(err => {
         console.error('Failed to store settings, ', err);
         self.toast({id: 'ERR_DATA_NOT_PERSISTED'});
