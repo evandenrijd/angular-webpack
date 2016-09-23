@@ -4,6 +4,7 @@ include tools.mk
 SOURCES = server.js \
 	./src/common/meta_data_factory_ctor.js \
 	./src/common/settings_ctor.js \
+	./src/common/settings_server_data_service_ctor.js \
 	./src/common/file_ctor.js
 TARGETS=$(patsubst %.js,%.plain.js,$(SOURCES))
 

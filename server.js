@@ -1,72 +1,5 @@
-import fileCtor from './src/common/file_ctor.plain';
-import settingsCtor from './src/common/settings_ctor.plain';
-
-let settingsApi = function _settingsCtor() {
-  let self = {};
-  let file = fileCtor({filename: 'data/settings.json', 
-                       enc: 'utf8'});
-  console.log('loading: ', file.filename);
-  _load().then(data => { //already catching load errors during startup
-    settingsCtor(data).check().catch(err => {
-      console.error(err);
-      process.exit(1);
-    });
-  }).catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
-
-  //Public API
-  self.get = get;
-  self.set = set;
-  self.hasUserAdminRole = hasUserAdminRole;
-
-  return self;
-
-  function get() {
-    return _load();
-  }
-
-  function set(data) {
-    console.log('data:', data);
-    return new Promise((resolve, reject) => {
-      settingsCtor(data).check().then(dummy => {
-        _store(data).then(dummy => {
-          console.log('stored settings');
-          resolve(self);
-        });
-      }).catch(err => {
-        reject(err);
-      });
-    });
-  }
-
-  function hasUserAdminRole(user) {
-    return new Promise((resolve, reject) => {
-      _load().then(data => {
-        resolve(settingsCtor(data).hasUserAdminRole(user));
-      }).catch(err => {
-        reject(err);
-      });
-    });
-    return
-  }
-
-  function _load() {
-    return new Promise((resolve, reject) => {
-      file.readJSON().then(data => {
-        resolve(data);
-      }).catch(err => {
-        reject(err);
-      });
-    });
-  }
-
-  function _store(data) {
-    return file.writeJSON(data);
-  }
-
-}();
+import settingsDataServiceCtor from './src/common/settings_server_data_service_ctor.plain';
+let settingsDataService = settingsDataServiceCtor();
 
 var express = require('express');
 var path = require('path');
@@ -118,7 +51,8 @@ var user = {
 };
 
 app.post('/login', authenticate, function (req, res) {
-  settingsApi.hasUserAdminRole(user).then(hasAdminRole => {
+  let user = req.body;
+  settingsDataService.hasUserAdminRole(user).then(hasAdminRole => {
     if (hasAdminRole) {
       let days = 24*60*60; //one day in seconds
       let token = jwt.sign({
@@ -152,7 +86,7 @@ app.get('/me', function (req, res) {
 });
 
 app.get('/settings', function (req, res) {
-  settingsApi.get().then(data => {
+  settingsDataService.load().then(data => {
     res.send(data);
   }).catch(err => {
     res.status(500).end(err);
@@ -161,8 +95,8 @@ app.get('/settings', function (req, res) {
 
 app.post('/settings', function (req, res) {
   let body = req.body;
-  settingsApi.set(body).then(dummy => {
-    settingsApi.get().then(data => {
+  settingsDataService.store(body).then(dummy => {
+    settingsDataService.load().then(data => {
       res.send(data);
     }).catch(err => {
       res.status(500).end(err);
