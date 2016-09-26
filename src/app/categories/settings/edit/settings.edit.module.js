@@ -28,7 +28,7 @@ import settingsCtor from '../../../../common/settings_ctor';
                 function(toastMixin, gcpSettingsDataService, gcpSettingsCtorFactory, $q, $translate) {
                   "ngInject";
 
-                  let layout = [{ //additional edit layout
+                  const layout = [{ //additional edit layout
                     className: 'layout-row',
                     fieldGroup: [
                       {className: 'flex', key: 'admins', asyncValidators: asyncValidators()},

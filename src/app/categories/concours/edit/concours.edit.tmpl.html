@@ -1,8 +1,8 @@
 <md-content layout="column">
   <h2 translate="EDIT_CONCOURS_TITLE"></h2>
 
-  <form novalidate>
-    <formly-form model="vm.model" fields="vm.fields" form="vm.form">
+  <form novalidate ng-if="vm.model">
+    <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
       <div layout="row"  layout-align="space-around center">
         <md-button
           type="submit"
@@ -14,13 +14,17 @@
         </md-button>
         <md-button
           class="md-primary md-raised"
-          ng-click="vm.cancel()"
+          ng-click="vm.options.resetModel()"
           aria-label="CANCEL_BUTTON | translate"
           translate="CANCEL_BUTTON">
         </md-button>
       </div>
     </formly-form>
   </form>
+
+  <div ng-if="!vm.model" translate="PAGE_LOADING">
+    Loading...
+  </div>
 
   <!-- <h2>Image</h2> -->
   <!-- <pre>Aggregate: {{vm.model.imageAggregate | json}}</pre> -->

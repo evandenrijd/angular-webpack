@@ -1,5 +1,5 @@
 <md-content layout="column">
-  <h2>Settings:</h2>
+  <h2 translate="SETTINGS_TITLE"></h2>
 
   <form novalidate ng-if="vm.model">
     <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
@@ -22,7 +22,7 @@
     </formly-form>
   </form>
 
-  <div  ng-if="!vm.model">
+  <div ng-if="!vm.model" translate="PAGE_LOADING">
     Loading...
   </div>
 

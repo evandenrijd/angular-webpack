@@ -15,12 +15,15 @@
   "ERR_login_please_login_again": "Please login again",
   "ERR_login_user_has_no_admin_role": "You do not have admin privileges",
 
+  "PAGE_LOADING": "Loading...",
+
   "DATA_PERSISTED": "Data is persisted",
   "ERR_DATA_NOT_PERSISTED": "Data is NOT persisted",
 
   "EDIT_CONCOURS_TITLE": "Update concours",
   "CREATE_CONCOURS_TITLE": "New concours",
   "PREFERENCES_TITLE": "Preferences",
+  "SETTINGS_TITLE": "Settings",
 
   "APPLY_BUTTON": "Apply",
   "CANCEL_BUTTON": "Cancel",
@@ -71,6 +74,8 @@
   "concours_db_successful_delete": "Successfully deleted concours",
 
   "preferences_language_ENUM_ENGLISH": "English",
-  "preferences_language_ENUM_FRENCH": "French"
+  "preferences_language_ENUM_FRENCH": "French",
+
+  "settings_admins": "Administators"
 
 }

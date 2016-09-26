@@ -23,32 +23,35 @@ import {dump_obj} from '../../../utils';
       ;
     })
 
-    .controller('PreferencesEditController', function preferencesEditControllerFactory($log, preferences, $stateParams, $timeout, $window, $state) {
+    .controller('PreferencesEditController', function ($log, preferences, $stateParams, $timeout, $window, $state) {
       "ngInject";
-      return preferencesEditControllerConstructor({}, {$log, preferences, $stateParams, $timeout, $window, $state});
+      return preferencesEditControllerCtor({}, {$log, preferences, $stateParams, $timeout, $window, $state});
     })
   ;
 
-  function preferencesEditControllerConstructor(spec, my) {
+  function preferencesEditControllerCtor(spec, my) {
     let self = {};
     my = my || {};
 
-    let layout = [
-      {
-        className: 'layout-row',
-        fieldGroup: [
-          { className: 'flex-20', key: 'language' }
-        ]
-      },
-    ];
-
+    const layout = _layout();
     my.$timeout(function() {
       self.fields = my.preferences.getFormlyFields({layout: layout});
       self.model = my.preferences.getFormlyModel();
     }, 0);
 
     self.apply = apply;
-    self.cancel = init;
+    return self;
+
+    function _layout() {
+      return [
+        {
+          className: 'layout-row',
+          fieldGroup: [
+            { className: 'flex-20', key: 'language' }
+          ]
+        },
+      ];
+    }
 
     function apply() {
       my.preferences.update(self.model).then(() => {
@@ -62,7 +65,6 @@ import {dump_obj} from '../../../utils';
       return self;
     }
 
-    return self;
   };
 
 })();

@@ -15,12 +15,15 @@
   "ERR_login_please_login_again": "SVP relogin",
   "ERR_login_user_has_no_admin_role": "Vous n'avez pas de privilèges admin",
 
+  "PAGE_LOADING": "Chargement en cours...",
+
   "DATA_PERSISTED": "Les données sont mises à jour",
   "ERR_DATA_NOT_PERSISTED": "Les données ne sont pas mises à jour",
 
   "EDIT_CONCOURS_TITLE": "Mise à jour d'un concours",
   "CREATE_CONCOURS_TITLE": "Nouveau concours",
   "PREFERENCES_TITLE": "Préférences",
+  "SETTINGS_TITLE": "Configuration",
 
   "APPLY_BUTTON": "Appliquer",
   "CANCEL_BUTTON": "Annuler",
@@ -34,7 +37,7 @@
 
   "category_concours": "Concours",
   "category_drawings": "Tirage au sort",
-  "category_settings": "Settings",
+  "category_settings": "Configuration",
   "category_preferences": "Préférences",
 
   "concours_code": "Code",
@@ -71,6 +74,8 @@
   "concours_db_successful_delete": "La suppression fu concours a réussi",
 
   "preferences_language_ENUM_ENGLISH": "Anglais",
-  "preferences_language_ENUM_FRENCH": "Français"
+  "preferences_language_ENUM_FRENCH": "Français",
+
+  "settings_admins": "Gestionnaire"
 
 }
