@@ -2,39 +2,58 @@ import angular from 'angular';
 import _ from 'underscore';
 import {dump_obj} from '../utils';
 import './meta.module';
-import concoursConstructor from './concours.constructor';
+import concoursCtor from './concours.ctor';
 
 (function(){
 
-  let concoursListConstructor = function(spec, my) {
-    let self = spec || {};
+  angular.module('gecopa.common.concours', [
+    'gecopa.common.meta'
+  ])
+    .provider('concoursList', function concoursListProvider() {
+      this.$get = function($http, $q, $translate, meta, $mdToast, $timeout) {
+        "ngInject";
+        return concoursListCtor({}, {$http, $q, $translate, meta, $mdToast, $timeout});
+      }
+    });
+
+  function concoursListCtor(spec, my) {
+    let self = {};
     my = my || {};
     let URLS = {
       FETCH: 'data/concours.json'
     };
     let concours;
 
-    let extract = function(result) {
+    //public API
+    self.reset = reset;
+    self.getConcoursById = getConcoursById;
+    self.createConcours = createConcours;
+    self.updateConcours = updateConcours;
+    self.deleteConcours = deleteConcours;
+
+    return self;
+
+    function extract(result) {
       // console.debug('result: ', result);
       return result.data.map(spec => {
-        return concoursConstructor(spec, my);
+        return concoursCtor(spec, my);
       });
     }
 
-    let cacheConcours = function(result) {
+    function cacheConcours(result) {
       concours = extract(result);
       // console.debug('concours: ', concours);
       return concours;
     }
 
-    let loadAllConcours = function () {
+    function loadAllConcours() {
       return (concours) ? my.$q.when(concours) :
         my.$http.get(URLS.FETCH).then(result => {
           return cacheConcours(result);
         });
     }
 
-    let reset = function(query) {
+    function reset(query) {
       return loadAllConcours();
     }
 
@@ -44,7 +63,7 @@ import concoursConstructor from './concours.constructor';
       })
     }
 
-    let getConcoursById = function (concoursId) {
+    function getConcoursById(concoursId) {
       return my.$q(function(resolve) {
         loadAllConcours().then(() => {
           resolve(findConcours(concoursId));
@@ -52,7 +71,7 @@ import concoursConstructor from './concours.constructor';
       });
     };
 
-    let createConcours = function (aConcours) {
+    function createConcours(aConcours) {
       return my.$q(function(resolve) {
         loadAllConcours().then(() => {
           my.$timeout(function() { //FIXME 1s simulation of create
@@ -68,7 +87,7 @@ import concoursConstructor from './concours.constructor';
       });
     };
 
-    let updateConcours = function (aConcours) {
+    function updateConcours(aConcours) {
       return my.$q(function(resolve) {
         loadAllConcours().then(() => {
           my.$timeout(function() { //FIXME 1s simulation of update
@@ -94,7 +113,7 @@ import concoursConstructor from './concours.constructor';
       });
     };
 
-    let deleteConcours = function (concoursId) {
+    function deleteConcours(concoursId) {
       return my.$q(function(resolve) {
         getConcoursById(concoursId).then((c) => {
           my.$timeout(function() { //FIXME 1s simulation of delete
@@ -111,24 +130,6 @@ import concoursConstructor from './concours.constructor';
       });
     };
 
-    //public API
-    self.reset = reset;
-    self.getConcoursById = getConcoursById;
-    self.createConcours = createConcours;
-    self.updateConcours = updateConcours;
-    self.deleteConcours = deleteConcours;
-
-    return self;
   }
-
-  angular.module('gecopa.common.concours', [
-    'gecopa.common.meta'
-  ])
-    .provider('concoursList', function concoursListProvider() {
-      this.$get = function concoursListConstructorFactory($http, $q, $translate, meta, $mdToast, $timeout) {
-        "ngInject";
-        return concoursListConstructor({}, {$http, $q, $translate, meta, $mdToast, $timeout});
-      }
-    });
 
 })();

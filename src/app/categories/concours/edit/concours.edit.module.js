@@ -32,7 +32,7 @@ import {dump_obj} from '../../../utils';
     })
   ;
 
-  var concoursEditControllerConstructor = function(spec, my) {
+  function concoursEditControllerConstructor(spec, my) {
     let self = {};
     my = my || {}; //shared state (global deps);
     let concours;
@@ -45,25 +45,26 @@ import {dump_obj} from '../../../utils';
       self.model = concours.getFormlyModel({exclude: excludeKeys});
     });
 
-    let getConcours = function() {
-      return concours;
-    }
-
-    let submit = function() {
-      concours.setFormlyModel();
-      my.concoursList.updateConcours(concours);
-    }
-
-    let cancel = function() {
-      self.model = concours.getFormlyModel({exclude: excludeKeys});
-      return self;
-    }
-
     self.submit = submit;
     self.cancel = cancel;
     self.getConcours = getConcours;
 
     return self;
+
+    function getConcours() {
+      return concours;
+    }
+
+    function submit() {
+      concours.setFormlyModel();
+      my.concoursList.updateConcours(concours);
+    }
+
+    function cancel() {
+      self.model = concours.getFormlyModel({exclude: excludeKeys});
+      return self;
+    }
+
   }
 
 })();

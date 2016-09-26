@@ -1,5 +1,5 @@
 import angular from 'angular';
-import concoursConstructor from '../../../common/concours.constructor';
+import concoursCtor from '../../../common/concours.ctor';
 import '../../../common/choose_file/choose_image_file';
 import {dump_obj} from '../../../utils';
 
@@ -27,14 +27,14 @@ import {dump_obj} from '../../../utils';
     })
     .controller('ConcoursCreateController', function(meta, $translate, concoursList) {
       "ngInject";
-      return concoursCreateControllerConstructor({}, {meta, $translate, concoursList});
+      return concoursCreateControllerCtor({}, {meta, $translate, concoursList});
     })
   ;
 
-  var concoursCreateControllerConstructor = function(spec, my) {
+  function concoursCreateControllerCtor(spec, my) {
     let self = {};
     my = my || {}; //shared state (global deps);
-    let concours = concoursConstructor(undefined, my);
+    let concours = concoursCtor(undefined, my);
     //FIXME set creation admin, from gcpAppState
 
     let excludeKeys = ['id'];
@@ -42,25 +42,26 @@ import {dump_obj} from '../../../utils';
     self.fields = concours.getFormlyFields({exclude: excludeKeys});
     self.model = concours.getFormlyModel({exclude: excludeKeys});
 
-    let getConcours = function() {
-      return concours;
-    }
-
-    let submit = function() {
-      concours.setFormlyModel();
-      my.concoursList.createConcours(concours);
-    }
-
-    let cancel = function() {
-      self.model = concours.getFormlyModel({exclude: excludeKeys});
-      return self;
-    }
-
     self.submit = submit;
     self.cancel = cancel;
     self.getConcours = getConcours;
 
     return self;
+
+    function getConcours() {
+      return concours;
+    }
+
+    function submit() {
+      concours.setFormlyModel();
+      my.concoursList.createConcours(concours);
+    }
+
+    function cancel() {
+      self.model = concours.getFormlyModel({exclude: excludeKeys});
+      return self;
+    }
+
   }
 
 })();

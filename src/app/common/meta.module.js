@@ -1,30 +1,32 @@
 import angular from 'angular';
 import _ from 'underscore';
 import {dump_obj} from '../utils';
-import metaDataFactoryCtor from '../../common/meta_data_factory_ctor';
+import metaDataCtor from '../../common/meta_data_ctor';
 
 (function(){
 
   angular.module('gecopa.common.meta', [])
 
     .provider('meta', function metaProvider() {
-      this.$get = function metaConstructorFactory($translate, languagePreferenceFactory) {
+      this.$get = function($translate, languagePreferenceFactory) {
         "ngInject";
-        return metaConstructor({}, {$translate, languagePreferenceFactory});
+        return metaCtor({}, {$translate, languagePreferenceFactory});
       }
     })
 
   ;
 
-  function metaConstructor(spec, my) {
-    let self = metaDataFactoryCtor(spec, my);
+  function metaCtor(spec, my) {
+    let self = metaDataCtor(spec, my);
+
+    const data = self.get();
 
     //Public API
     self.getFormlyFields = getFormlyFields;
     self.getFormlyModel = getFormlyModel;
     self.getAttributeLabelId = getAttributeLabelId;
+    return self;
 
-    const data = self.get();
 
     function formly_fields(o) {
       return data[o.name]
@@ -174,7 +176,6 @@ import metaDataFactoryCtor from '../../common/meta_data_factory_ctor';
       return o.name + '_' + o.attr;
     }
 
-    return self;
   }
 
 })();
