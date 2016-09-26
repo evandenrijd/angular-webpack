@@ -1,9 +1,9 @@
-import fileCtor from './/file_ctor.plain';
+import fileCtor from './file_ctor.plain';
 import settingsCtor from './settings_ctor.plain';
 
-export default settingsServerDataServiceCtor;
+export default settingsDataServiceCtor;
 
-function settingsServerDataServiceCtor(spec) {
+function settingsDataServiceCtor(spec) {
   let self = {};
   let file = fileCtor({filename: 'data/settings.json',
                        enc: 'utf8'});
@@ -54,7 +54,6 @@ function settingsServerDataServiceCtor(spec) {
         reject(err);
       });
     });
-    return
   }
 
 };

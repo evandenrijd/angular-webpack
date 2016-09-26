@@ -16,6 +16,8 @@ import 'angular-translate-loader-static-files';
 
 import './categories/categories.module';
 
+import userCtor from '../common/user_ctor.js';
+
 (function () {
 
   angular.module('gecopa.app', [
@@ -230,7 +232,7 @@ import './categories/categories.module';
         } else if (error.data.match(/has no admin role/)) {
           gcpAppState.logout('ERR_login_user_has_no_admin_role');
         } else {
-          gcpAppState.logout('ERR_login_please_login_again')
+          gcpAppState.logout('ERR_login_wrong_username_or_password')
         }
         return $q.reject(error);
       }
@@ -342,7 +344,7 @@ import './categories/categories.module';
     self.get = get;
     self.set = set;
     self.init = init;
-    self.getUserIdentifier = getUserIdentifier;
+    self.getUser = getUser;
     self.isLoggedIn = isLoggedIn;
     self.login = login;
     self.logout = logout;
@@ -356,10 +358,11 @@ import './categories/categories.module';
     function init() {
       return my.$q(function(resolve, reject) {
         my.gcpUserFactory.getUser().then(function (response) {
-          set('username', response.data.username); //cache only username, not password
+          let user = userCtor(response.data);
+          set('user', user);
           resolve(self);
         }).catch(function (error) {
-          set('username', null);
+          set('user', null);
           reject(error);
         });
       });
@@ -374,18 +377,18 @@ import './categories/categories.module';
       return self;
     }
 
+    function getUser() {
+      return get('user');
+    }
+
     //Expose the user API by delegation
     function userAPIMixin(that) {
-      that.getUserIdentifier = self.getUserIdentifier;
+      that.getUser = getUser;
       that.isLoggedIn = self.isLoggedIn;
       that.login = self.login;
       that.logout = self.logout;
       return that
     }
-
-    function getUserIdentifier() {
-      return get('username');
-    };
 
     function isLoggedIn() {
       return my.gcpUserFactory.isLoggedIn();
@@ -393,12 +396,13 @@ import './categories/categories.module';
 
     function login(username, password) {
       return my.$q(function(resolve, reject){
-        my.gcpUserFactory.login(username, password).then(function(response) {
-          set('username', response.data.username);
-          my.$window.location.reload();
-          resolve(self);
-        }).catch(function(error){
-          set('username', null);
+        my.gcpUserFactory.login(username, password).then(() => {
+          init().then(() => {
+            my.$window.location.reload();
+            resolve(self);
+          });
+        }).catch((error) => {
+          set('user', null);
           console.error('login error: ', error);
           self.toast({id: 'ERR_login_wrong_username_or_password'});
           reject(error);
@@ -409,7 +413,7 @@ import './categories/categories.module';
     function logout(id) {
       return my.$q(function(resolve) {
         my.gcpUserFactory.logout().then(() => {
-          set('username', null);
+          set('user', null);
           my.$state.go('gecopa.admin.welcome');
           resolve(self);
         });

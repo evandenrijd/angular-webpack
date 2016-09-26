@@ -55,7 +55,7 @@
           <md-menu>
             <md-button ng-click="$mdOpenMenu($event)" aria-label="user options">
               <div layout="row" layout-align="end center">
-                <md-label>{{ vm.getUserIdentifier() }}</md-label>
+                <md-label>{{ vm.getUser().getUserName() }}</md-label>
                 <div class="material-icons">arrow_drop_down</div>
               </div>
             </md-button>

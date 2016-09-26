@@ -1,0 +1,25 @@
+[
+  {
+    "username":"admin",
+    "email":"admin@rtbf.be",
+    "password":"p",
+    "first_name":"Admin",
+    "last_name":"admin"
+  },
+
+  {
+    "username":"user",
+    "email":"user@rtbf.be",
+    "password":"p",
+    "first_name":"User",
+    "last_name":"user"
+  },
+
+  {
+    "username":"eduv",
+    "email":"eduv@rtbf.be",
+    "password":"p",
+    "first_name":"Eduv",
+    "last_name":"eduv"
+  }
+]

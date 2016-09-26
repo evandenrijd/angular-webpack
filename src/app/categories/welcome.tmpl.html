@@ -1,5 +1,7 @@
 <md-content flex>
-  <h1 translate="WELCOME_TITLE" translate_values="{ username: vm.getUserIdentifier() }"></h1>
+  <h1 ng-show="vm.isLoggedIn()"
+      translate="WELCOME_TITLE"
+      translate_values="{ username: vm.getUser().getFirstName() }"></h1>
 
   <div ng-hide="vm.isLoggedIn()">
     <form ng-submit="vm.onSubmit()" name="vm.form" novalidate>

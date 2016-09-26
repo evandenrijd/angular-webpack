@@ -1,31 +1,35 @@
-import settingsDataServiceCtor from './src/common/settings_server_data_service_ctor.plain';
+import usersCtor from './src/common/users_data_service_ctor.plain';
+import settingsDataServiceCtor from './src/common/settings_data_service_ctor.plain';
+
 let settingsDataService = settingsDataServiceCtor();
 
-var express = require('express');
-var path = require('path');
-var httpProxy = require('http-proxy');
+let express = require('express');
+let path = require('path');
+let httpProxy = require('http-proxy');
 
-var bodyParser = require('body-parser');
-var jwt = require('jsonwebtoken');
-var expressJwt = require('express-jwt');
+let bodyParser = require('body-parser');
+let jwt = require('jsonwebtoken');
+let expressJwt = require('express-jwt');
 
 //FIXME: jwtSecret should be somewhere securely
-var jwtSecret = 'aalskfasd;lkfj;kljoiurqwelrk1,m34r1;should be stored securely.';
+let jwtSecret = 'aalskfasd;lkfj;kljoiurqwelrk1,m34r1;should be stored securely.';
 
-var proxy = httpProxy.createProxyServer();
-var app = express();
+let proxy = httpProxy.createProxyServer();
+let app = express();
 
-var isProduction = process.env.NODE_ENV === 'production';
-var port = isProduction ? process.env.PORT : 3000;
-var publicPath = path.resolve(__dirname, 'public');
+let isProduction = process.env.NODE_ENV === 'production';
+let port = isProduction ? process.env.PORT : 3000;
+let publicPath = path.resolve(__dirname, 'public');
 console.log('serving: ', publicPath);
+
+let users = usersCtor();
 
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
 app.use(expressJwt({ secret: jwtSecret }).unless({
   path: [
       /\/dist\/.*/,             //Need the app.bundle.js and app.*.hot-fixes.js
-                                //before login
+    //before login
       /\/data\/languages\/.*/,  //Need languages before login
     '/login']                   //Need login API before login
 }));
@@ -39,21 +43,15 @@ if (!isProduction) {
   // to webpack-dev-server
   app.all('/dist/*', function (req, res) {
     proxy.web(req, res, {
-        target: 'http://localhost:8080'
+      target: 'http://localhost:8080'
     });
   });
 }
 
-//FIXME: access the user db
-var user = {
-  username: 'eduv',
-  password: 'p'
-};
-
 app.post('/login', authenticate, function (req, res) {
   let user = req.body;
-  settingsDataService.hasUserAdminRole(user).then(hasAdminRole => {
-    if (hasAdminRole) {
+  settingsDataService.hasUserAdminRole(user).then(admitted => {
+    if (admitted) {
       let days = 24*60*60; //one day in seconds
       let token = jwt.sign({
         username: user.username
@@ -72,7 +70,7 @@ app.post('/login', authenticate, function (req, res) {
     } else {
       let err = 'User ' + user.username + ' has no admin role'
       console.error(err);
-      res.status(500).end(err);
+      res.status(401).end(err);
     }
   }).catch(err => {
     console.error(err);
@@ -81,8 +79,13 @@ app.post('/login', authenticate, function (req, res) {
 });
 
 app.get('/me', function (req, res) {
-  console.log('req: ', req.user);
-  res.send(req.user);
+  // console.log('/me user:', req.user);
+  users.getWoPassword(req.user).then(user => {
+    res.send(user);
+  }).catch(err => {
+    console.error(err);
+    res.status(500).end(err);
+  });
 });
 
 app.get('/settings', function (req, res) {
@@ -107,13 +110,20 @@ app.post('/settings', function (req, res) {
 });
 
 function authenticate(req, res, next) {
-  let body = req.body;
-  if (!body.username || !body.password) {
+  let user = req.body;
+  if (!user.username || !user.password) {
     res.status(400).end('Must provide username or password');
-  } else if (body.username !== user.username || body.password !== user.password) {
-    res.status(401).end('Username or password incorrect');
   } else {
-    next();
+    users.authenticate(user).then((authenticated) => {
+      if (authenticated) {
+        next();
+      } else {
+        res.status(401).end('Username or password incorrect');
+      }
+    }).catch(err => {
+      console.error(err);
+      res.status(500).end('Authentication failed');      
+    });
   }
 }
 
@@ -131,4 +141,4 @@ proxy.on('error', function(e) {
 
 app.listen(port, function () {
   console.log('Server running on port:', port);
-});
+});  
